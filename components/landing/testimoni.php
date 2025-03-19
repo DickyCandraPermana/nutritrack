@@ -7,7 +7,7 @@
     <h2 class="w-full text-3xl font-bold text-center text-green-500">Apa Kata Mereka</h2>
     <div class="flex flex-row justify-around">
       <div class="flex flex-col items-center justify-center w-1/3 gap-3 px-4 py-8 text-center bg-white rounded-tr-sm rounded-bl-sm shadow-md bg-opacity-35 rounded-tl-3xl rounded-br-3xl shadow-slate-200">
-        <img src="public/assets/testi-pict.jpg" class="rounded-full drop-shadow-md size-40" alt="">
+        <img src="public/assets/testi1.png" class="rounded-full drop-shadow-md size-40" alt="">
         <p class="text-sm text-slate-700">NutriTrack sangat membantu saya dalam memantau asupan gizi harian. UI-nya simpel dan mudah digunakan!</p>
         <div class="">
           <h3 class="font-semibold"> Rina Setiawan</h3>
@@ -16,7 +16,7 @@
       </div>
 
       <div class="flex flex-col items-center justify-center w-1/3 gap-3 px-4 py-8 text-center bg-white rounded-tr-sm rounded-bl-sm shadow-md bg-opacity-35 rounded-tl-3xl rounded-br-3xl shadow-slate-200">
-        <img src="public/assets/testi-pict.jpg" class="rounded-full drop-shadow-md size-40" alt="">
+        <img src="public/assets/testi2.png" class="rounded-full drop-shadow-md size-40" alt="">
         <p class="text-sm text-slate-700">NutriTrack sangat membantu saya dalam memantau asupan gizi harian. UI-nya simpel dan mudah digunakan!</p>
         <div class="">
           <h3 class="font-semibold"> Rina Setiawan</h3>
