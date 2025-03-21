@@ -1,39 +1,14 @@
-<div>
+<div class="p-6 bg-white rounded-lg shadow-md welcome-section">
   <div>
-    <div>
-      <h2>Quick Views</h2>
-      <p>Ringkasan data diri</p>
-    </div>
-    <div class="">
-      <div class="flex flex-col items-center justify-center px-4 py-2 bg-gray-200 border border-gray-700 rounded-xl">
-        <h3 class="w-full -mt-1 font-semibold text-left">BMI</h3>
-        <p class="text-4xl font-medium">300</p>
-      </div>
-      <div></div>
-      <div></div>
+    <h4 class="text-xl font-semibold">Welcome back, <?= $_SESSION['username'] ?></h4>
+    <p class="text-sm text-gray-500"><?= date('l, j F Y') ?></p>
+    <div class="flex justify-center gap-4 mt-4">
+      <div class="px-4 py-2 text-red-600 bg-red-100 rounded-lg shadow tracker-card calories">5490 cal</div>
+      <div class="px-4 py-2 text-yellow-600 bg-yellow-100 rounded-lg shadow tracker-card carbs">5490 carb</div>
+      <div class="px-4 py-2 text-pink-600 bg-pink-100 rounded-lg shadow tracker-card heart">5490 bpm</div>
+      <div class="px-4 py-2 text-blue-600 bg-blue-100 rounded-lg shadow tracker-card water">5490 oz</div>
+      <div class="px-4 py-2 text-green-600 bg-green-100 rounded-lg shadow tracker-card exercise">5490 min</div>
     </div>
   </div>
-
-  <div>
-    <div class="left">
-
-    </div>
-    <div class="right">
-
-    </div>
-  </div>
-
-  <div class="chart">
-    <div>
-      <h2>Quick Views</h2>
-      <p>Ringkasan data diri</p>
-    </div>
-    <div>
-
-    </div>
-  </div>
-
-  <?
-  include 'lihatMakanan.php';
-  ?>
+  <button class="px-6 py-2 mt-4 text-white transition bg-black rounded-full hover:bg-gray-800">Create New Plan</button>
 </div>

@@ -24,7 +24,7 @@ class AuthController
     $result = updateSession($this->db, $user['user_id']);
 
     if($result) {
-      header('Location: /nutritrack/profile');
+      header('Location: /nutritrack/profile/dashboard');
       exit();
     } else {
       header('Location: /nutritrack/login');

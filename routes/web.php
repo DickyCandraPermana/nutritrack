@@ -35,12 +35,12 @@ if ($method === 'POST') {
     require_once 'views/register.php';
   } elseif ($uri === 'nutritrack/login') {
     require_once 'views/login.php';
-  } elseif ($uri === 'nutritrack/logout') {
+  } elseif ($uri === 'nutritrack/profile/logout') {
     session_start();
     session_destroy();
     header('Location: /nutritrack');
     exit();
-  } elseif ($uri === 'nutritrack/profile') {
+  } elseif ($uri === 'nutritrack/profile' || $uri === 'nutritrack/profile/dashboard') {
     $controller = new ProfileController($db);
     $controller->showProfile($_SESSION['user_id']);
   } elseif ($uri === 'nutritrack/profile/update') {

@@ -1,39 +1,61 @@
-<header class="flex flex-row justify-between p-5 border-b-2 border-green-400 bg-green-50">
-  <div class="flex flex-row gap-5">
-    <a href="<?= BASE_URL ?>" class="border-0">
-      <img class="w-8 h-8 bg-[url(../assets/logo.png)] bg-contain border-0">
+<header class="flex items-center justify-between w-full px-6 py-3 bg-white shadow-md">
+  <div class="flex gap-2">
+    <a class="flex items-center gap-3" href="<?= BASE_URL ?>">
+      <img src="<?= BASE_URL ?>public/assets/logo.png" alt="Nutritrack Logo" class="w-8 h-8">
+      <h3 class="text-xl font-semibold">Nutritrack</h3>
     </a>
-    <nav>
-      <ul class="flex flex-row gap-3">
-        <a href="#" class="text-md">
-          <li>Lens</li>
-        </a>
-        <a href="#" class="text-md">
-          <li>NutriPedia</li>
-        </a>
-        <a href="#" class="text-md">
-          <li>Link</li>
-        </a>
-        <a href="<?= BASE_URL ?>logout" class="text-md">
-          <li>Log out</li>
-        </a>
+
+    <div class="relative">
+      <input type="text" name="search" placeholder="Search your food..." class="px-4 py-2 pl-10 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+      <i class="absolute text-gray-500 transform -translate-y-1/2 fas fa-search left-3 top-1/2"></i>
+    </div>
+  </div>
+
+  <div class="flex items-center gap-4">
+    <nav class="flex items-center gap-4">
+      <?php
+      $menuItems = [
+        ["Camera", "fas fa-camera", "scan"],
+        ["Help", "", "help"],
+        ["Upgrade", "", "upgrade"],
+        ["Comunity", "", "comunity"],
+        ["Notification", "fas fa-bell", "notification"],
+        ["Chat", "fas fa-comments", "chat"]
+      ];
+      ?>
+
+      <ul class="flex items-center gap-4">
+        <?php foreach ($menuItems as $item) { ?>
+          <li>
+            <a href="<?= BASE_URL . $item[2] ?>" class="flex items-center gap-2 text-gray-700 hover:text-blue-500">
+              <?php if ($item[1] != "") { ?>
+                <i class="<?= $item[1] ?> text-lg"></i>
+              <?php } else { ?>
+                <?= $item[0] ?>
+              <?php } ?>
+            </a>
+          </li>
+        <?php } ?>
       </ul>
     </nav>
-  </div>
-  <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) { ?>
-    <div class="flex flex-row items-center justify-center h-full gap-3">
+
+    <?php
+    if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
+    ?>
       <a href="<?= BASE_URL ?>profile">
-        <img src="<?= BASE_URL . $_SESSION['profile_picture'] ?>" class="w-10 h-10 rounded-full" alt="">
+        <div class="flex items-center justify-center w-10 h-10 font-bold text-white bg-gray-300 rounded-full">
+          J
+        </div>
       </a>
-      <div class="flex flex-col">
-        <h3 class="text-sm font-medium"><?= $_SESSION['username'] ?></h3>
-        <p class="text-xs"><?= $_SESSION['bio'] ?></p>
+    <?php
+    } else {
+    ?>
+      <div>
+        <a class="px-4 py-1 bg-white border-2 rounded-xl border-slate-800 text-slate-800" href="<?= BASE_URL ?>login">Sign In</a>
+        <a class="px-4 py-1 text-white border-2 bg-slate-800 rounded-xl" href="<?= BASE_URL ?>register">Register</a>
       </div>
-    </div>
-  <?php } else { ?>
-    <div>
-      <a class="px-4 py-1 bg-white border-2 rounded-xl border-slate-800 text-slate-800" href="<?= BASE_URL ?>login">Sign In</a>
-      <a class="px-4 py-1 text-white border-2 bg-slate-800 rounded-xl" href="<?= BASE_URL ?>register">Register</a>
-    </div>
-  <?php } ?>
+    <?php
+    }
+    ?>
+  </div>
 </header>

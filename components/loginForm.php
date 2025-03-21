@@ -1,40 +1,41 @@
 <div
-  class="
-  flex flex-col items-center justify-center 
-  w-full m-auto h-svh 
-  bg-gray-500 bg-opacity-35
+  class="relative flex flex-col items-center justify-center w-full min-h-screen overflow-hidden bg-gray-500 bg-opacity-35">
+  <div
+    class="absolute inset-0 bg-[url(../assets/background.jpg)] bg-cover bg-fixed bg-no-repeat blur-lg mix-blend-darken -z-10"></div>
 
-  before:bg-[url(../assets/background.jpg)] 
-  before:h-full before:w-full before:bg-cover before:bg-fixed before:bg-no-repeat 
-  before:-z-10 before:blur-lg before:absolute before:mix-blend-darken">
-  <h1 class="mb-20 text-4xl font-bold">Log in to use our website</h1>
+  <h1 class="mb-10 text-4xl font-bold text-white">Log in to use our website</h1>
 
-  <div 
-  class="
-  flex flex-row 
-  bg-blue-100 bg-opacity-85 
-  border-blue-300 border-4 w-[600px] 
-  shadow-md shadow-slate-500 rounded-sm">
-    <div 
-    class="
-    w-full h-full 
-    bg-[url(../assets/image-login.jpeg)] bg-cover bg-no-repeat bg-center"> </div>
-    <form action="<?= BASE_URL ?>login" method="post" class="flex flex-col w-full gap-2 p-4">
+  <div class="flex bg-blue-100 bg-opacity-85 border-blue-300 border-4 w-[600px] shadow-lg rounded-lg overflow-hidden">
+    <div class="w-1/2 bg-[url(../assets/image-login.jpeg)] bg-cover bg-center hidden md:block"></div>
+
+    <form action="<?= BASE_URL ?>login" method="post" class="flex flex-col w-full p-6 md:w-1/2">
       <h2 class="w-full mb-4 text-2xl font-bold text-center">Log In</h2>
+
       <div class="flex flex-col gap-2">
         <label for="username">Username</label>
-        <input type="text" name="username" id="username" class="p-1 shadow-sm" placeholder="username">
+        <input type="text" name="username" id="username" class="p-2 border rounded shadow-sm" placeholder="Username">
       </div>
+
       <div class="flex flex-col gap-2">
         <label for="password">Password</label>
-        <input type="password" name="password" id="password" class="p-1 shadow-sm" placeholder="********">
+        <input type="password" name="password" id="password" class="p-2 border rounded shadow-sm" placeholder="********">
       </div>
-      <div class="flex justify-between">
-        <span class="flex gap-2 text-sm"><input type="checkbox" name="rememberMe" id="rememberMe"><label for="rememberMe">Remember Me</label></span>
-        <a href="" class="text-sm text-blue-600">Forgot Password?</a>
+
+      <div class="flex justify-between mt-2 text-sm">
+        <label class="flex items-center gap-2">
+          <input type="checkbox" name="rememberMe" id="rememberMe" class="accent-blue-600">
+          Remember Me
+        </label>
+        <a href="#" class="text-blue-600 hover:underline">Forgot Password?</a>
       </div>
-      <input type="submit" value="Log In" class="py-2 text-white bg-blue-600">
-      <span class="w-full text-sm text-center">Belum memiliki akun? <a href="" class="text-blue-600">Daftar</a></span>
+
+      <button type="submit" class="w-full py-2 mt-4 text-white transition bg-blue-600 rounded hover:bg-blue-700">
+        Log In
+      </button>
+
+      <p class="w-full mt-2 text-sm text-center">
+        Belum memiliki akun? <a href="#" class="text-blue-600 hover:underline">Daftar</a>
+      </p>
     </form>
   </div>
 </div>

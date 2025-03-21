@@ -69,7 +69,7 @@ function updateSession($db, $id) {
       $_SESSION['bmi'] = hitungBMI($user['berat_badan'], $user['tinggi_badan']);
       $_SESSION['bmi_status'] = $_SESSION['bmi'] < 18.5 ? 'Kurus' : ($_SESSION['bmi'] < 25 ? 'Normal' : 'Gemuk');
 
-      $_SESSION['bmr'] = hitungBMR($user['berat_badan'], $user['tinggi_badan'], $user['umur'], $user['jenis_kelamin']);
+      $_SESSION['bmr'] = hitungBMR($user['berat_badan'], $user['tinggi_badan'], $_SESSION['umur'], $user['jenis_kelamin']);
 
       $_SESSION['tdee'] = hitungTDEE($_SESSION['bmr'], $user['aktivitas']);
     }
