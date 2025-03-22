@@ -43,7 +43,7 @@ if ($method === 'POST') {
   } elseif ($uri === 'nutritrack/profile' || $uri === 'nutritrack/profile/dashboard') {
     $controller = new ProfileController($db);
     $controller->showProfile($_SESSION['user_id']);
-  } elseif ($uri === 'nutritrack/profile/update') {
+  } elseif ($uri === 'nutritrack/profile/edit') {
     $controller = new ProfileController($db);
     $controller->editProfile($_SESSION['user_id']);
   } elseif ($uri === 'nutritrack/profile/dashboard') {
@@ -52,6 +52,9 @@ if ($method === 'POST') {
   } elseif ($uri === 'nutritrack/profile/data') {
     $controller = new ProfileController($db);
     $controller->viewData($_SESSION['user_id']);
+  } elseif ($uri === 'nutritrack/profile/personal') {
+    $controller = new ProfileController($db);
+    $controller->profilePersonal($_SESSION['user_id']);
   } else {
     echo "404 Not Found";
   }

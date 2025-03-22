@@ -6,7 +6,7 @@
     <?php
     $menuItems = [
       ["Dashboard", "fas fa-home", "dashboard"],
-      ["Personal", "fas fa-user", "update"],
+      ["Personal", "fas fa-user", "personal"],
       ["Tracking Gizi", "fas fa-chart-line", "tracking"],
       ["Schedules", "fas fa-calendar", "schedules"],
       ["Meal Plans", "fas fa-utensils", "meal-plans"],

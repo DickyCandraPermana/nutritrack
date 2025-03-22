@@ -46,6 +46,18 @@ class ProfileController
     }
   }
 
+  public function profilePersonal($id)
+  {
+    $profile = new Profile($this->db);
+    $userData = $profile->getUserById($id);
+
+    if ($userData) {
+      require_once 'views/profile_personal.php';
+    } else {
+      echo "User not found";
+    }
+  }
+
   public function viewData($id)
   {
     $profile = new Profile($this->db);
@@ -63,6 +75,7 @@ class ProfileController
     $profile = new Profile($this->db);
     $profile->updateProfile($data);
     updateSession($this->db, $data['user_id']);
+    Header('Location: /nutritrack/profile/personal');
   }
 
   public function tambahMakanan($data) {
