@@ -7,7 +7,7 @@ $features = [
 ];
 ?>
 
-<div class="flex flex-col items-center justify-center w-full h-full p-10 bg-green-600 keunggulan">
+<div class="flex flex-col items-center justify-center w-full h-full p-10 bg-green-500 keunggulan">
   <article class="flex flex-col items-center justify-center w-full gap-2 text-center">
     <h2 class="text-4xl font-bold text-white">
       Apa itu Nutri<span class="text-black">Track?</span>

@@ -58,6 +58,19 @@ class ProfileController
     }
   }
 
+  public function profileTracking($id) 
+  {
+    $profile = new Profile($this->db);
+    $foodData = $profile->getUserMakananById($id);
+
+    if ($foodData) {
+      $_SESSION["makanan_user"] = $foodData;
+      require_once 'views/profile_tracking.php';
+    } else {
+      echo "User not found";
+    }
+  }
+
   public function viewData($id)
   {
     $profile = new Profile($this->db);

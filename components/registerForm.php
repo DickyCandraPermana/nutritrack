@@ -47,7 +47,7 @@
     </div>
     <div class="flex w-full gap-4 mt-4">
       <button type="button" onclick="backStep()" class="w-full py-2 text-white transition bg-gray-500 rounded-lg hover:bg-gray-600">Back</button>
-      <button type="submit" class="w-full py-2 text-white transition bg-green-600 rounded-lg hover:bg-green-700">Sign Up</button>
+      <button type="submit" class="w-full py-2 text-white transition bg-green-500 rounded-lg hover:bg-green-700">Sign Up</button>
     </div>
   </div>
 </form>

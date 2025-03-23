@@ -17,14 +17,14 @@ class Profile
     return $stmt->fetch(PDO::FETCH_ASSOC);
   }
 
-  public function getUserMakananAll($user_id)
+  public function getUserMakananByUserId($user_id)
   {
     $stmt = $this->db->prepare("SELECT * FROM user_makanan WHERE user_id = ? ORDER BY tanggal DESC");
     $stmt->execute([$user_id]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
-  public function getUserMakanan($date)
+  public function getUserMakananByDate($date)
   {
     $user_id = $_SESSION['user_id'];
     $stmt = $this->db->prepare("SELECT * FROM user_makanan WHERE user_id = ? AND tanggal = ?");
@@ -34,10 +34,54 @@ class Profile
 
   public function getUserMakananById($id)
   {
-    $stmt = $this->db->prepare("SELECT * FROM user_makanan WHERE id = ?");
+    $stmt = $this->db->prepare(
+      "SELECT 
+            user_makanan.id,
+            makanan.nama_makanan, 
+            makanan.deskripsi, 
+            user_makanan.tanggal, 
+            user_makanan.waktu_makan, 
+            user_makanan.jumlah_porsi, 
+            user_makanan.satuan,
+            makanan_nutrisi.jumlah, 
+            makanan_nutrisi.satuan AS nutrisi_satuan,
+            nutrisi.nama AS nutrisi_nama
+        FROM user_makanan
+        INNER JOIN makanan ON user_makanan.food_id = makanan.food_id
+        INNER JOIN makanan_nutrisi ON makanan.food_id = makanan_nutrisi.food_id
+        INNER JOIN nutrisi ON makanan_nutrisi.nutrition_id = nutrisi.nutrition_id
+        WHERE user_makanan.user_id = ?"
+    );
     $stmt->execute([$id]);
-    return $stmt->fetch(PDO::FETCH_ASSOC);
+
+    $data = [];
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+      $makananId = $row['id'];
+
+      if (!isset($data[$makananId])) {
+        // Simpan data makanan tanpa nutrisi dulu
+        $data[$makananId] = [
+          'nama_makanan' => $row['nama_makanan'],
+          'deskripsi' => $row['deskripsi'],
+          'tanggal' => $row['tanggal'],
+          'waktu_makan' => $row['waktu_makan'],
+          'jumlah_porsi' => $row['jumlah_porsi'],
+          'satuan' => $row['satuan'],
+          'nutrisi' => [] // Buat array kosong untuk nutrisi
+        ];
+      }
+
+      // Tambahkan nutrisi dalam format array 2 dimensi
+      $data[$makananId]['nutrisi'][] = [
+        $row['nutrisi_nama'],
+        $row['jumlah'],
+        $row['nutrisi_satuan']
+      ];
+    }
+
+    return $data;
   }
+
 
   public function updateProfile($data)
   {
