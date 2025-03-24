@@ -68,6 +68,11 @@ class ProfileController
     $this->renderView('profile_view_data', compact('userData'));
   }
 
+  public function profileInputMakanan($id) {
+    $userData = $this->fetchUserData($id);
+    $this->renderView('profile_input_makanan', compact('userData'));
+  }
+
   public function updateProfile($data)
   {
     $this->profile->updateProfile($data);

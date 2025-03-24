@@ -58,6 +58,9 @@ if ($method === 'POST') {
   } elseif ($uri === 'nutritrack/profile/tracking') {
     $controller = new ProfileController($db);
     $controller->profileTracking($_SESSION['user_id']);
+  } elseif ($uri === 'nutritrack/profile/tambah-makanan') {
+    $controller = new ProfileController($db);
+    $controller->profileInputMakanan($_SESSION['user_id']);
   } else {
     echo "404 Not Found";
   }

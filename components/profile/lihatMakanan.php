@@ -1,6 +1,9 @@
 <div class="p-5 bg-gray-100">
   <div class="max-w-5xl p-5 mx-auto bg-white rounded-lg shadow">
-    <h1 class="mb-4 text-2xl font-bold">Riwayat Makanan <?= $_SESSION['username'] ?></h1>
+    <div class="flex justify-between mb-4">
+      <h1 class="text-2xl font-bold">Riwayat Makanan <?= $_SESSION['username'] ?></h1>
+      <a href="<?= BASE_URL ?>profile/tambah-makanan" class="flex items-center gap-2 px-4 py-2 text-white transition bg-blue-600 rounded-md hover:bg-blue-700"><i class="fas fa-plus"></i></a>
+    </div>
 
     <table class="min-w-full overflow-hidden bg-white border border-gray-300 rounded-lg">
       <thead class="bg-gray-200">
@@ -16,7 +19,7 @@
       <tbody>
         <?php
         // DATA DUMMY
-        if(isset($_SESSION['makanan_user']) && count($_SESSION['makanan_user']) > 0) {
+        if (isset($_SESSION['makanan_user']) && count($_SESSION['makanan_user']) > 0) {
           $data = $_SESSION['makanan_user'];
 
           // LOOPING DATA
@@ -29,7 +32,7 @@
             echo "<td class='px-4 py-2 border'>{$makanan['jumlah_porsi']}</td>";
             echo "<td class='px-4 py-2 border'>";
             echo "<ul class='pl-5'>";
-            echo "<li>". ($makanan['nutrisi'][0][1] * $makanan['jumlah_porsi'])  ." {$makanan['nutrisi'][0][2]}</li>";
+            echo "<li>" . ($makanan['nutrisi'][0][1] * $makanan['jumlah_porsi'])  . " {$makanan['nutrisi'][0][2]}</li>";
             // foreach ($makanan['nutrisi'] as $nutrisi) {
             //   echo "<li>" . $nutrisi[1] . " " . $nutrisi[2] . " - " . $nutrisi[0] . "</li>";
             // }

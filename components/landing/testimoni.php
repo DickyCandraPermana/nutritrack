@@ -1,7 +1,7 @@
 <?php
 $testimonials = [
-  ["name" => "Rina Setiawan", "role" => "Ahli Gizi", "image" => "public/assets/jasmine.jpg", "text" => "NutriTrack sangat membantu saya dalam memantau asupan gizi harian. UI-nya simpel dan mudah digunakan!"],
-  ["name" => "Budi Santoso", "role" => "Atlet", "image" => "public/assets/danan.jpg", "text" => "Aplikasi ini sangat membantu saya menjaga pola makan yang seimbang untuk performa terbaik saya."],
+  ["name" => "Nurul Firdaus", "role" => "Dosen Anapersis", "image" => "public/assets/testi1.png", "text" => "NutriTrack sangat membantu saya dalam memantau asupan gizi harian. UI-nya simpel dan mudah digunakan!"],
+  ["name" => "Agus Purbayu", "role" => "Dosen Pemweb", "image" => "public/assets/testi2.png", "text" => "Aplikasi ini sangat membantu saya menjaga pola makan yang seimbang untuk performa terbaik saya."],
 ];
 ?>
 
