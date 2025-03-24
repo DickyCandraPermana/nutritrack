@@ -44,7 +44,7 @@
     ?>
       <a href="<?= BASE_URL ?>profile">
         <div class="flex items-center justify-center w-10 h-10 font-bold text-white bg-gray-300 rounded-full">
-          J
+          <?= substr($_SESSION['username'], 0, 1) ?>
         </div>
       </a>
     <?php

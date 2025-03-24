@@ -4,100 +4,85 @@ require_once 'models/Profile.php';
 class ProfileController
 {
   private $db;
+  private $profile;
 
   public function __construct($db)
   {
     $this->db = $db;
+    $this->profile = new Profile($this->db);
+  }
+
+  // Helper buat fetch data user
+  private function fetchUserData($id)
+  {
+    $userData = $this->profile->getUserById($id);
+    if (!$userData) {
+      echo "User not found";
+      exit;
+    }
+    return $userData;
+  }
+
+  // Helper buat render view
+  private function renderView($view, $data = [])
+  {
+    extract($data); // Convert array jadi variable
+    require_once "views/{$view}.php";
   }
 
   public function showProfile($id): void
   {
-    $profile = new Profile($this->db);
-    $userData = $profile->getUserById($id);
-
-    if ($userData) {
-      require_once 'views/profile.php';
-    } else {
-      echo "User not found";
-    }
+    $userData = $this->fetchUserData($id);
+    $this->renderView('profile', compact('userData'));
   }
 
   public function editProfile($id)
   {
-    $profile = new Profile($this->db);
-    $userData = $profile->getUserById($id);
-
-    if ($userData) {
-      require_once 'views/profile_edit.php';
-    } else {
-      echo "User not found";
-    }
+    $userData = $this->fetchUserData($id);
+    $this->renderView('profile_edit', compact('userData'));
   }
 
   public function dashboard($id)
   {
-    $profile = new Profile($this->db);
-    $userData = $profile->getUserById($id);
-
-    if ($userData) {
-      require_once 'views/profile_dashboard.php';
-    } else {
-      echo "User not found";
-    }
+    $userData = $this->fetchUserData($id);
+    $this->renderView('profile_dashboard', compact('userData'));
   }
 
   public function profilePersonal($id)
   {
-    $profile = new Profile($this->db);
-    $userData = $profile->getUserById($id);
-
-    if ($userData) {
-      require_once 'views/profile_personal.php';
-    } else {
-      echo "User not found";
-    }
+    $userData = $this->fetchUserData($id);
+    $this->renderView('profile_personal', compact('userData'));
   }
 
-  public function profileTracking($id) 
+  public function profileTracking($id)
   {
-    $profile = new Profile($this->db);
-    $foodData = $profile->getUserMakananById($id);
+    $foodData = $this->profile->getUserMakananById($id);
 
-    if ($foodData) {
-      $_SESSION["makanan_user"] = $foodData;
-      require_once 'views/profile_tracking.php';
-    } else {
-      echo "User not found";
-    }
+    $_SESSION["makanan_user"] = $foodData;
+    $this->renderView('profile_tracking', compact('foodData'));
   }
 
   public function viewData($id)
   {
-    $profile = new Profile($this->db);
-    $userData = $profile->getUserById($id);
-
-    if ($userData) {
-      require_once 'views/profile_view_data.php';
-    } else {
-      echo "User not found";
-    }
+    $userData = $this->fetchUserData($id);
+    $this->renderView('profile_view_data', compact('userData'));
   }
 
   public function updateProfile($data)
   {
-    $profile = new Profile($this->db);
-    $profile->updateProfile($data);
+    $this->profile->updateProfile($data);
     updateSession($this->db, $data['user_id']);
-    Header('Location: /nutritrack/profile/personal');
+    header('Location: /nutritrack/profile/personal');
+    exit;
   }
 
-  public function tambahMakanan($data) {
-    $profile = new Profile($this->db);
-    $profile->tambahMakanan($data);
+  public function tambahMakanan($data)
+  {
+    $this->profile->tambahMakanan($data);
   }
 
-  public function editMakanan($data) {
-    $profile = new Profile($this->db);
-    $profile->editMakanan($data);
+  public function editMakanan($data)
+  {
+    $this->profile->editMakanan($data);
   }
 }
