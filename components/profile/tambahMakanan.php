@@ -1,83 +1,89 @@
-<div class="">
-  <h2>Catatan Konsumsi Makanan Harian</h2>
-  <form action="#" method="POST" enctype="multipart/form-data">
-    <table>
-      <tr>
-        <td><label for="nama">Nama Makanan:</label></td>
-        <td><input type="text" id="nama" name="nama" required></td>
-      </tr>
-      <tr>
-        <td><label for="catatan">Catatan Tambahan:</label></td>
-        <td><textarea id="catatan" name="catatan"></textarea></td>
-      </tr>
-      <tr>
-        <td><label for="gambar">Upload Foto Makanan:</label></td>
-        <td><input type="file" id="gambar" name="gambar" accept="image/*"></td>
-      </tr>
-      <tr>
-        <td><label for="tanggal">Tanggal Konsumsi:</label></td>
-        <td><input type="date" id="tanggal" name="tanggal" required></td>
-      </tr>
-      <tr>
-        <td><label for="jam">Jam Makan:</label></td>
-        <td><input type="time" id="jam" name="jam" required></td>
-      </tr>
-      <tr>
-        <td>Jenis Makan:</td>
-        <td>
-          <input type="radio" id="sarapan" name="jenis" value="Sarapan" required> <label
-            for="sarapan">Sarapan</label>
-          <input type="radio" id="siang" name="jenis" value="Makan Siang"> <label for="siang">Makan
-            Siang</label>
-          <input type="radio" id="malam" name="jenis" value="Makan Malam"> <label for="malam">Makan
-            Malam</label>
-          <input type="radio" id="camilan" name="jenis" value="Camilan"> <label
-            for="camilan">Camilan</label>
-        </td>
-      </tr>
-      <tr>
-        <td><label for="porsi">Jumlah Konsumsi (gram):</label></td>
-        <td><input type="number" id="porsi" name="porsi" required></td>
-      </tr>
-      <tr>
-        <td>Perasaan Setelah Makan:</td>
-        <td>
-          <input type="checkbox" id="kenyang" name="perasaan" value="Kenyang"> <label
-            for="kenyang">Kenyang</label>
-          <input type="checkbox" id="lapar" name="perasaan" value="Lapar"> <label
-            for="lapar">Lapar</label>
-          <input type="checkbox" id="lelah" name="perasaan" value="Lelah"> <label
-            for="lelah">Lelah</label>
-          <input type="checkbox" id="enerjik" name="perasaan" value="Enerjik"> <label
-            for="enerjik">Enerjik</label>
-        </td>
-      </tr>
+<div class="p-6 bg-gray-100 rounded-lg shadow-md">
+  <h2 class="mb-4 text-xl font-semibold text-gray-800">Makanan Dikonsumsi</h2>
 
-      <tr>
-        <td><label for="aktivitas">Aktivitas Setelah Makan:</label></td>
-        <td>
-          <select id="aktivitas" name="aktivitas">
-            <option value="Duduk">Duduk</option>
-            <option value="Berjalan">Berjalan</option>
-            <option value="Olahraga">Olahraga</option>
-          </select>
-        </td>
-      </tr>
-      <tr>
-        <td>Seberapa Kenyang?</td>
-        <td><input type="range" id="kenyang_scale" name="kenyang_scale" min="1" max="10"></td>
-      </tr>
-      <tr>
-        <td><input type="hidden" name="id_user" value="12345"></td>
-      </tr>
-      <tr>
-        <td colspan="2" style="text-align: center;">
-          <input type="submit" name="submit">Simpan Data</input>
-          <br>
-          <br>
-          <button type="remove">Hapus Data</button>
-        </td>
-      </tr>
-    </table>
+  <form action="" method="post" class="space-y-4">
+    <input type="hidden" name="user_id" value="<?= $_SESSION['user_id'] ?>">
+    <!-- Dropdown Alpine -->
+    <div x-data="dropdownData()" class="relative w-64">
+      <!-- Button -->
+      <button type="button" @click="open = !open" class="flex items-center justify-between w-full p-3 bg-white border border-gray-300 rounded-lg shadow">
+        <span x-text="selected.nama_makanan ? selected.nama_makanan : 'Pilih Makanan'"></span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+        </svg>
+      </button>
+
+      <!-- Dropdown -->
+      <div x-show="open" @click.away="open = false" class="absolute z-10 w-full mt-2 bg-white border border-gray-300 rounded-lg shadow-lg">
+        <!-- Search Bar -->
+        <input type="text" x-model="search" placeholder="Cari..." class="w-full p-2 border-b border-gray-300 focus:outline-none">
+
+        <!-- Options -->
+        <ul class="overflow-y-auto max-h-40">
+          <template x-for="item in filteredItems" :key="item.food_id">
+            <li @click="selected = item; open = false; search = '';" class="p-3 cursor-pointer hover:bg-gray-100">
+              <span x-text="item.nama_makanan"></span>
+            </li>
+          </template>
+        </ul>
+      </div>
+
+      <!-- Hidden Input to Send Value -->
+      <input type="hidden" name="food_id" x-model="selected.food_id">
+    </div>
+
+    <!-- Catatan -->
+    <div class="flex flex-col gap-2">
+      <label for="catatan" class="font-medium text-gray-700">Catatan</label>
+      <input type="text" name="catatan" id="catatan" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Masukkan catatan">
+    </div>
+
+    <!-- Jenis Makan -->
+    <div class="flex flex-col gap-2">
+      <label for="waktu_makan" class="font-medium text-gray-700">Jenis Makan</label>
+      <select name="waktu_makan" id="waktu_makan" class="w-full p-3 bg-white border border-gray-300 rounded-lg shadow focus:ring-2 focus:ring-blue-400">
+        <option value="sarapan">Sarapan</option>
+        <option value="makan siang">Makan Siang</option>
+        <option value="makan malam">Makan Malam</option>
+        <option value="snack">Snack</option>
+      </select>
+    </div>
+
+    <!-- Porsi -->
+    <div class="flex flex-col gap-2">
+      <label for="jumlah_porsi" class="font-medium text-gray-700">Porsi</label>
+      <input type="number" name="jumlah_porsi" id="jumlah_porsi" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Masukkan porsi makan">
+    </div>
+
+    <!-- Satuan -->
+    <div class="flex flex-col gap-2">
+      <label for="satuan" class="font-medium text-gray-700">Satuan Porsi</label>
+      <input type="text" name="satuan" id="satuan" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Masukkan nama satuan">
+    </div>
+
+    <!-- Submit -->
+    <div class="flex flex-col gap-2">
+      <button type="submit" class="w-full p-3 text-white bg-blue-600 rounded-lg shadow hover:bg-blue-700 focus:ring-2 focus:ring-blue-400">Simpan</button>
+    </div>
   </form>
 </div>
+
+
+<script>
+  function dropdownData() {
+    return {
+      open: false,
+      search: '',
+      selected: {
+        label: '',
+        value: ''
+      },
+      items: <?php 
+      echo json_encode($_SESSION['foodData']); 
+      ?>,
+      get filteredItems() {
+        return this.items.filter(i => i.nama_makanan.toLowerCase().includes(this.search.toLowerCase()));
+      }
+    }
+  }
+</script>

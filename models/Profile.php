@@ -123,7 +123,7 @@ class Profile
     $user_id = $data['user_id'];
     $makanan = $data['food_id'];
     $tanggal = getCurrentDate();
-    $jam = getCurrentTime();
+    $jam = $data['waktu_makan'];
     $jumlah_porsi = $data['jumlah_porsi'];
     $satuan = $data['satuan'];
     $catatan = $data['catatan'];

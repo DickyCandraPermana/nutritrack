@@ -1,5 +1,6 @@
 <?php
 require_once 'models/Profile.php';
+require_once 'controllers/FoodController.php';
 
 class ProfileController
 {
@@ -68,7 +69,11 @@ class ProfileController
     $this->renderView('profile_view_data', compact('userData'));
   }
 
-  public function profileInputMakanan($id) {
+  public function profileInputMakanan($id)
+  {
+    $foodData = new FoodController($this->db);
+    $foodData = $foodData->fetchFoodData();
+    $_SESSION["foodData"] = $foodData;
     $userData = $this->fetchUserData($id);
     $this->renderView('profile_input_makanan', compact('userData'));
   }
@@ -84,6 +89,9 @@ class ProfileController
   public function tambahMakanan($data)
   {
     $this->profile->tambahMakanan($data);
+    unset($_SESSION['foodData']);
+    header('Location: /nutritrack/profile/tracking');
+    exit;
   }
 
   public function editMakanan($data)
