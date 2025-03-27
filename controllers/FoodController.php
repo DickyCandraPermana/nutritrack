@@ -19,4 +19,9 @@ class FoodController {
     }
     return $foodData;
   }
+
+  public function showFoodPage() {
+    $foodData = $this->fetchFoodData();
+    require_once 'views/search.php';
+  }
 }
