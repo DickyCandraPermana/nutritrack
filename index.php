@@ -2,7 +2,6 @@
 <html lang="en">
 <?php
 include_once 'config/config.php';
-session_start();
 ?>
 
 <head>

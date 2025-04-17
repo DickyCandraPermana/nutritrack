@@ -13,9 +13,90 @@ class Profile
   {
     $stmt = $this->db->prepare("SELECT * FROM users WHERE user_id = ?");
     $stmt->execute([$id]);
-    
+
     return $stmt->fetch(PDO::FETCH_ASSOC);
   }
+
+  public function getNutritionInWeekData($userId)
+  {
+    $stmt = $this->db->prepare(
+      "SELECT 
+        user_makanan.tanggal, 
+        nutrisi.nutrition_id, 
+        SUM(makanan_nutrisi.jumlah) AS jumlah
+      FROM user_makanan 
+      INNER JOIN makanan ON user_makanan.food_id = makanan.food_id 
+      INNER JOIN makanan_nutrisi ON makanan.food_id = makanan_nutrisi.food_id 
+      INNER JOIN nutrisi ON makanan_nutrisi.nutrition_id = nutrisi.nutrition_id 
+      WHERE user_makanan.user_id = ?
+        AND nutrisi.nutrition_id IN (1, 2, 6, 8)
+      GROUP BY user_makanan.tanggal, nutrisi.nutrition_id
+      ORDER BY user_makanan.tanggal ASC
+      LIMIT 28;"
+    );
+    $stmt->execute([$userId]);
+
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Inisialisasi array kosong per nutrisi
+    $data = [
+      'calories' => [],
+      'protein' => [],
+      'carbs' => [],
+      'fat' => []
+    ];
+
+    // Mapping nutrition_id → nama array
+    $map = [
+      1 => 'calories',
+      8 => 'protein',
+      6 => 'carbs',
+      2 => 'fat'
+    ];
+
+    // Buat index per tanggal
+    $tanggalIndex = [];
+    $index = 0;
+
+    foreach ($results as $row) {
+      $tgl = $row['tanggal'];
+      $id = (int) $row['nutrition_id'];
+      $jumlah = (float) $row['jumlah'];
+
+      if (!isset($map[$id])) continue;
+
+      if (!isset($tanggalIndex[$tgl])) {
+        if ($index >= 7) continue;
+        $tanggalIndex[$tgl] = $index++;
+      }
+
+      $hariKe = $tanggalIndex[$tgl];
+      $key = $map[$id];
+
+      if (!isset($data[$key][$hariKe])) {
+        $data[$key][$hariKe] = 0;
+      }
+
+      $data[$key][$hariKe] += $jumlah;
+    }
+
+    // Fallback: pastikan tiap nutrisi punya 7 entri
+    foreach ($data as $key => $values) {
+      for ($i = 0; $i < 7; $i++) {
+        if (!isset($data[$key][$i])) {
+          $data[$key][$i] = 0;
+        }
+      }
+      // Urutkan berdasarkan index hari (0–6)
+      ksort($data[$key]);
+      // Reset index array agar [0,1,2,...] (penting untuk JavaScript)
+      $data[$key] = array_values($data[$key]);
+    }
+
+    return $data;
+  }
+
+
 
   public function getUserMakananByUserId($user_id)
   {

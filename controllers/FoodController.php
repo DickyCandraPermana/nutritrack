@@ -10,6 +10,11 @@ class FoodController {
     $this->food = new Food($this->db);
   }
 
+  public function renderView($view, $data = []){
+    extract($data);
+    require_once "views/{$view}.php";
+  }
+
   public function fetchFoodData()
   {
     $foodData = $this->food->getNamaMakananDanID();
@@ -22,6 +27,6 @@ class FoodController {
 
   public function showFoodPage() {
     $foodData = $this->fetchFoodData();
-    require_once 'views/search.php';
+    $this->renderView('search', compact('foodData'));
   }
 }

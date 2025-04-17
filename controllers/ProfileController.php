@@ -27,7 +27,13 @@ class ProfileController
   // Helper buat render view
   private function renderView($view, $data = [])
   {
-    extract($data); // Convert array jadi variable
+    extract($data);
+
+    // echo "<pre>";
+    // echo "DUMP di renderView:\n";
+    // var_dump($userData, $weeklyFoodData); // <- ini harus muncul
+    // echo "</pre>";
+
     require_once "views/{$view}.php";
   }
 
@@ -45,8 +51,9 @@ class ProfileController
 
   public function dashboard($id)
   {
+    $weeklyFoodData = $this->profile->getNutritionInWeekData($id);
     $userData = $this->fetchUserData($id);
-    $this->renderView('profile_dashboard', compact('userData'));
+    $this->renderView('profile', compact('userData', 'weeklyFoodData'));
   }
 
   public function profilePersonal($id)

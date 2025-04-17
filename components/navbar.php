@@ -6,7 +6,7 @@
     </a>
 
     <div class="relative">
-      <form action="<?= BASE_URL ?>search" method="POST">
+      <form action="<?= BASE_URL ?>search" method="GET">
         <input type="text" name="search" placeholder="Search your food..." class="px-4 py-2 pl-10 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500">
         <button type="submit"><i class="absolute text-gray-500 transform -translate-y-1/2 fas fa-search left-3 top-1/2"></i></button>
       </form>
