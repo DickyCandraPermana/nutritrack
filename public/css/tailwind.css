@@ -11,3 +11,18 @@ body {
 .sidebar-item {
   @apply flex items-center w-full gap-3 px-6 py-3 text-white transition duration-300;
 }
+
+@keyframes fade-in-down {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-down {
+  animation: fade-in-down 0.3s ease-out;
+}

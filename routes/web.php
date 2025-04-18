@@ -67,10 +67,13 @@ $routes = [
       $profileController->profilePersonal($_SESSION['user_id']);
     },
     'nutritrack/search' => function () use ($homeController, $queryParams) {
-      $page = isset($queryParams['page']) ? (int)$queryParams['page'] : 1;
-      $query = isset($queryParams['search']) ? (string)$queryParams['search'] : '';
-      echo "from router". $query;
+      $page = isset($queryParams['page']) ? (int) $queryParams['page'] : 1;
+      $query = isset($queryParams['search']) ? (string) $queryParams['search'] : '';
       $homeController->search($query, $page);
+    },
+    'nutritrack/details' => function () use ($foodController, $queryParams) {
+      $id = isset($queryParams['id']) ? (int) $queryParams['id'] : 0;
+      $foodController->foodDetail($id);
     },
     'nutritrack/profile/tracking' => function () use ($profileController) {
       requireAuth();

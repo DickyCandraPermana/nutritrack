@@ -2,6 +2,7 @@
 <html lang="en">
 <?php
 include_once 'config/config.php';
+include_once 'config/helpers.php';
 ?>
 
 <head>

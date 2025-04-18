@@ -19,31 +19,41 @@ class Profile
 
   public function getNutritionInWeekData($userId)
   {
+    $today = date('Y-m-d');
+    $sevenDaysAgo = date('Y-m-d', strtotime('-6 days'));
+
     $stmt = $this->db->prepare(
       "SELECT 
-        user_makanan.tanggal, 
-        nutrisi.nutrition_id, 
-        SUM(makanan_nutrisi.jumlah) AS jumlah
-      FROM user_makanan 
-      INNER JOIN makanan ON user_makanan.food_id = makanan.food_id 
-      INNER JOIN makanan_nutrisi ON makanan.food_id = makanan_nutrisi.food_id 
-      INNER JOIN nutrisi ON makanan_nutrisi.nutrition_id = nutrisi.nutrition_id 
-      WHERE user_makanan.user_id = ?
-        AND nutrisi.nutrition_id IN (1, 2, 6, 8)
-      GROUP BY user_makanan.tanggal, nutrisi.nutrition_id
-      ORDER BY user_makanan.tanggal ASC
-      LIMIT 28;"
+      user_makanan.tanggal, 
+      nutrisi.nutrition_id, 
+      SUM(makanan_nutrisi.jumlah) AS jumlah
+    FROM user_makanan 
+    INNER JOIN makanan ON user_makanan.food_id = makanan.food_id 
+    INNER JOIN makanan_nutrisi ON makanan.food_id = makanan_nutrisi.food_id 
+    INNER JOIN nutrisi ON makanan_nutrisi.nutrition_id = nutrisi.nutrition_id 
+    WHERE user_makanan.user_id = ?
+      AND nutrisi.nutrition_id IN (1, 2, 6, 8)
+      AND user_makanan.tanggal BETWEEN ? AND ?
+    GROUP BY user_makanan.tanggal, nutrisi.nutrition_id
+    ORDER BY user_makanan.tanggal ASC;"
     );
-    $stmt->execute([$userId]);
+    $stmt->execute([$userId, $sevenDaysAgo, $today]);
 
     $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Inisialisasi array kosong per nutrisi
+    // Inisialisasi tanggal 7 hari ke belakang (index 0 = 6 hari lalu, index 6 = hari ini)
+    $tanggalList = [];
+    for ($i = 6; $i >= 0; $i--) {
+      $tanggal = date('Y-m-d', strtotime("-$i days"));
+      $tanggalList[$tanggal] = 6 - $i; // misal 2025-04-12 → index 0, 2025-04-18 → index 6
+    }
+
+    // Inisialisasi array nutrisi
     $data = [
-      'calories' => [],
-      'protein' => [],
-      'carbs' => [],
-      'fat' => []
+      'calories' => array_fill(0, 7, 0),
+      'protein'  => array_fill(0, 7, 0),
+      'carbs'    => array_fill(0, 7, 0),
+      'fat'      => array_fill(0, 7, 0),
     ];
 
     // Mapping nutrition_id → nama array
@@ -54,47 +64,23 @@ class Profile
       2 => 'fat'
     ];
 
-    // Buat index per tanggal
-    $tanggalIndex = [];
-    $index = 0;
-
     foreach ($results as $row) {
       $tgl = $row['tanggal'];
       $id = (int) $row['nutrition_id'];
       $jumlah = (float) $row['jumlah'];
 
       if (!isset($map[$id])) continue;
+      if (!isset($tanggalList[$tgl])) continue;
 
-      if (!isset($tanggalIndex[$tgl])) {
-        if ($index >= 7) continue;
-        $tanggalIndex[$tgl] = $index++;
-      }
-
-      $hariKe = $tanggalIndex[$tgl];
+      $indexHari = $tanggalList[$tgl];
       $key = $map[$id];
 
-      if (!isset($data[$key][$hariKe])) {
-        $data[$key][$hariKe] = 0;
-      }
-
-      $data[$key][$hariKe] += $jumlah;
-    }
-
-    // Fallback: pastikan tiap nutrisi punya 7 entri
-    foreach ($data as $key => $values) {
-      for ($i = 0; $i < 7; $i++) {
-        if (!isset($data[$key][$i])) {
-          $data[$key][$i] = 0;
-        }
-      }
-      // Urutkan berdasarkan index hari (0–6)
-      ksort($data[$key]);
-      // Reset index array agar [0,1,2,...] (penting untuk JavaScript)
-      $data[$key] = array_values($data[$key]);
+      $data[$key][$indexHari] += $jumlah;
     }
 
     return $data;
   }
+
 
 
 
@@ -166,20 +152,8 @@ class Profile
 
   public function updateProfile($data)
   {
-    $user_id = $data['user_id'];
-    $username = $data['username'];
-    $bio = $data['bio'];
-    $profile_picture = $data['profile_picture'];
-    $first_name = $data['first_name'];
-    $last_name = $data['last_name'];
-    $email = $data['email'];
-    $phone_number = $data['phone_number'];
-    $jenis_kelamin = $data['jenis_kelamin'];
-    $tanggal_lahir = $data['tanggal_lahir'];
-    $tinggi_badan = $data['tinggi_badan'];
-    $berat_badan = $data['berat_badan'];
-    $aktivitas = $data['aktivitas'];
-    $umur = hitungUmur($data['tanggal_lahir']);
+    extract($data);
+    $umur = hitungUmur($tanggal_lahir);
 
     $stmt = $this->db->prepare("UPDATE users SET username = ?, bio = ?, profile_picture = ?, first_name = ?, last_name = ?, email = ?, phone_number = ?, jenis_kelamin = ?, tanggal_lahir = ?, tinggi_badan = ?, berat_badan = ?, aktivitas = ? WHERE user_id = ?");
 
@@ -215,17 +189,12 @@ class Profile
 
   public function editMakanan($data)
   {
-    $id = $data['id'];
-    $user_id = $data['user_id'];
-    $makanan = $data['food_id'];
+    extract($data);
     $tanggal = getCurrentDate();
     $jam = getCurrentTime();
-    $jumlah_porsi = $data['jumlah_porsi'];
-    $satuan = $data['satuan'];
-    $catatan = $data['catatan'];
 
     $stmt = $this->db->prepare("UPDATE user_makanan SET food_id = ?, tanggal = ?, waktu_makan = ?, jumlah_porsi = ?, satuan = ?, catatan = ? WHERE user_makanan_id = ? AND user_id = ?");
-    $stmt->execute([$makanan, $tanggal, $jam, $jumlah_porsi, $satuan, $catatan, $id, $user_id]);
+    $stmt->execute([$food_id, $tanggal, $jam, $jumlah_porsi, $satuan, $catatan, $id, $user_id]);
   }
 
   public function deleteMakanan($id)

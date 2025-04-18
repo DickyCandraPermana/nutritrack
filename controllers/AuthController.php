@@ -27,6 +27,7 @@ class AuthController
       header('Location: /nutritrack/profile/dashboard');
       exit();
     } else {
+      setFlash('error', 'Username atau password salah'); 
       header('Location: /nutritrack/login');
       exit();
     }

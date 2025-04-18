@@ -34,15 +34,47 @@ function hitungUmur($tanggal_lahir)
   return $umur->y; // Ambil umur dalam tahun
 }
 
-function getCurrentDate() {
+function getCurrentDate()
+{
   return date('Y-m-d');
 }
 
-function getCurrentTime() {
+function setFlash($type, $message)
+{
+  $_SESSION['message'] = [
+    "type" => $type,
+    "message" => $message
+  ];
+}
+
+function getFlash($key)
+{
+  if (!isset($_SESSION[$key])) return null;
+  $msg = $_SESSION[$key];
+  unset($_SESSION[$key]);
+  return $msg;
+}
+
+function renderView($view, $data = [])
+{
+  extract($data);
+
+  // echo "<pre>";
+  // echo "DUMP di renderView:\n";
+  // var_dump($userData, $weeklyFoodData); // <- ini harus muncul
+  // echo "</pre>";
+
+  require_once "views/{$view}.php";
+}
+
+
+function getCurrentTime()
+{
   return date('H:i:s');
 }
 
-function updateSession($db, $id) {
+function updateSession($db, $id)
+{
   $profile = new Profile($db);
   $user = $profile->getUserById($id);
 

@@ -25,41 +25,30 @@ class ProfileController
   }
 
   // Helper buat render view
-  private function renderView($view, $data = [])
-  {
-    extract($data);
-
-    // echo "<pre>";
-    // echo "DUMP di renderView:\n";
-    // var_dump($userData, $weeklyFoodData); // <- ini harus muncul
-    // echo "</pre>";
-
-    require_once "views/{$view}.php";
-  }
 
   public function showProfile($id): void
   {
     $userData = $this->fetchUserData($id);
-    $this->renderView('profile', compact('userData'));
+    renderView('profile', compact('userData'));
   }
 
   public function editProfile($id)
   {
     $userData = $this->fetchUserData($id);
-    $this->renderView('profile_edit', compact('userData'));
+    renderView('profile_edit', compact('userData'));
   }
 
   public function dashboard($id)
   {
     $weeklyFoodData = $this->profile->getNutritionInWeekData($id);
     $userData = $this->fetchUserData($id);
-    $this->renderView('profile', compact('userData', 'weeklyFoodData'));
+    renderView('profile', compact('userData', 'weeklyFoodData'));
   }
 
   public function profilePersonal($id)
   {
     $userData = $this->fetchUserData($id);
-    $this->renderView('profile_personal', compact('userData'));
+    renderView('profile_personal', compact('userData'));
   }
 
   public function profileTracking($id)
@@ -67,13 +56,13 @@ class ProfileController
     $foodData = $this->profile->getUserMakananById($id);
 
     $_SESSION["makanan_user"] = $foodData;
-    $this->renderView('profile_tracking', compact('foodData'));
+    renderView('profile_tracking', compact('foodData'));
   }
 
   public function viewData($id)
   {
     $userData = $this->fetchUserData($id);
-    $this->renderView('profile_view_data', compact('userData'));
+    renderView('profile_view_data', compact('userData'));
   }
 
   public function profileInputMakanan($id)
@@ -82,7 +71,7 @@ class ProfileController
     $foodData = $foodData->fetchFoodData();
     $_SESSION["foodData"] = $foodData;
     $userData = $this->fetchUserData($id);
-    $this->renderView('profile_input_makanan', compact('userData'));
+    renderView('profile_input_makanan', compact('userData'));
   }
 
   public function updateProfile($data)

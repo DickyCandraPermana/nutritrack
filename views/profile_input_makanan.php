@@ -1,3 +1,7 @@
+<?php
+include 'components/errorHandling.php';
+?>
+
 <div class="flex flex-row">
   <?php
   include 'components/profile/profileSidebar.php';

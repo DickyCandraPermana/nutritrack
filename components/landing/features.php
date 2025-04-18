@@ -29,7 +29,7 @@ $features = [
     <?php endforeach; ?>
   </section>
 
-  <button class="px-12 py-3 mt-10 font-medium text-white uppercase transition-all duration-500 bg-green-800 rounded-lg shadow hover:scale-110 hover:drop-shadow-lg hover:bg-green-900">
+  <button class="px-12 py-3 mt-10 font-medium text-white uppercase transition-all duration-500 bg-green-800 rounded-lg shadow hover:scale-110 hover:drop-shadow-lg hover:bg-green-900" onclick="window.location.href = '<?= BASE_URL . "register" ?>'; ">
     Get Started
   </button>
 </div>

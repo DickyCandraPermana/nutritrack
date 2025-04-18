@@ -15,7 +15,6 @@ class HomeController
   {
     $food = new Food($this->db);
     $foods = $food->search($data, 10, $page);
-    var_dump($data);
     extract($foods);
     require_once 'views/search.php';
   }

@@ -2,41 +2,81 @@
 
 class Food
 {
-  private $db;
+  private PDO $db;
 
-  public function __construct($db)
+  public function __construct(PDO $db)
   {
     $this->db = $db;
   }
 
-  public function getNamaMakananDanID()
+  /**
+   * Ambil semua nama makanan dan ID-nya.
+   * @return array
+   */
+  public function getNamaMakananDanID(): array
   {
     $stmt = $this->db->prepare("SELECT food_id, nama_makanan FROM makanan");
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
-  public function search($search, $perPage, $page)
+  /**
+   * Cari makanan berdasarkan keyword, paginated.
+   *
+   * @param string $search
+   * @param int $perPage
+   * @param int $page
+   * @return array [array $foods, int $totalPages]
+   */
+  public function search(string $search, int $perPage, int $page): array
   {
-    $total = $this->db->query("SELECT COUNT(*) FROM makanan")->fetchColumn();
-    $totalPages = ceil($total / $perPage);
+    // Hitung total hasil pencarian
+    $countStmt = $this->db->prepare("
+            SELECT COUNT(*) 
+            FROM makanan 
+            WHERE nama_makanan LIKE :search
+        ");
+    $countStmt->execute(['search' => '%' . $search . '%']);
+    $totalItems = (int) $countStmt->fetchColumn();
+    $totalPages = (int) ceil($totalItems / $perPage);
 
+    // Ambil data dengan limit dan offset
     $offset = ($page - 1) * $perPage;
-    var_dump($search);
-    $stmt = $this->db->prepare("SELECT food_id, nama_makanan FROM makanan WHERE nama_makanan LIKE ? LIMIT ? OFFSET ?");
-    $stmt->bindValue(1, '%' . $search . '%', PDO::PARAM_STR);
-    $stmt->bindValue(2, $perPage, PDO::PARAM_INT);
-    $stmt->bindValue(3, $offset, PDO::PARAM_INT);
-    $stmt->execute();
-    $currentFoods = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $dataStmt = $this->db->prepare("
+            SELECT food_id, nama_makanan 
+            FROM makanan 
+            WHERE nama_makanan LIKE :search 
+            LIMIT :limit OFFSET :offset
+        ");
+    $dataStmt->bindValue(':search', '%' . $search . '%', PDO::PARAM_STR);
+    $dataStmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
+    $dataStmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+    $dataStmt->execute();
+    $foods = $dataStmt->fetchAll(PDO::FETCH_ASSOC);
 
-    var_dump([
-      $currentFoods,
-      $totalPages
-    ]);
-    return [
-      $currentFoods,
-      $totalPages
-    ];
+    return [$foods, $totalPages];
+  }
+
+  /**
+   * Ambil detail makanan berdasarkan ID.
+   *
+   * @param int|string $id
+   * @return array
+   */
+  public function getFoodDetail($id): array
+  {
+    $stmt = $this->db->prepare("
+            SELECT 
+                makanan.nama_makanan AS makanan, 
+                makanan_nutrisi.jumlah, 
+                makanan_nutrisi.satuan, 
+                nutrisi.nama AS nutrisi
+            FROM makanan 
+            INNER JOIN makanan_nutrisi ON makanan.food_id = makanan_nutrisi.food_id 
+            INNER JOIN nutrisi ON makanan_nutrisi.nutrition_id = nutrisi.nutrition_id
+            WHERE makanan.food_id = ?
+        ");
+    $stmt->execute([$id]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 }
