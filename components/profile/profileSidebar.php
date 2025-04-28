@@ -1,7 +1,7 @@
 <?php include_once 'config/config.php'; ?>
 
 <!-- Sidebar -->
-<div class="fixed z-50 w-64 h-screen text-white transition-all duration-300 ease-in-out transform -translate-x-full bg-gray-900 lg:static lg:z-0 lg:translate-x-0" id="sidebar">
+<div class="fixed z-50 w-64 h-screen text-white transition-all duration-300 ease-in-out transform -translate-x-full bg-gray-900 lg:sticky lg:z-0 lg:translate-x-0" id="sidebar">
   <ul class="flex flex-col w-full h-full pt-5">
     <?php
     $menuItems = [
