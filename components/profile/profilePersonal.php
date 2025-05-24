@@ -15,18 +15,26 @@
     <p><strong>Tinggi Badan:</strong> <?= $_SESSION["tinggi_badan"] ?> cm</p>
     <p><strong>Aktivitas:</strong> <?= $_SESSION["aktivitas"] ?></p>
   </div>
-  <div class="grid max-w-4xl grid-cols-1 gap-4 mx-auto mt-6 md:grid-cols-3">
-    <div class="p-6 text-center text-white bg-blue-500 rounded-lg shadow-lg">
-      <h3 class="text-xl font-bold">BMI</h3>
-      <p class="text-2xl font-semibold"><?= number_format($_SESSION["bmi"], 2) ?></p>
+  <?php
+
+  if (isset($_SESSION['bmi'])) {
+  ?>
+    <div class="grid max-w-4xl grid-cols-1 gap-4 mx-auto mt-6 md:grid-cols-3">
+      <div class="p-6 text-center text-white bg-blue-500 rounded-lg shadow-lg">
+        <h3 class="text-xl font-bold">BMI</h3>
+        <p class="text-2xl font-semibold"><?= number_format($_SESSION["bmi"], 2) ?></p>
+      </div>
+      <div class="p-6 text-center text-white bg-green-500 rounded-lg shadow-lg">
+        <h3 class="text-xl font-bold">BMR</h3>
+        <p class="text-2xl font-semibold"><?= number_format($_SESSION['bmr'], 2) ?> kcal</p>
+      </div>
+      <div class="p-6 text-center text-white bg-red-500 rounded-lg shadow-lg">
+        <h3 class="text-xl font-bold">TDEE</h3>
+        <p class="text-2xl font-semibold"><?= number_format($_SESSION['tdee'], 2) ?> kcal</p>
+      </div>
     </div>
-    <div class="p-6 text-center text-white bg-green-500 rounded-lg shadow-lg">
-      <h3 class="text-xl font-bold">BMR</h3>
-      <p class="text-2xl font-semibold"><?= number_format($_SESSION['bmr'], 2) ?> kcal</p>
-    </div>
-    <div class="p-6 text-center text-white bg-red-500 rounded-lg shadow-lg">
-      <h3 class="text-xl font-bold">TDEE</h3>
-      <p class="text-2xl font-semibold"><?= number_format($_SESSION['tdee'], 2) ?> kcal</p>
-    </div>
-  </div>
+  <?php
+  }
+
+  ?>
 </div>
