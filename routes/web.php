@@ -22,6 +22,60 @@ if (isset($parsedUrl['query'])) {
   parse_str($parsedUrl['query'], $queryParams); // Ubah jadi array asosiatif
 }
 
+function dispatchRoute($route)
+{
+  try {
+    $handler = $route['handler'];
+    $middlewares = $route['middleware'] ?? [];
+    $params = $route['params'] ?? [];
+
+    // Jalankan middleware
+    foreach ($middlewares as $mw) {
+      runMiddleware($mw);
+    }
+
+    // Resolve closure param
+    $params = array_map(function ($p) {
+      return is_callable($p) ? $p() : $p;
+    }, $params);
+
+    // Eksekusi handler
+    if (is_callable($handler)) {
+      return call_user_func_array($handler, $params);
+    }
+
+    throw new Exception("Invalid handler");
+  } catch (Exception $e) {
+    http_response_code(500);
+    echo "Internal Server Error: " . $e->getMessage();
+  }
+}
+
+
+function runMiddleware($name)
+{
+  switch ($name) {
+    case 'auth':
+      requireAuth();
+      break;
+    case 'guest':
+      requireGuest();
+      break;
+    default:
+      throw new Exception("Unknown middleware: $name");
+  }
+}
+
+function requireGuest()
+{
+  if (isset($_SESSION['user_id'])) {
+    header('Location: /nutritrack/profile');
+    exit();
+  }
+}
+
+
+
 // Simple auth middleware
 function requireAuth()
 {
@@ -34,96 +88,95 @@ function requireAuth()
 // Routing table
 $routes = [
   'GET' => [
-    'nutritrack' => function () {
-      require 'views/home.php';
-    },
-    'nutritrack/home' => function () {
-      require 'views/home.php';
-    },
-    'nutritrack/login' => function () {
-      require 'views/login.php';
-    },
-    'nutritrack/register' => function () {
-      require 'views/register.php';
-    },
-    'nutritrack/profile' => function () use ($profileController) {
-      requireAuth();
-      $profileController->dashboard($_SESSION['user_id']);
-    },
-    'nutritrack/profile/dashboard' => function () use ($profileController) {
-      requireAuth();
-      $profileController->dashboard($_SESSION['user_id']);
-    },
-    'nutritrack/profile/edit' => function () use ($profileController) {
-      requireAuth();
-      $profileController->editProfile($_SESSION['user_id']);
-    },
-    'nutritrack/profile/data' => function () use ($profileController) {
-      requireAuth();
-      $profileController->viewData($_SESSION['user_id']);
-    },
-    'nutritrack/profile/personal' => function () use ($profileController) {
-      requireAuth();
-      $profileController->profilePersonal($_SESSION['user_id']);
-    },
-    'nutritrack/search' => function () use ($homeController, $queryParams) {
-      $page = isset($queryParams['page']) ? (int) $queryParams['page'] : 1;
-      $query = isset($queryParams['search']) ? (string) $queryParams['search'] : '';
-      $homeController->search($query, $page);
-    },
-    'nutritrack/details' => function () use ($foodController, $queryParams) {
-      $id = isset($queryParams['id']) ? (int) $queryParams['id'] : 0;
-      $foodController->foodDetail($id);
-    },
-    'nutritrack/profile/tracking' => function () use ($profileController) {
-      requireAuth();
-      $profileController->profileTracking($_SESSION['user_id']);
-    },
-    'nutritrack/profile/tambah-makanan' => function () use ($profileController) {
-      requireAuth();
-      $profileController->profileInputMakanan($_SESSION['user_id']);
-    },
-    'nutritrack/profile/logout' => function () {
-      session_destroy();
-      header('Location: /nutritrack');
-      exit();
-    },
+    'nutritrack' => [
+      'handler' => [$homeController, 'index'],
+    ],
+    'nutritrack/home' => [
+      'handler' => fn() => header('Location: /nutritrack'),
+    ],
+    'nutritrack/login' => [
+      'handler' => [$authController, 'login'],
+      'middleware' => ['guest'],
+    ],
+    'nutritrack/register' => [
+      'handler' => [$authController, 'register'],
+      'middleware' => ['guest'],
+    ],
+    'nutritrack/profile' => [
+      'handler' => [$profileController, 'dashboard'],
+      'middleware' => ['auth'],
+      'params' => [fn() => $_SESSION['user_id']],
+    ],
+    'nutritrack/profile/edit' => [
+      'handler' => [$profileController, 'editProfile'],
+      'middleware' => ['auth'],
+      'params' => [fn() => $_SESSION['user_id']],
+    ],
+    'nutritrack/profile/data' => [
+      'handler' => [$profileController, 'viewData'],
+      'middleware' => ['auth'],
+      'params' => [fn() => $_SESSION['user_id']],
+    ],
+    'nutritrack/profile/personal' => [
+      'handler' => [$profileController, 'profilePersonal'],
+      'middleware' => ['auth'],
+      'params' => [fn() => $_SESSION['user_id']],
+    ],
+    'nutritrack/search' => [
+      'handler' => fn() => $homeController->search(
+        isset($_GET['search']) ? $_GET['search'] : '',
+        isset($_GET['page']) ? (int)$_GET['page'] : 1
+      ),
+    ],
+    'nutritrack/details' => [
+      'handler' => fn() => $foodController->foodDetail(
+        isset($_GET['id']) ? (int)$_GET['id'] : -1
+      ),
+    ],
+    'nutritrack/profile/tracking' => [
+      'handler' => [$profileController, 'profileTracking'],
+      'middleware' => ['auth'],
+      'params' => [fn() => $_SESSION['user_id']],
+    ],
+    'nutritrack/profile/tambah-makanan' => [
+      'handler' => [$profileController, 'profileInputMakanan'],
+      'middleware' => ['auth'],
+      'params' => [fn() => $_SESSION['user_id']],
+    ],
+    'nutritrack/profile/logout' => [
+      'handler' => function () {
+        session_destroy();
+        header("Location: /nutritrack");
+        exit();
+      },
+    ],
   ],
 
   'POST' => [
-    'nutritrack/login' => function () use ($authController) {
-      $authController->login($_POST);
-    },
-    'nutritrack/register' => function () use ($authController) {
-      $authController->register($_POST);
-    },
-    'nutritrack/search' => function () use ($homeController, $queryParams) {
-      $page = isset($queryParams['page']) ? (int)$queryParams['page'] : 1;
-      $query = isset($queryParams['search']) ? (int)$queryParams['search'] : '';
-      var_dump($query);
-      $homeController->search($query, $page);
-    },
-    'nutritrack/profile/update' => function () use ($profileController) {
-      $profileController->updateProfile($_POST);
-    },
-    'nutritrack/profile/tambah-makanan' => function () use ($profileController) {
-      $profileController->tambahMakanan($_POST);
-    },
+    'nutritrack/login' => [
+      'handler' => [$authController, 'login'],
+      'params' => [$_POST],
+    ],
+    'nutritrack/register' => [
+      'handler' => [$authController, 'register'],
+      'params' => [$_POST],
+    ],
+    'nutritrack/profile/update' => [
+      'handler' => [$profileController, 'updateProfile'],
+      'params' => [$_POST],
+    ],
+    'nutritrack/profile/tambah-makanan' => [
+      'handler' => [$profileController, 'tambahMakanan'],
+      'params' => [$_POST],
+    ],
   ]
 ];
 
-// Custom dynamic route handler (e.g., search with pagination)
-if ($method === 'GET' && preg_match('/^nutritrack\/search\/(\d+)$/', $uri, $matches)) {
-  requireAuth();
-  $page = (int) $matches[1];
-  $foodController->showFoodPage();
-  exit();
-}
-
 // Main route dispatcher
 if (isset($routes[$method][$uri])) {
-  $routes[$method][$uri]();
+  $route = $routes[$method][$uri];
+  dispatchRoute($route);
 } else {
   http_response_code(404);
-  require 'views/404.php'; // Create this file
+  require 'views/404.php';
 }

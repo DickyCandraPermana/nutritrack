@@ -1,9 +1,13 @@
 <?php if ($flash = getFlash('message')): ?>
   <?php
   $type = $flash['type'] ?? 'success';
-  $msg = htmlspecialchars($flash['message'] ?? '');
+  $messages = $flash['message'] ?? [];
 
-  // Warna dan ikon berdasarkan tipe flash
+  // Jika message bukan array, ubah jadi array
+  if (!is_array($messages)) {
+    $messages = [$messages];
+  }
+
   $styles = [
     'success' => [
       'bg'    => 'bg-green-100',
@@ -38,9 +42,13 @@
   $s = $styles[$type] ?? $styles['success'];
   ?>
   <div class="absolute z-50 flex -translate-x-1/2 left-1/2 top-4">
-    <div class="flex items-center max-w-sm p-4 <?= $s['text'] ?> <?= $s['bg'] ?> <?= $s['border'] ?> border shadow-lg rounded-2xl animate-fade-in-down">
+    <div class="flex items-start max-w-sm p-4 <?= $s['text'] ?> <?= $s['bg'] ?> <?= $s['border'] ?> border shadow-lg rounded-2xl animate-fade-in-down gap-3">
       <?= $s['svg'] ?>
-      <span class="text-sm font-medium"><?= $msg ?></span>
+      <ul class="space-y-1 text-sm font-medium list-disc list-inside">
+        <?php foreach ($messages as $msg): ?>
+          <li><?= htmlspecialchars($msg) ?></li>
+        <?php endforeach; ?>
+      </ul>
       <button onclick="this.parentElement.remove()" class="ml-auto <?= $s['icon'] ?> hover:opacity-80 focus:outline-none">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />

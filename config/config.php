@@ -1,2 +1,2 @@
 <?php
-define('BASE_URL', 'http://localhost/nutritrack/');
+define('BASE_URL', '/nutritrack/');

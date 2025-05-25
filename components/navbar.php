@@ -1,7 +1,7 @@
 <header class="flex items-center justify-between w-full px-6 py-3 bg-white shadow-md">
   <div class="flex gap-4">
-    <a class="flex items-center gap-3" href="<?= BASE_URL ?>">
-      <img src="<?= BASE_URL ?>public/assets/logo.png" alt="Nutritrack Logo" class="w-8 h-8">
+    <a class="flex items-center gap-3" href="<?= BASE_URL ?>home">
+      <img src="/public/assets/logo.png" alt="Nutritrack Logo" class="w-8 h-8">
       <h3 class="text-xl font-semibold">Nutritrack</h3>
     </a>
 
@@ -42,7 +42,7 @@
     </nav>
 
     <?php
-    if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
+    if (isset($_SESSION['user_id'])) {
     ?>
       <a href="<?= BASE_URL ?>profile">
         <div class="flex items-center justify-center w-10 h-10 font-bold text-white bg-gray-300 rounded-full">

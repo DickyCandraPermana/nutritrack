@@ -11,6 +11,11 @@ class HomeController
     $this->db = $db;
   }
 
+  public function index()
+  {
+    renderView('home');
+  }
+
   public function search($data, $page = 1)
   {
     $food = new Food($this->db);
