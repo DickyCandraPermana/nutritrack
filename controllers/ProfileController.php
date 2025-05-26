@@ -24,38 +24,46 @@ class ProfileController
     return $userData;
   }
 
-  // Helper buat render view
-
-  public function showProfile($id): void
-  {
-    $userData = $this->fetchUserData($id);
-    renderView('profile', compact('userData'));
-  }
-
   public function editProfile($id)
   {
-    $userData = $this->fetchUserData($id);
-    renderView('profile_edit', compact('userData'));
+    if (!isset($_SESSION['user_id'])) {
+      header("Location: /nutritrack/login");
+      exit;
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+      $this->profile->updateProfile($_POST);
+      header('Location: /nutritrack/profile/personal');
+      exit;
+    }
+
+    $user = $this->fetchUserData($id);
+    renderView('profile_edit', compact('user'));
   }
 
-  public function dashboard($id)
+  public function dashboard()
   {
+    if (!isset($_SESSION['user_id'])) {
+      header("Location: /nutritrack/login");
+      exit;
+    }
+
+    $id = $_SESSION['user_id'];
     $weeklyFoodData = $this->profile->getNutritionInWeekData($id);
-    $userData = $this->fetchUserData($id);
-    renderView('profile', compact('userData', 'weeklyFoodData'));
+    $user = $this->fetchUserData($id);
+    renderView('profile', compact('user', 'weeklyFoodData'));
   }
 
   public function profilePersonal($id)
   {
-    $userData = $this->fetchUserData($id);
-    renderView('profile_personal', compact('userData'));
+    $user = $this->fetchUserData($id);
+    renderView('profile_personal', compact('user'));
   }
 
-  public function profileTracking($id)
+  public function profileTracking()
   {
-    $foodData = $this->profile->getUserMakananById($id);
+    $foodData = $this->profile->getDetailRegistrasiMakanan($_SESSION['user_id']);
 
-    $_SESSION["makanan_user"] = $foodData;
     renderView('profile_tracking', compact('foodData'));
   }
 
@@ -65,21 +73,12 @@ class ProfileController
     renderView('profile_view_data', compact('userData'));
   }
 
-  public function profileInputMakanan($id)
+  public function profileInputMakanan()
   {
     $foodData = new FoodController($this->db);
     $foodData = $foodData->fetchFoodData();
-    $_SESSION["foodData"] = $foodData;
-    $userData = $this->fetchUserData($id);
-    renderView('profile_input_makanan', compact('userData'));
-  }
-
-  public function updateProfile($data)
-  {
-    $this->profile->updateProfile($data);
-    updateSession($this->db, $data['user_id']);
-    header('Location: /nutritrack/profile/personal');
-    exit;
+    $userData = $this->fetchUserData($_SESSION['user_id']);
+    renderView('profile_input_makanan', compact('user', 'foodData'));
   }
 
   public function tambahMakanan($data)
@@ -88,10 +87,5 @@ class ProfileController
     unset($_SESSION['foodData']);
     header('Location: /nutritrack/profile/tracking');
     exit;
-  }
-
-  public function editMakanan($data)
-  {
-    $this->profile->editMakanan($data);
   }
 }

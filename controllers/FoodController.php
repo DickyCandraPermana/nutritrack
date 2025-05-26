@@ -24,7 +24,6 @@ class FoodController
     if (empty($foodData)) {
       // Jangan asal echo, kirim ke flash dan redirect lebih baik
       setFlash('error', 'Tidak ada data makanan ditemukan!');
-      header('Location: /error');
       exit;
     }
 

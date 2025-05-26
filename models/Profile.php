@@ -14,7 +14,16 @@ class Profile
     $stmt = $this->db->prepare("SELECT * FROM users WHERE user_id = ?");
     $stmt->execute([$id]);
 
-    return $stmt->fetch(PDO::FETCH_ASSOC);
+    $data = $stmt->fetch(PDO::FETCH_ASSOC);
+    $data["umur"] = hitungUmur($data["tanggal_lahir"]);
+    if ($data["tinggi_badan"] != null && $data["berat_badan"] != null) {
+      $data["bmi"] = hitungBMI($data["berat_badan"], $data["tinggi_badan"]);
+      $data["bmi_status"] = $data["bmi"] < 18.5 ? 'Kurus' : ($data["bmi"] < 25 ? 'Normal' : 'Gemuk');
+      $data["bmr"] = hitungBMR($data["berat_badan"], $data["tinggi_badan"], $data["umur"], $data["jenis_kelamin"]);
+      $data["tdee"] = hitungTDEE($data["bmr"], $data["aktivitas"]);
+    }
+
+    return $data;
   }
 
   public function getNutritionInWeekData($userId)
@@ -24,18 +33,18 @@ class Profile
 
     $stmt = $this->db->prepare(
       "SELECT 
-      user_makanan.tanggal, 
+      registrasi_makanan.tanggal, 
       nutrisi.nutrition_id, 
-      SUM(makanan_nutrisi.jumlah) AS jumlah
-    FROM user_makanan 
-    INNER JOIN makanan ON user_makanan.food_id = makanan.food_id 
-    INNER JOIN makanan_nutrisi ON makanan.food_id = makanan_nutrisi.food_id 
-    INNER JOIN nutrisi ON makanan_nutrisi.nutrition_id = nutrisi.nutrition_id 
-    WHERE user_makanan.user_id = ?
+      SUM(detail_nutrisi_makanan.jumlah) AS jumlah
+    FROM registrasi_makanan 
+    INNER JOIN detail_registrasi_makanan ON registrasi_makanan.reg_id = detail_registrasi_makanan.reg_id
+    INNER JOIN detail_nutrisi_makanan ON detail_registrasi_makanan.food_id = detail_nutrisi_makanan.food_id 
+    INNER JOIN nutrisi ON detail_nutrisi_makanan.nutrition_id = nutrisi.nutrition_id 
+    WHERE registrasi_makanan.user_id = ?
       AND nutrisi.nutrition_id IN (1, 2, 6, 8)
-      AND user_makanan.tanggal BETWEEN ? AND ?
-    GROUP BY user_makanan.tanggal, nutrisi.nutrition_id
-    ORDER BY user_makanan.tanggal ASC;"
+      AND registrasi_makanan.tanggal BETWEEN ? AND ?
+    GROUP BY registrasi_makanan.tanggal, nutrisi.nutrition_id
+    ORDER BY registrasi_makanan.tanggal ASC;"
     );
     $stmt->execute([$userId, $sevenDaysAgo, $today]);
 
@@ -99,25 +108,26 @@ class Profile
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
-  public function getUserMakananById($id)
+  public function getDetailRegistrasiMakanan($id)
   {
     $stmt = $this->db->prepare(
       "SELECT 
-            user_makanan.id,
+            detail_registrasi_makanan.id,
             makanan.nama_makanan, 
             makanan.deskripsi, 
-            user_makanan.tanggal, 
-            user_makanan.waktu_makan, 
-            user_makanan.jumlah_porsi, 
-            user_makanan.satuan,
-            makanan_nutrisi.jumlah, 
-            makanan_nutrisi.satuan AS nutrisi_satuan,
+            registrasi_makanan.tanggal, 
+            detail_registrasi_makanan.waktu_makan, 
+            detail_registrasi_makanan.jumlah_porsi, 
+            detail_registrasi_makanan.satuan,
+            detail_nutrisi_makanan.jumlah, 
+            detail_nutrisi_makanan.satuan AS nutrisi_satuan,
             nutrisi.nama AS nutrisi_nama
-        FROM user_makanan
-        INNER JOIN makanan ON user_makanan.food_id = makanan.food_id
-        INNER JOIN makanan_nutrisi ON makanan.food_id = makanan_nutrisi.food_id
-        INNER JOIN nutrisi ON makanan_nutrisi.nutrition_id = nutrisi.nutrition_id
-        WHERE user_makanan.user_id = ?"
+        FROM detail_registrasi_makanan
+        INNER JOIN registrasi_makanan ON detail_registrasi_makanan.reg_id = registrasi_makanan.reg_id
+        INNER JOIN makanan ON detail_registrasi_makanan.food_id = makanan.food_id
+        INNER JOIN detail_nutrisi_makanan ON makanan.food_id = detail_nutrisi_makanan.food_id
+        INNER JOIN nutrisi ON detail_nutrisi_makanan.nutrition_id = nutrisi.nutrition_id
+        WHERE registrasi_makanan.user_id = ?"
     );
     $stmt->execute([$id]);
 

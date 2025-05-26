@@ -18,7 +18,6 @@
       </thead>
       <tbody>
         <?php
-        // DATA DUMMY
         if (isset($_SESSION['makanan_user']) && count($_SESSION['makanan_user']) > 0) {
           $data = $_SESSION['makanan_user'];
 

@@ -2,7 +2,7 @@
   <h2 class="mb-4 text-xl font-semibold text-gray-800">Makanan Dikonsumsi</h2>
 
   <form action="" method="post" class="space-y-4">
-    <input type="hidden" name="user_id" value="<?= $_SESSION['user_id'] ?>">
+    <input type="hidden" name="user_id" value="<?= $user['user_id'] ?>">
     <!-- Dropdown Alpine -->
     <div x-data="dropdownData()" class="relative w-64">
       <!-- Button -->
@@ -78,9 +78,9 @@
         label: '',
         value: ''
       },
-      items: <?php 
-      echo json_encode($_SESSION['foodData']); 
-      ?>,
+      items: <?php
+              echo json_encode($foodData);
+              ?>,
       get filteredItems() {
         return this.items.filter(i => i.nama_makanan.toLowerCase().includes(this.search.toLowerCase()));
       }

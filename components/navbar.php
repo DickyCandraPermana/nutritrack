@@ -1,3 +1,4 @@
+<?php include 'config/config.php'; ?>
 <header class="flex items-center justify-between w-full px-6 py-3 bg-white shadow-md">
   <div class="flex gap-4">
     <a class="flex items-center gap-3" href="<?= BASE_URL ?>home">
@@ -46,7 +47,7 @@
     ?>
       <a href="<?= BASE_URL ?>profile">
         <div class="flex items-center justify-center w-10 h-10 font-bold text-white bg-gray-300 rounded-full">
-          <?= substr($_SESSION['username'], 0, 1) ?>
+          <?= substr($user["username"], 0, 1) ?>
         </div>
       </a>
     <?php

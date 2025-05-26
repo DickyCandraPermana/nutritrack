@@ -68,12 +68,12 @@ class Food
     $stmt = $this->db->prepare("
             SELECT 
                 makanan.nama_makanan AS makanan, 
-                makanan_nutrisi.jumlah, 
-                makanan_nutrisi.satuan, 
+                detail_nutrisi_makanan.jumlah, 
+                detail_nutrisi_makanan.satuan, 
                 nutrisi.nama AS nutrisi
             FROM makanan 
-            INNER JOIN makanan_nutrisi ON makanan.food_id = makanan_nutrisi.food_id 
-            INNER JOIN nutrisi ON makanan_nutrisi.nutrition_id = nutrisi.nutrition_id
+            INNER JOIN detail_nutrisi_makanan ON makanan.food_id = detail_nutrisi_makanan.food_id 
+            INNER JOIN nutrisi ON detail_nutrisi_makanan.nutrition_id = nutrisi.nutrition_id
             WHERE makanan.food_id = ?
         ");
     $stmt->execute([$id]);

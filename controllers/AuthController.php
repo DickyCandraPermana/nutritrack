@@ -21,29 +21,50 @@ class AuthController
     }
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-      $username = htmlspecialchars(trim($_POST['username']));
-      $password = trim($_POST['password']);
+      $data = json_decode(file_get_contents('php://input'), true);
+      $username = trim($data['username'] ?? '');
+      $password = trim($data['password'] ?? '');
+
+      header('Content-Type: application/json');
+
+      if (empty($username) || empty($password)) {
+        echo json_encode([
+          'status' => 'error',
+          'message' => ['Username dan password tidak boleh kosong']
+        ]);
+        exit();
+      }
+
       $user = $this->auth->getLoginInfo($username);
 
       if (!$user) {
-        setFlash('error', 'User tidak ditemukan.');
-        renderView('login');
-        return;
+        echo json_encode([
+          'status' => 'error',
+          'message' => ['Username tidak ditemukan']
+        ]);
+        exit();
       }
 
       if (!password_verify($password, $user['password'])) {
-        setFlash('error', 'Password salah!');
-        renderView('login');
-        return;
+        echo json_encode([
+          'status' => 'error',
+          'message' => ['Password salah']
+        ]);
+        exit();
       }
 
       $_SESSION['user_id'] = $user['user_id'];
-      header("Location: /nutritrack/profile");
+
+      echo json_encode([
+        'status' => 'success',
+        'message' => ['Berhasil Login']
+      ]);
       exit();
-    } else {
-      renderView('login');
     }
+
+    renderView('login');
   }
+
 
   public function register()
   {

@@ -5,15 +5,20 @@ class HomeController
 {
 
   private $db;
+  private $profile;
 
   public function __construct($db)
   {
     $this->db = $db;
+    $this->profile = new Profile($this->db);
   }
 
   public function index()
   {
-    renderView('home');
+    if (isset($_SESSION['user_id'])) {
+      $user = $this->profile->getUserById($_SESSION['user_id']);
+    }
+    renderView('home', compact('user'));
   }
 
   public function search($data, $page = 1)

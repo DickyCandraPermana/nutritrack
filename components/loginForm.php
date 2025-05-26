@@ -8,7 +8,7 @@
   <div class="flex bg-blue-100 bg-opacity-85 border-blue-300 border-4 w-[600px] shadow-lg rounded-lg overflow-hidden">
     <div class="w-1/2 bg-[url(../assets/image-login.jpeg)] bg-cover bg-center hidden md:block"></div>
 
-    <form action="<?= BASE_URL ?>login" method="post" class="flex flex-col w-full p-6 md:w-1/2">
+    <form onsubmit="kirimData(); return false;" class="flex flex-col w-full p-6 md:w-1/2">
       <h2 class="w-full mb-4 text-2xl font-bold text-center">Log In</h2>
 
       <div class="flex flex-col gap-2">
@@ -39,3 +39,34 @@
     </form>
   </div>
 </div>
+
+<script>
+  async function kirimData() {
+    try {
+      const res = await fetch('<?= BASE_URL ?>login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          username: document.getElementById('username').value,
+          password: document.getElementById('password').value
+        })
+      });
+
+      const data = await res.json();
+      console.log(data);
+
+      if (data.status === 'success') {
+        window.location.href = '/nutritrack/profile';
+      } else if (data.status === 'error') {
+        showFlashMessage({
+          type: 'error',
+          messages: data.message
+        });
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+</script>

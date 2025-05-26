@@ -1,9 +1,9 @@
 <form action="<?= BASE_URL ?>profile/update" method="post" class="flex flex-col w-full gap-4 p-6 mx-auto bg-white rounded-lg shadow-md">
-  <input type="hidden" name="user_id" value="<?= $_SESSION['user_id'] ?>">
+  <input type="hidden" name="user_id" value="<?= $user['user_id'] ?>">
 
   <div class="space-y-2">
     <label for="username" class="font-semibold">Username</label>
-    <input type="text" name="username" id="username" class="p-2 border rounded-md shadow-sm" placeholder="Username" value="<?= $_SESSION['username'] ?>">
+    <input type="text" name="username" id="username" class="p-2 border rounded-md shadow-sm" placeholder="Username" value="<?= $user['username'] ?>">
   </div>
 
   <div class="space-y-2">
@@ -14,37 +14,32 @@
   <div class="grid grid-cols-2 gap-4">
     <div class="space-y-2">
       <label for="first_name" class="font-semibold">First Name</label>
-      <input type="text" name="first_name" id="first_name" class="p-2 border rounded-md shadow-sm" placeholder="First Name" value="<?= $_SESSION['first_name'] ?>">
+      <input type="text" name="first_name" id="first_name" class="p-2 border rounded-md shadow-sm" placeholder="First Name" value="<?= $user['first_name'] ?>">
     </div>
     <div class="space-y-2">
       <label for="last_name" class="font-semibold">Last Name</label>
-      <input type="text" name="last_name" id="last_name" class="p-2 border rounded-md shadow-sm" placeholder="Last Name" value="<?= $_SESSION['last_name'] ?>">
+      <input type="text" name="last_name" id="last_name" class="p-2 border rounded-md shadow-sm" placeholder="Last Name" value="<?= $user['last_name'] ?>">
     </div>
   </div>
 
   <div class="space-y-2">
     <label for="email" class="font-semibold">Email</label>
-    <input type="email" name="email" id="email" class="p-2 border rounded-md shadow-sm" placeholder="Email" value="<?= $_SESSION['email'] ?>">
-  </div>
-
-  <div class="space-y-2">
-    <label for="password" class="font-semibold">Password</label>
-    <input type="password" name="password" id="password" class="p-2 border rounded-md shadow-sm" placeholder="Password">
+    <input type="email" name="email" id="email" class="p-2 border rounded-md shadow-sm" placeholder="Email" value="<?= $user['email'] ?>">
   </div>
 
   <div class="space-y-2">
     <label for="bio" class="font-semibold">Bio</label>
-    <textarea name="bio" id="bio" class="p-2 border rounded-md shadow-sm" placeholder="Bio"><?= $_SESSION['bio'] ?></textarea>
+    <textarea name="bio" id="bio" class="p-2 border rounded-md shadow-sm" placeholder="Bio"><?= $user['bio'] ?></textarea>
   </div>
 
   <div class="space-y-2">
     <label class="font-semibold">Jenis Kelamin</label>
     <div class="flex items-center gap-4">
       <label class="flex items-center gap-2">
-        <input type="radio" name="jenis_kelamin" value="1" class="accent-blue-600"> Laki-laki
+        <input type="radio" name="jenis_kelamin" value="1" class="accent-blue-600" <?= $user['jenis_kelamin'] == 1 ? 'checked' : '' ?>> Laki-laki
       </label>
       <label class="flex items-center gap-2">
-        <input type="radio" name="jenis_kelamin" value="0" class="accent-blue-600"> Perempuan
+        <input type="radio" name="jenis_kelamin" value="0" class="accent-blue-600" <?= $user['jenis_kelamin'] == 0 ? 'checked' : '' ?>> Perempuan
       </label>
     </div>
   </div>
@@ -52,22 +47,22 @@
   <div class="grid grid-cols-2 gap-4">
     <div class="space-y-2">
       <label for="phone_number" class="font-semibold">Nomor Telepon</label>
-      <input type="number" name="phone_number" id="phone_number" class="p-2 border rounded-md shadow-sm" value="<?= $_SESSION['phone_number'] ?>">
+      <input type="number" name="phone_number" id="phone_number" class="p-2 border rounded-md shadow-sm" value="<?= $user['phone_number'] ?>">
     </div>
     <div class="space-y-2">
       <label for="tanggal_lahir" class="font-semibold">Tanggal Lahir</label>
-      <input type="date" name="tanggal_lahir" id="tanggal_lahir" class="p-2 border rounded-md shadow-sm" value="<?= $_SESSION['tanggal_lahir'] ?>">
+      <input type="date" name="tanggal_lahir" id="tanggal_lahir" class="p-2 border rounded-md shadow-sm" value="<?= $user['tanggal_lahir'] ?>">
     </div>
   </div>
 
   <div class="grid grid-cols-2 gap-4">
     <div class="space-y-2">
       <label for="berat_badan" class="font-semibold">Berat Badan (kg)</label>
-      <input type="number" name="berat_badan" id="berat_badan" class="p-2 border rounded-md shadow-sm" value="<?= $_SESSION['berat_badan'] ?>">
+      <input type="number" name="berat_badan" id="berat_badan" class="p-2 border rounded-md shadow-sm" value="<?= $user['berat_badan'] ?>">
     </div>
     <div class="space-y-2">
       <label for="tinggi_badan" class="font-semibold">Tinggi Badan (cm)</label>
-      <input type="number" name="tinggi_badan" id="tinggi_badan" class="p-2 border rounded-md shadow-sm" value="<?= $_SESSION['tinggi_badan'] ?>">
+      <input type="number" name="tinggi_badan" id="tinggi_badan" class="p-2 border rounded-md shadow-sm" value="<?= $user['tinggi_badan'] ?>">
     </div>
   </div>
 

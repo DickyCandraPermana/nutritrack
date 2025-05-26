@@ -61,7 +61,7 @@ function renderView($view, $data = [])
 
   // echo "<pre>";
   // echo "DUMP di renderView:\n";
-  // var_dump($userData, $weeklyFoodData); // <- ini harus muncul
+  // var_dump($data); // <- ini harus muncul
   // echo "</pre>";
 
   require_once "views/{$view}.php";
