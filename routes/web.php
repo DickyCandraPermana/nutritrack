@@ -22,65 +22,65 @@ if (isset($parsedUrl['query'])) {
   parse_str($parsedUrl['query'], $queryParams); // Ubah jadi array asosiatif
 }
 
-function dispatchRoute($route)
-{
-  try {
-    $handler = $route['handler'];
-    $middlewares = $route['middleware'] ?? [];
-    $params = $route['params'] ?? [];
+// function dispatchRoute($route)
+// {
+//   try {
+//     $handler = $route['handler'];
+//     $middlewares = $route['middleware'] ?? [];
+//     $params = $route['params'] ?? [];
 
-    // Jalankan middleware
-    foreach ($middlewares as $mw) {
-      runMiddleware($mw);
-    }
+//     // Jalankan middleware
+//     foreach ($middlewares as $mw) {
+//       runMiddleware($mw);
+//     }
 
-    // Resolve closure param
-    $params = array_map(function ($p) {
-      return is_callable($p) ? $p() : $p;
-    }, $params);
+//     // Resolve closure param
+//     $params = array_map(function ($p) {
+//       return is_callable($p) ? $p() : $p;
+//     }, $params);
 
-    // Eksekusi handler
-    if (is_callable($handler)) {
-      return call_user_func_array($handler, $params);
-    }
+//     // Eksekusi handler
+//     if (is_callable($handler)) {
+//       return call_user_func_array($handler, $params);
+//     }
 
-    throw new Exception("Invalid handler");
-  } catch (Exception $e) {
-    http_response_code(500);
-    echo "Internal Server Error: " . $e->getMessage();
-  }
-}
+//     throw new Exception("Invalid handler");
+//   } catch (Exception $e) {
+//     http_response_code(500);
+//     echo "Internal Server Error: " . $e->getMessage();
+//   }
+// }
 
-function runMiddleware($name)
-{
-  switch ($name) {
-    case 'auth':
-      requireAuth();
-      break;
-    case 'guest':
-      requireGuest();
-      break;
-    default:
-      throw new Exception("Unknown middleware: $name");
-  }
-}
+// function runMiddleware($name)
+// {
+//   switch ($name) {
+//     case 'auth':
+//       requireAuth();
+//       break;
+//     case 'guest':
+//       requireGuest();
+//       break;
+//     default:
+//       throw new Exception("Unknown middleware: $name");
+//   }
+// }
 
-function requireGuest()
-{
-  if (isset($_SESSION['user_id'])) {
-    header('Location: /nutritrack/profile');
-    exit();
-  }
-}
+// function requireGuest()
+// {
+//   if (isset($_SESSION['user_id'])) {
+//     header('Location: /nutritrack/profile');
+//     exit();
+//   }
+// }
 
-// Simple auth middleware
-function requireAuth()
-{
-  if (!isset($_SESSION['user_id'])) {
-    header('Location: /nutritrack/login');
-    exit();
-  }
-}
+// // Simple auth middleware
+// function requireAuth()
+// {
+//   if (!isset($_SESSION['user_id'])) {
+//     header('Location: /nutritrack/login');
+//     exit();
+//   }
+// }
 
 // Routing table
 $routes = [
@@ -137,7 +137,7 @@ $routes = [
       'middleware' => ['auth'],
     ],
     'nutritrack/profile/tambah-makanan' => [
-      'handler' => [$profileController, 'profileInputMakanan'],
+      'handler' => [$profileController, 'tambahMakanan'],
       'middleware' => ['auth'],
     ],
     'nutritrack/profile/logout' => [

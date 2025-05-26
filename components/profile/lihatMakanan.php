@@ -18,8 +18,8 @@
       </thead>
       <tbody>
         <?php
-        if (isset($_SESSION['makanan_user']) && count($_SESSION['makanan_user']) > 0) {
-          $data = $_SESSION['makanan_user'];
+        if (count($foodData) > 0) {
+          $data = $foodData;
 
           // LOOPING DATA
           foreach ($data as $makanan) {

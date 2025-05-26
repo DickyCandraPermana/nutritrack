@@ -183,33 +183,52 @@ class Profile
     $_SESSION['tdee'] = hitungTDEE($_SESSION['bmr'], $data['aktivitas']);
   }
 
-  public function tambahMakanan($data)
+  public function cekRegistrasiMakanan($id)
+  {
+    $user_id = $id;
+    $tanggal = getCurrentDate();
+    $stmt = $this->db->prepare("SELECT * FROM registrasi_makanan WHERE user_id = ? AND tanggal = ?");
+    $stmt->execute([$user_id, $tanggal]);
+    return $stmt->rowCount();
+  }
+
+  public function tambahRegistrasiMakanan($id)
+  {
+    $user_id = $id;
+    $tanggal = getCurrentDate();
+    $stmt = $this->db->prepare("INSERT INTO registrasi_makanan (user_id, tanggal) VALUES (?, ?)");
+    $stmt->execute([$user_id, $tanggal]);
+  }
+
+  public function getRegistrasiMakanan($id)
+  {
+    $user_id = $id;
+    $tanggal = getCurrentDate();
+    $stmt = $this->db->prepare("SELECT * FROM registrasi_makanan WHERE user_id = ? AND tanggal = ?");
+    $stmt->execute([$user_id, $tanggal]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+  }
+
+  public function tambahDetailRegistrasiMakanan($data)
   {
     $user_id = $data['user_id'];
     $makanan = $data['food_id'];
-    $tanggal = getCurrentDate();
     $jam = $data['waktu_makan'];
     $jumlah_porsi = $data['jumlah_porsi'];
     $satuan = $data['satuan'];
     $catatan = $data['catatan'];
 
-    $stmt = $this->db->prepare("INSERT INTO user_makanan (user_id, food_id, tanggal, waktu_makan, jumlah_porsi, satuan, catatan) VALUES (?, ?, ?, ?, ?, ?, ?)");
-    $stmt->execute([$user_id, $makanan, $tanggal, $jam, $jumlah_porsi, $satuan, $catatan]);
-  }
+    if (!isset($catatan)) {
+      $catatan = null;
+    }
 
-  public function editMakanan($data)
-  {
-    extract($data);
-    $tanggal = getCurrentDate();
-    $jam = getCurrentTime();
+    if ($this->cekRegistrasiMakanan($user_id) == 0) {
+      $this->tambahRegistrasiMakanan($user_id);
+    }
 
-    $stmt = $this->db->prepare("UPDATE user_makanan SET food_id = ?, tanggal = ?, waktu_makan = ?, jumlah_porsi = ?, satuan = ?, catatan = ? WHERE user_makanan_id = ? AND user_id = ?");
-    $stmt->execute([$food_id, $tanggal, $jam, $jumlah_porsi, $satuan, $catatan, $id, $user_id]);
-  }
+    $reg_id = $this->getRegistrasiMakanan($user_id)['reg_id'];
 
-  public function deleteMakanan($id)
-  {
-    $stmt = $this->db->prepare("DELETE FROM user_makanan WHERE user_makanan_id = ?");
-    $stmt->execute([$id]);
+    $stmt = $this->db->prepare("INSERT INTO detail_registrasi_makanan (reg_id, food_id, waktu_makan, jumlah_porsi, satuan, catatan) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->execute([$reg_id, $makanan, $jam, $jumlah_porsi, $satuan, $catatan]);
   }
 }

@@ -73,19 +73,18 @@ class ProfileController
     renderView('profile_view_data', compact('userData'));
   }
 
-  public function profileInputMakanan()
+  public function tambahMakanan()
   {
-    $foodData = new FoodController($this->db);
-    $foodData = $foodData->fetchFoodData();
-    $userData = $this->fetchUserData($_SESSION['user_id']);
-    renderView('profile_input_makanan', compact('user', 'foodData'));
-  }
-
-  public function tambahMakanan($data)
-  {
-    $this->profile->tambahMakanan($data);
-    unset($_SESSION['foodData']);
-    header('Location: /nutritrack/profile/tracking');
-    exit;
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+      $data = $_POST;
+      $this->profile->tambahDetailRegistrasiMakanan($data);
+      header('Location: /nutritrack/profile/tracking');
+      exit;
+    } else {
+      $foodData = new FoodController($this->db);
+      $foodData = $foodData->fetchFoodData();
+      $user = $this->fetchUserData($_SESSION['user_id']);
+      renderView('profile_input_makanan', compact('user', 'foodData'));
+    }
   }
 }

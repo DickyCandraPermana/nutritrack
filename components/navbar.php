@@ -1,4 +1,4 @@
-<?php include 'config/config.php'; ?>
+<?php include_once 'config/config.php' ?>
 <header class="flex items-center justify-between w-full px-6 py-3 bg-white shadow-md">
   <div class="flex gap-4">
     <a class="flex items-center gap-3" href="<?= BASE_URL ?>home">

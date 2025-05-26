@@ -84,71 +84,6 @@ function requireAuth()
 
 // Routing table
 $routes = [
-  'GET' => [
-    'nutritrack' => [
-      'handler' => [$homeController, 'index'],
-    ],
-    'nutritrack/home' => [
-      'handler' => fn() => header('Location: /nutritrack'),
-    ],
-    'nutritrack/login' => [
-      'handler' => [$authController, 'login'],
-      'middleware' => ['guest'],
-    ],
-    'nutritrack/register' => [
-      'handler' => [$authController, 'register'],
-      'middleware' => ['guest'],
-    ],
-    'nutritrack/profile' => [
-      'handler' => [$profileController, 'dashboard'],
-      'middleware' => ['auth']
-    ],
-    'nutritrack/profile/dashboard' => [
-      'handler' => fn() => header('Location: /nutritrack/profile'),
-    ],
-    'nutritrack/profile/edit' => [
-      'handler' => [$profileController, 'editProfile'],
-      'middleware' => ['auth'],
-      'params' => [fn() => $_SESSION['user_id']],
-    ],
-    'nutritrack/profile/data' => [
-      'handler' => [$profileController, 'viewData'],
-      'middleware' => ['auth'],
-      'params' => [fn() => $_SESSION['user_id']],
-    ],
-    'nutritrack/profile/personal' => [
-      'handler' => [$profileController, 'profilePersonal'],
-      'middleware' => ['auth'],
-      'params' => [fn() => $_SESSION['user_id']],
-    ],
-    'nutritrack/search' => [
-      'handler' => fn() => $homeController->search(
-        isset($_GET['search']) ? $_GET['search'] : '',
-        isset($_GET['page']) ? (int)$_GET['page'] : 1
-      ),
-    ],
-    'nutritrack/details' => [
-      'handler' => fn() => $foodController->foodDetail(
-        isset($_GET['id']) ? (int)$_GET['id'] : -1
-      ),
-    ],
-    'nutritrack/profile/tracking' => [
-      'handler' => [$profileController, 'profileTracking'],
-      'middleware' => ['auth'],
-    ],
-    'nutritrack/profile/tambah-makanan' => [
-      'handler' => [$profileController, 'profileInputMakanan'],
-      'middleware' => ['auth'],
-    ],
-    'nutritrack/profile/logout' => [
-      'handler' => function () {
-        session_destroy();
-        header("Location: /nutritrack");
-        exit();
-      },
-    ],
-  ],
-
   'POST' => [
     'nutritrack/login' => [
       'handler' => [$authController, 'login'],
@@ -173,7 +108,4 @@ $routes = [
 if (isset($routes[$method][$uri])) {
   $route = $routes[$method][$uri];
   dispatchRoute($route);
-} else {
-  http_response_code(404);
-  require 'views/404.php';
 }
