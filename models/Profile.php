@@ -1,4 +1,9 @@
 <?php
+
+namespace Models;
+
+use PDO, PDOException, Exception;
+
 require_once 'config/helpers.php';
 
 class Profile
@@ -9,6 +14,7 @@ class Profile
   {
     $this->db = $db;
   }
+
   public function getUserById($id)
   {
     $stmt = $this->db->prepare("SELECT * FROM users WHERE user_id = ?");
@@ -90,24 +96,6 @@ class Profile
     return $data;
   }
 
-
-
-
-  public function getUserMakananByUserId($user_id)
-  {
-    $stmt = $this->db->prepare("SELECT * FROM user_makanan WHERE user_id = ? ORDER BY tanggal DESC");
-    $stmt->execute([$user_id]);
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-  }
-
-  public function getUserMakananByDate($date)
-  {
-    $user_id = $_SESSION['user_id'];
-    $stmt = $this->db->prepare("SELECT * FROM user_makanan WHERE user_id = ? AND tanggal = ?");
-    $stmt->execute([$user_id, $date]);
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-  }
-
   public function getDetailRegistrasiMakanan($id)
   {
     $stmt = $this->db->prepare(
@@ -158,7 +146,6 @@ class Profile
 
     return $data;
   }
-
 
   public function updateProfile($data)
   {
@@ -230,5 +217,110 @@ class Profile
 
     $stmt = $this->db->prepare("INSERT INTO detail_registrasi_makanan (reg_id, food_id, waktu_makan, jumlah_porsi, satuan, catatan) VALUES (?, ?, ?, ?, ?, ?)");
     $stmt->execute([$reg_id, $makanan, $jam, $jumlah_porsi, $satuan, $catatan]);
+  }
+
+  public function getRegIdByUserIdTanggal($user_id, $tanggal)
+  {
+    $stmt = $this->db->prepare("SELECT registrasi_makanan.reg_id FROM registrasi_makanan 
+    WHERE registrasi_makanan.user_id = ? AND tanggal = ?");
+    $stmt->execute([$user_id, $tanggal]);
+    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    return $data[0]['reg_id'];
+  }
+
+  public function getConsumedFoodData($id, $tanggal)
+  {
+
+    $reg_id = $this->getRegIdByUserIdTanggal($id, $tanggal);
+
+    $stmt = $this->db->prepare(
+      "SELECT makanan.nama_makanan, detail_registrasi_makanan.jumlah_porsi, detail_registrasi_makanan.satuan, detail_registrasi_makanan.waktu_makan, detail_nutrisi_makanan.jumlah, detail_nutrisi_makanan.nutrition_id FROM detail_registrasi_makanan 
+      INNER JOIN makanan ON detail_registrasi_makanan.food_id = makanan.food_id
+      INNER JOIN detail_nutrisi_makanan ON makanan.food_id = detail_nutrisi_makanan.food_id
+      INNER JOIN nutrisi ON detail_nutrisi_makanan.nutrition_id = nutrisi.nutrition_id
+      WHERE reg_id = ? AND nutrisi.nutrition_id IN (1, 2, 6, 8, 9)
+      ORDER BY waktu_makan ASC"
+    );
+    $stmt->execute([$reg_id]);
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $meals = [];
+
+    foreach ($rows as $row) {
+      $waktu = $row['waktu_makan'];
+      $nama = $row['nama_makanan'];
+      $key = "{$waktu}_{$nama}";
+
+      // Initialize meal slot
+      if (!isset($meals[$waktu])) {
+        $meals[$waktu] = [
+          'name' => $waktu,
+          'totalCalories' => 0,
+          'items' => []
+        ];
+      }
+
+      // Initialize item if belum ada
+      if (!isset($meals[$waktu]['items'][$key])) {
+        $meals[$waktu]['items'][$key] = [
+          'name' => $nama,
+          'portion' => "{$row['jumlah_porsi']} {$row['satuan']}",
+          'calories' => 0,
+          'carbs' => 0,
+          'protein' => 0,
+          'fat' => 0
+        ];
+      }
+
+      // Map nutrition_id ke field
+      switch ((int)$row['nutrition_id']) {
+        case 1:
+          $meals[$waktu]['items'][$key]['calories'] = (float)$row['jumlah'];
+          $meals[$waktu]['totalCalories'] += (float)$row['jumlah'];
+          break;
+        case 2:
+          $meals[$waktu]['items'][$key]['carbs'] = (float)$row['jumlah'];
+          break;
+        case 6:
+          $meals[$waktu]['items'][$key]['protein'] = (float)$row['jumlah'];
+          break;
+        case 8:
+          $meals[$waktu]['items'][$key]['fat'] = (float)$row['jumlah'];
+          break;
+          // case 9 => fiber (serat) tidak digunakan di output
+      }
+    }
+
+    // Rapihin jadi array indexed (items-nya juga)
+    $result = [];
+    foreach ($meals as $meal) {
+      $meal['items'] = array_values($meal['items']);
+      $result[] = $meal;
+    }
+
+    return json_encode($result);
+  }
+
+  public function getTrackedNutrient($id, $tanggal)
+  {
+    $reg_id = $this->getRegIdByUserIdTanggal($id, $tanggal);
+
+    $stmt = $this->db->prepare(
+      "SELECT SUM(detail_nutrisi_makanan.jumlah) AS 'total_nutrisi', nutrisi.nama FROM detail_registrasi_makanan
+      INNER JOIN detail_nutrisi_makanan ON detail_registrasi_makanan.food_id = detail_nutrisi_makanan.food_id
+      INNER JOIN nutrisi ON detail_nutrisi_makanan.nutrition_id = nutrisi.nutrition_id
+      WHERE reg_id = ? AND nutrisi.nutrition_id IN (1, 2, 6, 8, 9)
+      GROUP BY detail_nutrisi_makanan.nutrition_id"
+    );
+    $stmt->execute([$reg_id]);
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $result = [];
+
+    foreach ($rows as $row) {
+      $result[$row['nama']] = $row['total_nutrisi'];
+    }
+
+    return json_encode($result);
   }
 }

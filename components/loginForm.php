@@ -43,7 +43,7 @@
 <script>
   async function kirimData() {
     try {
-      const res = await fetch('<?= BASE_URL ?>login', {
+      const res = await fetch('/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -58,7 +58,11 @@
       console.log(data);
 
       if (data.status === 'success') {
-        window.location.href = '/nutritrack/profile';
+        if (data.role === 'admin') {
+          window.location.href = '/nutritrack/admin';
+        } else {
+          window.location.href = '/nutritrack/profile';
+        }
       } else if (data.status === 'error') {
         showFlashMessage({
           type: 'error',

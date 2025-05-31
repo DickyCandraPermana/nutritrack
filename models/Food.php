@@ -1,5 +1,9 @@
 <?php
 
+namespace Models;
+
+use PDO, PDOException, Exception; 
+
 class Food
 {
   private PDO $db;
@@ -7,6 +11,46 @@ class Food
   public function __construct(PDO $db)
   {
     $this->db = $db;
+  }
+
+  /**
+   * Ambil semua data makanan.
+   * @return array
+   */
+  public function getFoods(): array
+  {
+    $stmt = $this->db->query("SELECT * FROM makanan");
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  public function tambahMakanan($data){
+    try {
+      $stmt = $this->db->prepare("INSERT INTO makanan (food_id, nama_makanan) VALUES (?, ?)");
+      $stmt->execute([$data['food_id'], $data['nama_makanan']]);
+      return true;
+    } catch (PDOException $e) {
+      return false;
+    }
+  }
+
+  public function editMakanan($data){
+    try {
+      $stmt = $this->db->prepare("UPDATE makanan SET nama_makanan = ? WHERE food_id = ?");
+      $stmt->execute([$data['food_id'], $data['nama_makanan'], $data['id']]);
+      return true;
+    } catch (PDOException $e) {
+      return false;
+    }
+  }
+
+  public function deleteMakanan($data){
+    try {
+      $stmt = $this->db->prepare("DELETE FROM makanan WHERE food_id = ?");
+      $stmt->execute([$data['id']]);
+      return true;
+    } catch (PDOException $e) {
+      return false;
+    }
   }
 
   /**

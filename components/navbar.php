@@ -1,5 +1,6 @@
 <?php include_once 'config/config.php' ?>
-<header class="flex items-center justify-between w-full px-6 py-3 bg-white shadow-md">
+
+<header class="sticky top-0 z-10 flex items-center justify-between w-full px-6 py-3 bg-white shadow-md">
   <div class="flex gap-4">
     <a class="flex items-center gap-3" href="<?= BASE_URL ?>home">
       <img src="/public/assets/logo.png" alt="Nutritrack Logo" class="w-8 h-8">
@@ -20,7 +21,7 @@
       $menuItems = [
         ["Camera", "fas fa-camera", "scan"],
         ["Help", "", "help"],
-        ["Upgrade", "", "upgrade"],
+        ["Upgrade", "", "premium"],
         ["Comunity", "", "comunity"],
         ["Notification", "fas fa-bell", "notification"],
         ["Chat", "fas fa-comments", "chat"]

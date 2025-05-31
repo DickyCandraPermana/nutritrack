@@ -1,10 +1,17 @@
 <?php
-session_start();
+
+use Controllers\Web\AuthController;
+use Controllers\Web\ProfileController;
+use Controllers\Web\HomeController;
+use Controllers\Web\FoodController;
+
 require_once 'config/koneksi.php';
-require_once 'controllers/ProfileController.php';
-require_once 'controllers/AuthController.php';
-require_once 'controllers/HomeController.php';
-require_once 'controllers/FoodController.php';
+require_once 'Middlewares/middleware.php';
+
+require_once 'controllers/Web/AuthController.php';
+require_once 'controllers/Web/ProfileController.php';
+require_once 'controllers/Web/HomeController.php';
+require_once 'controllers/Web/FoodController.php';
 
 $authController = new AuthController($db);
 $homeController = new HomeController($db);
@@ -22,66 +29,6 @@ if (isset($parsedUrl['query'])) {
   parse_str($parsedUrl['query'], $queryParams); // Ubah jadi array asosiatif
 }
 
-// function dispatchRoute($route)
-// {
-//   try {
-//     $handler = $route['handler'];
-//     $middlewares = $route['middleware'] ?? [];
-//     $params = $route['params'] ?? [];
-
-//     // Jalankan middleware
-//     foreach ($middlewares as $mw) {
-//       runMiddleware($mw);
-//     }
-
-//     // Resolve closure param
-//     $params = array_map(function ($p) {
-//       return is_callable($p) ? $p() : $p;
-//     }, $params);
-
-//     // Eksekusi handler
-//     if (is_callable($handler)) {
-//       return call_user_func_array($handler, $params);
-//     }
-
-//     throw new Exception("Invalid handler");
-//   } catch (Exception $e) {
-//     http_response_code(500);
-//     echo "Internal Server Error: " . $e->getMessage();
-//   }
-// }
-
-// function runMiddleware($name)
-// {
-//   switch ($name) {
-//     case 'auth':
-//       requireAuth();
-//       break;
-//     case 'guest':
-//       requireGuest();
-//       break;
-//     default:
-//       throw new Exception("Unknown middleware: $name");
-//   }
-// }
-
-// function requireGuest()
-// {
-//   if (isset($_SESSION['user_id'])) {
-//     header('Location: /nutritrack/profile');
-//     exit();
-//   }
-// }
-
-// // Simple auth middleware
-// function requireAuth()
-// {
-//   if (!isset($_SESSION['user_id'])) {
-//     header('Location: /nutritrack/login');
-//     exit();
-//   }
-// }
-
 // Routing table
 $routes = [
   'GET' => [
@@ -98,6 +45,11 @@ $routes = [
     'nutritrack/register' => [
       'handler' => [$authController, 'register'],
       'middleware' => ['guest'],
+    ],
+    [
+      'nutritrack/premium' => [
+        'handler' => [$authController, 'premiumPage'],
+      ]
     ],
     'nutritrack/profile' => [
       'handler' => [$profileController, 'dashboard'],
@@ -123,8 +75,8 @@ $routes = [
     ],
     'nutritrack/search' => [
       'handler' => fn() => $homeController->search(
-        isset($_GET['search']) ? $_GET['search'] : '',
-        isset($_GET['page']) ? (int)$_GET['page'] : 1
+        $_GET['search'] ?? '',
+        $_GET['page'] ?? 1
       ),
     ],
     'nutritrack/details' => [
@@ -140,15 +92,15 @@ $routes = [
       'handler' => [$profileController, 'tambahMakanan'],
       'middleware' => ['auth'],
     ],
+    'nutritrack/premium' => [
+      'handler' => [$homeController, 'premiumPage'],
+    ],
     'nutritrack/profile/logout' => [
-      'handler' => function () {
-        session_destroy();
-        header("Location: /nutritrack");
-        exit();
-      },
+      'handler' => [$authController, 'logout'],
     ],
   ],
 
+  //! To be deleted!!
   'POST' => [
     'nutritrack/login' => [
       'handler' => [$authController, 'login'],

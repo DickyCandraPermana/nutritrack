@@ -1,6 +1,12 @@
 <?php
+
+namespace Controllers\API;
+
+use PDO, PDOException, Exception;
+use Models\Profile;
+
 require_once 'models/Profile.php';
-require_once 'controllers/FoodController.php';
+require_once 'controllers/API/FoodController.php';
 
 class ProfileController
 {
@@ -86,5 +92,28 @@ class ProfileController
       $user = $this->fetchUserData($_SESSION['user_id']);
       renderView('profile_input_makanan', compact('user', 'foodData'));
     }
+  }
+
+  public function userTrackingData()
+  {
+    // if (!isset($_SESSION['user_id'])) {
+    //   header("Location: /nutritrack/login");
+    //   exit;
+    // }
+
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    $consumedFoodData = $this->profile->getConsumedFoodData($data['user_id'], $data['tanggal']);
+
+    echo $consumedFoodData;
+  }
+
+  public function getUserTrackingData() 
+  {
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    $trackedNutrient = $this->profile->getTrackedNutrient($data['user_id'], $data['tanggal']);
+
+    echo $trackedNutrient;
   }
 }

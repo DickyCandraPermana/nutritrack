@@ -1,7 +1,7 @@
 <div class="p-6 bg-gray-100 rounded-lg shadow-md">
   <h2 class="mb-4 text-xl font-semibold text-gray-800">Makanan Dikonsumsi</h2>
 
-  <form action="" method="post" class="space-y-4">
+  <form action="" method="POST" class="space-y-4">
     <input type="hidden" name="user_id" value="<?= $user['user_id'] ?>">
     <!-- Dropdown Alpine -->
     <div x-data="dropdownData()" class="relative w-64">

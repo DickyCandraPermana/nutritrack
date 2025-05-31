@@ -1,12 +1,20 @@
 <?php
-require_once 'routes/api.php';
+// 1. Konfigurasi
+require_once 'config/config.php';
+require_once 'config/helpers.php';
+
+// 2. Routing berdasar URI
+$uri = $_SERVER['REQUEST_URI'];
+
+if (strpos($uri, '/api') === 0) {
+  require_once 'routes/api.php';
+  exit;
+}
+
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
-<?php
-include_once 'config/config.php';
-include_once 'config/helpers.php';
-?>
 
 <head>
   <meta charset="UTF-8">
@@ -22,9 +30,18 @@ include_once 'config/helpers.php';
 
 <body>
   <?php
+  session_start();
+
   // Sertakan file router
-  require_once 'routes/web.php';
+  if (isset($_SESSION['role']) && strtolower($_SESSION['role']) === "admin") {
+    require_once 'routes/admin.php';
+    //echo '<script>alert("Selamat datang, ' . $_SESSION['username'] . '!");</script>';
+  } else {
+    require_once 'routes/web.php';
+    //echo '<script>alert("' . $_SESSION['role'] . '");</script>';
+  }
   ?>
+
 </body>
 
 </html>

@@ -6,7 +6,7 @@ include 'components/errorHandling.php';
   <?php
   include 'components/profile/profileSidebar.php';
   ?>
-  <div class="w-full">
+  <div class="flex flex-col w-full overflow-scroll h-svh">
     <?php
     include 'components/navbar.php';
     include 'components/profile/profileContent.php'

@@ -1,5 +1,9 @@
 <?php
 
+namespace Models;
+
+use PDO, PDOException, Exception;
+
 require_once 'config/helpers.php';
 
 class Auth
@@ -64,7 +68,7 @@ class Auth
 
   public function getLoginInfo($username)
   {
-    $stmt = $this->db->prepare("SELECT user_id, email, username, password FROM users WHERE username = ? OR email = ?");
+    $stmt = $this->db->prepare("SELECT user_id, email, username, password, role FROM users WHERE username = ? OR email = ?");
     $stmt->execute([$username, $username]);
 
     return $stmt->fetch(PDO::FETCH_ASSOC) ?: false;

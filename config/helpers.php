@@ -39,6 +39,35 @@ function getCurrentDate()
   return date('Y-m-d');
 }
 
+function dispatchRoute($route)
+{
+  try {
+    $handler = $route['handler'];
+    $middlewares = $route['middleware'] ?? [];
+    $params = $route['params'] ?? [];
+
+    // Jalankan middleware
+    foreach ($middlewares as $mw) {
+      runMiddleware($mw);
+    }
+
+    // Resolve closure param
+    $params = array_map(function ($p) {
+      return is_callable($p) ? $p() : $p;
+    }, $params);
+
+    // Eksekusi handler
+    if (is_callable($handler)) {
+      return call_user_func_array($handler, $params);
+    }
+
+    throw new Exception("Invalid handler");
+  } catch (Exception $e) {
+    http_response_code(500);
+    echo "Internal Server Error: " . $e->getMessage();
+  }
+}
+
 function setFlash($type, $message)
 {
   $_SESSION['message'] = [
@@ -47,16 +76,9 @@ function setFlash($type, $message)
   ];
 }
 
-function getFlash($key)
-{
-  if (!isset($_SESSION[$key])) return null;
-  $msg = $_SESSION[$key];
-  unset($_SESSION[$key]);
-  return $msg;
-}
-
 function renderView($view, $data = [])
 {
+
   extract($data);
 
   // echo "<pre>";
@@ -71,42 +93,4 @@ function renderView($view, $data = [])
 function getCurrentTime()
 {
   return date('H:i:s');
-}
-
-function updateSession($db, $id)
-{
-  $profile = new Profile($db);
-  $user = $profile->getUserById($id);
-
-  if ($user) {
-    $_SESSION['logged_in'] = true;
-    $_SESSION['user_id'] = $user['user_id'];
-    $_SESSION['username'] = $user['username'];
-    $_SESSION['bio'] = $user['bio'];
-    $_SESSION['profile_picture'] = $user['profile_picture'];
-    $_SESSION['role'] = $user['role'];
-    $_SESSION['email'] = $user['email'];
-    $_SESSION['first_name'] = $user['first_name'];
-    $_SESSION['last_name'] = $user['last_name'];
-    $_SESSION['phone_number'] = $user['phone_number'];
-    $_SESSION['jenis_kelamin'] = $user['jenis_kelamin'] == 0 ? 'Perempuan' : 'Laki-laki';
-    $_SESSION['tanggal_lahir'] = $user['tanggal_lahir'];
-    $_SESSION['umur'] = hitungUmur($user['tanggal_lahir']);
-    $_SESSION['is_premium'] = $user['is_premium'] == 1 ? true : false;
-    $_SESSION['tinggi_badan'] = $user['tinggi_badan'];
-    $_SESSION['berat_badan'] = $user['berat_badan'];
-    $_SESSION['aktivitas'] = $user['aktivitas'];
-
-    if ($user['berat_badan'] !== NULL) {
-      $_SESSION['bmi'] = hitungBMI($user['berat_badan'], $user['tinggi_badan']);
-      $_SESSION['bmi_status'] = $_SESSION['bmi'] < 18.5 ? 'Kurus' : ($_SESSION['bmi'] < 25 ? 'Normal' : 'Gemuk');
-
-      $_SESSION['bmr'] = hitungBMR($user['berat_badan'], $user['tinggi_badan'], $_SESSION['umur'], $user['jenis_kelamin']);
-
-      $_SESSION['tdee'] = hitungTDEE($_SESSION['bmr'], $user['aktivitas']);
-    }
-    return true;
-  } else {
-    return false;
-  }
 }

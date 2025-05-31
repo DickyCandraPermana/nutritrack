@@ -45,207 +45,12 @@
         <div class="flex items-center mb-4 text-lg font-semibold">
           <i class="mr-2 text-gray-600 fas fa-chart-pie"></i> Distribusi Nutrisi
         </div>
-        <div class="grid grid-cols-1 gap-6 lg:grid-cols-5">
-          <div class="space-y-4 lg:col-span-5">
-            <!-- Karbohidrat -->
-            <div class="flex items-start space-x-3">
-              <div class="p-2 text-white bg-blue-500 rounded-full">
-                <i class="fas fa-bread-slice"></i>
-              </div>
-              <div class="flex-1">
-                <h6 class="mb-1 font-medium">Karbohidrat</h6>
-                <div class="flex justify-between text-sm">
-                  <span>180g / 250g</span><span>72%</span>
-                </div>
-                <div class="w-full h-2 mt-1 bg-gray-200 rounded-full">
-                  <div class="h-2 bg-blue-500 rounded-full" style="width: 72%"></div>
-                </div>
-              </div>
-            </div>
-            <!-- Protein -->
-            <div class="flex items-start space-x-3">
-              <div class="p-2 text-white bg-green-500 rounded-full">
-                <i class="fas fa-drumstick-bite"></i>
-              </div>
-              <div class="flex-1">
-                <h6 class="mb-1 font-medium">Protein</h6>
-                <div class="flex justify-between text-sm">
-                  <span>85g / 120g</span><span>71%</span>
-                </div>
-                <div class="w-full h-2 mt-1 bg-gray-200 rounded-full">
-                  <div class="h-2 bg-green-500 rounded-full" style="width: 71%"></div>
-                </div>
-              </div>
-            </div>
-            <!-- Lemak -->
-            <div class="flex items-start space-x-3">
-              <div class="p-2 text-white bg-yellow-500 rounded-full">
-                <i class="fas fa-oil-can"></i>
-              </div>
-              <div class="flex-1">
-                <h6 class="mb-1 font-medium">Lemak</h6>
-                <div class="flex justify-between text-sm">
-                  <span>45g / 65g</span><span>69%</span>
-                </div>
-                <div class="w-full h-2 mt-1 bg-gray-200 rounded-full">
-                  <div class="h-2 bg-yellow-500 rounded-full" style="width: 69%"></div>
-                </div>
-              </div>
-            </div>
-            <!-- Serat -->
-            <div class="flex items-start space-x-3">
-              <div class="p-2 text-white rounded-full bg-cyan-500">
-                <i class="fas fa-seedling"></i>
-              </div>
-              <div class="flex-1">
-                <h6 class="mb-1 font-medium">Serat</h6>
-                <div class="flex justify-between text-sm">
-                  <span>18g / 30g</span><span>60%</span>
-                </div>
-                <div class="w-full h-2 mt-1 bg-gray-200 rounded-full">
-                  <div class="h-2 rounded-full bg-cyan-500" style="width: 60%"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <!-- Item nutrisi -->
+        <div id="nutrient-container" class="space-y-4 lg:col-span-5"></div>
       </div>
 
       <!-- Riwayat Makanan -->
-      <div class="mb-6 bg-white rounded-lg shadow">
-        <div class="flex items-center justify-between px-4 py-3 border-b">
-          <h5 class="flex items-center text-lg font-semibold">
-            <i class="mr-2 fas fa-utensils"></i> Riwayat Makanan
-          </h5>
-          <button class="flex items-center px-3 py-2 text-xs text-white rounded-md bg-cyan-500">
-            <i class="mr-1 fas fa-plus"></i> Tambah Makanan
-          </button>
-        </div>
-
-        <div class="px-4 py-5">
-          <!-- Breakfast -->
-          <div class="mb-4">
-            <div class="flex items-center justify-between mb-3">
-              <h6 class="px-2 py-1 text-sm font-semibold text-gray-700 bg-yellow-200 rounded-full">Sarapan</h6>
-              <span class="text-gray-600">425 kkal</span>
-            </div>
-            <div class="flex items-center justify-between mb-3">
-              <div>
-                <h6 class="text-sm font-semibold text-gray-700">nasi goreng telur</h6>
-                <small class="text-gray-500">1 mangkuk (250g)</small>
-              </div>
-              <div class="text-right">
-                <span class="block text-gray-700">320 kkal</span>
-                <div class="flex mt-1 space-x-2">
-                  <span class="px-2 py-1 text-xs text-white bg-blue-500 rounded-full">K: 45g</span>
-                  <span class="px-2 py-1 text-xs text-white bg-green-500 rounded-full">P: 12g</span>
-                  <span class="px-2 py-1 text-xs text-white bg-yellow-500 rounded-full">L: 8g</span>
-                </div>
-              </div>
-            </div>
-            <div class="flex items-center justify-between mb-3">
-              <div>
-                <h6 class="text-sm font-semibold text-gray-700">Susu</h6>
-                <small class="text-gray-500">1 gelas (200ml)</small>
-              </div>
-              <div class="text-right">
-                <span class="block text-gray-700">105 kkal</span>
-                <div class="flex mt-1 space-x-2">
-                  <span class="px-2 py-1 text-xs text-white bg-blue-500 rounded-full">K: 12g</span>
-                  <span class="px-2 py-1 text-xs text-white bg-green-500 rounded-full">P: 8g</span>
-                  <span class="px-2 py-1 text-xs text-white bg-yellow-500 rounded-full">L: 2.5g</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Lunch -->
-          <div class="mb-4">
-            <div class="flex items-center justify-between mb-3">
-              <h6 class="px-2 py-1 text-sm font-semibold text-gray-700 bg-yellow-200 rounded-full">Makan Siang</h6>
-              <span class="text-gray-600">625 kkal</span>
-            </div>
-            <div class="flex items-center justify-between mb-3">
-              <div>
-                <h6 class="text-sm font-semibold text-gray-700">Nasi kuning</h6>
-                <small class="text-gray-500">1 porsi (150g)</small>
-              </div>
-              <div class="text-right">
-                <span class="block text-gray-700">180 kkal</span>
-                <div class="flex mt-1 space-x-2">
-                  <span class="px-2 py-1 text-xs text-white bg-blue-500 rounded-full">K: 40g</span>
-                  <span class="px-2 py-1 text-xs text-white bg-green-500 rounded-full">P: 4g</span>
-                  <span class="px-2 py-1 text-xs text-white bg-yellow-500 rounded-full">L: 1g</span>
-                </div>
-              </div>
-            </div>
-            <div class="flex items-center justify-between mb-3">
-              <div>
-                <h6 class="text-sm font-semibold text-gray-700">Mie ayam</h6>
-                <small class="text-gray-500">1 mangkuk 240g</small>
-              </div>
-              <div class="text-right">
-                <span class="block text-gray-700">480 kkal</span>
-                <div class="flex mt-1 space-x-2">
-                  <span class="px-2 py-1 text-xs text-white bg-blue-500 rounded-full">K: 0g</span>
-                  <span class="px-2 py-1 text-xs text-white bg-green-500 rounded-full">P: 35g</span>
-                  <span class="px-2 py-1 text-xs text-white bg-yellow-500 rounded-full">L: 8g</span>
-                </div>
-              </div>
-            </div>
-            <div class="flex items-center justify-between mb-3">
-              <div>
-                <h6 class="text-sm font-semibold text-gray-700">Sop buah</h6>
-                <small class="text-gray-500">1 mangkuk (200g)</small>
-              </div>
-              <div class="text-right">
-                <span class="block text-gray-700">125 kkal</span>
-                <div class="flex mt-1 space-x-2">
-                  <span class="px-2 py-1 text-xs text-white bg-blue-500 rounded-full">K: 15g</span>
-                  <span class="px-2 py-1 text-xs text-white bg-green-500 rounded-full">P: 2g</span>
-                  <span class="px-2 py-1 text-xs text-white bg-yellow-500 rounded-full">L: 4g</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Dinner -->
-          <div class="mb-4">
-            <div class="flex items-center justify-between mb-3">
-              <h6 class="px-2 py-1 text-sm font-semibold text-gray-700 bg-yellow-200 rounded-full">Makan Malam</h6>
-              <span class="text-gray-600">400 kkal</span>
-            </div>
-            <div class="flex items-center justify-between mb-3">
-              <div>
-                <h6 class="text-sm font-semibold text-gray-700">Roti Bakar</h6>
-                <small class="text-gray-500">3 potong (210g)</small>
-              </div>
-              <div class="text-right">
-                <span class="block text-gray-700">500 kkal</span>
-                <div class="flex mt-1 space-x-2">
-                  <span class="px-2 py-1 text-xs text-white bg-blue-500 rounded-full">K: 20g</span>
-                  <span class="px-2 py-1 text-xs text-white bg-green-500 rounded-full">P: 3g</span>
-                  <span class="px-2 py-1 text-xs text-white bg-yellow-500 rounded-full">L: 15g</span>
-                </div>
-              </div>
-            </div>
-            <div class="flex items-center justify-between mb-3">
-              <div>
-                <h6 class="text-sm font-semibold text-gray-700">Tempe goreng</h6>
-                <small class="text-gray-500">1 buah sedang (150g)</small>
-              </div>
-              <div class="text-right">
-                <span class="block text-gray-700">120 kkal</span>
-                <div class="flex mt-1 space-x-2">
-                  <span class="px-2 py-1 text-xs text-white bg-blue-500 rounded-full">K: 27g</span>
-                  <span class="px-2 py-1 text-xs text-white bg-green-500 rounded-full">P: 3g</span>
-                  <span class="px-2 py-1 text-xs text-white bg-yellow-500 rounded-full">L: 0g</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div id="mealHistoryContainer" class="mb-6 bg-white rounded-lg shadow"></div>
 
     </div>
 
@@ -446,6 +251,244 @@
         </div>
       </div> */ ?>
 
+
     </div>
   </div>
 </div>
+
+<script>
+  const nutrients = [{
+      label: 'Karbohidrat',
+      icon: 'fas fa-bread-slice',
+      color: 'bg-blue-500',
+      current: 180,
+      target: 250
+    },
+    {
+      label: 'Protein',
+      icon: 'fas fa-drumstick-bite',
+      color: 'bg-green-500',
+      current: 85,
+      target: 120
+    },
+    {
+      label: 'Lemak',
+      icon: 'fas fa-oil-can',
+      color: 'bg-yellow-500',
+      current: 45,
+      target: 65
+    },
+    {
+      label: 'Serat Pangan',
+      icon: 'fas fa-seedling',
+      color: 'bg-cyan-500',
+      current: 18,
+      target: 30
+    }
+  ];
+
+  const meals = [{
+      name: "Sarapan",
+      totalCalories: 0,
+      items: [],
+    },
+    {
+      name: "Makan Siang",
+      totalCalories: 0,
+      items: [],
+    },
+    {
+      name: "Makan Malam",
+      totalCalories: 0,
+      items: [],
+    },
+  ];
+
+
+  const container = document.getElementById('nutrient-container');
+
+  /**
+   * Render ulang tampilan nutrisi di dalam container.
+   * @param {Array} nutrients - Array of nutrient objects.
+   * @param {string} containerId - ID dari elemen HTML tempat render.
+   */
+  function renderNutrientProgress(nutrients, containerId = 'nutrient-container') {
+    const container = document.getElementById(containerId);
+    if (!container) return console.error('Container tidak ditemukan:', containerId);
+
+    container.innerHTML = ''; // Kosongkan dulu
+
+    nutrients.forEach(n => {
+      const percent = Math.round((n.current / n.target) * 100);
+      const item = document.createElement('div');
+      item.className = 'flex items-start space-x-3';
+
+      item.innerHTML = `
+      <div class="p-2 text-white ${n.color} rounded-full">
+        <i class="${n.icon}"></i>
+      </div>
+      <div class="flex-1">
+        <h6 class="mb-1 font-medium">${n.label}</h6>
+        <div class="flex justify-between text-sm">
+          <span>${n.current}g / ${n.target}g</span><span>${percent}%</span>
+        </div>
+        <div class="w-full h-2 mt-1 bg-gray-200 rounded-full">
+          <div class="h-2 ${n.color} rounded-full" style="width: ${percent}%"></div>
+        </div>
+      </div>
+    `;
+      container.appendChild(item);
+    });
+  }
+
+
+  async function getUserTrackingData(user_id, tanggal) {
+    try {
+      const response = await fetch('/api/get-user-tracking-data', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          user_id: user_id,
+          tanggal: tanggal
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching user tracking data:', error);
+      return null;
+    }
+  }
+
+  async function updatePage() {
+    const data = await getUserTrackingData(<?= $_SESSION["user_id"] ?>, new Date().toISOString().split('T')[0]);
+    const newMeals = await getFoodConsumed(<?= $_SESSION["user_id"] ?>, new Date().toISOString().split('T')[0]);
+    if (data && newMeals) {
+      nutrients.forEach(nutrient => {
+        const key = nutrient.label.toLowerCase();
+        if (data[key] !== undefined) {
+          nutrient.current = data[key];
+        }
+      });
+      newMeals.forEach((mealData, i) => {
+        if (meals[i]) {
+          meals[i].totalCalories = mealData.totalCalories;
+          meals[i].items = mealData.items;
+        }
+      });
+      renderMealHistory(meals);
+      renderNutrientProgress(nutrients);
+    }
+  }
+
+  async function getFoodConsumed(user_id, tanggal) {
+    try {
+      const response = await fetch('/api/user-tracking-data', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          user_id: user_id,
+          tanggal: tanggal
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching user tracking data:', error);
+      return null;
+    }
+  }
+
+  async function getUserGoal(user_id) {
+    try {
+      const response = await fetch('/api/get-user-goal', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          user_id: user_id
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching user tracking data:', error);
+      return null;
+    }
+  }
+
+  function renderMealHistory(meals) {
+    const container = document.getElementById("mealHistoryContainer");
+
+    // Header
+    container.innerHTML = `
+    <div class="flex items-center justify-between px-4 py-3 border-b">
+      <h5 class="flex items-center text-lg font-semibold">
+        <i class="mr-2 fas fa-utensils"></i> Riwayat Makanan
+      </h5>
+      <a href="<?= BASE_URL ?>profile/tambah-makanan" class="flex items-center px-3 py-2 text-xs text-white rounded-md bg-cyan-500">
+        <i class="mr-1 fas fa-plus"></i> Tambah Makanan
+      </a>
+    </div>
+    <div class="px-4 py-5">
+      ${meals
+  .filter(meal => meal.items && meal.items.length > 0) // Cek kalau meal punya items
+  .map(
+    (meal) => `
+      <div class="mb-4">
+        <div class="flex items-center justify-between mb-3">
+          <h6 class="px-2 py-1 text-sm font-semibold text-gray-700 bg-yellow-200 rounded-full">${meal.name}</h6>
+          <span class="text-gray-600">${meal.totalCalories} kkal</span>
+        </div>
+        ${meal.items
+          .map(
+            (item) => `
+              <div class="flex items-center justify-between mb-3">
+                <div>
+                  <h6 class="text-sm font-semibold text-gray-700">${item.name}</h6>
+                  <small class="text-gray-500">${item.portion}</small>
+                </div>
+                <div class="text-right">
+                  <span class="block text-gray-700">${item.calories} kkal</span>
+                  <div class="flex mt-1 space-x-2">
+                    <span class="px-2 py-1 text-xs text-white bg-blue-500 rounded-full">K: ${item.carbs}g</span>
+                    <span class="px-2 py-1 text-xs text-white bg-green-500 rounded-full">P: ${item.protein}g</span>
+                    <span class="px-2 py-1 text-xs text-white bg-yellow-500 rounded-full">L: ${item.fat}g</span>
+                  </div>
+                </div>
+              </div>
+            `
+          )
+          .join("")}
+      </div>
+    `
+  )
+  .join("")}
+    </div>
+  `;
+  }
+
+
+  updatePage();
+  setInterval(updatePage, 5000);
+</script>

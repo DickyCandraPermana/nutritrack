@@ -1,4 +1,4 @@
-<form action="<?= BASE_URL ?>register" method="post" class="flex flex-col w-full max-w-md p-6 mx-auto bg-white rounded-lg shadow-md">
+<form onsubmit="kirimData(); return false;" method="post" class="flex flex-col w-full max-w-md p-6 mx-auto bg-white rounded-lg shadow-md">
   <div id="step1" class="transition-all">
     <h2 class="mb-4 text-3xl font-bold text-center text-gray-800">Sign Up</h2>
     <div class="space-y-3">
@@ -61,5 +61,43 @@
   function backStep() {
     document.getElementById('step1').classList.remove('hidden');
     document.getElementById('step2').classList.add('hidden');
+  }
+
+  async function kirimData() {
+    try {
+      const res = await fetch('/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: document.getElementById('email').value,
+          username: document.getElementById('username').value,
+          password: document.getElementById('password').value,
+          first_name: document.getElementById('first_name').value,
+          last_name: document.getElementById('last_name').value,
+          jenis_kelamin: document.querySelector('input[name="jenis_kelamin"]:checked').value,
+          tanggal_lahir: document.getElementById('tanggal_lahir').value
+        })
+      });
+
+      const data = await res.json();
+      console.log(data);
+
+      if (data.status === 'success') {
+        showFlashMessage({
+          type: 'success',
+          messages: data.message
+        });
+        window.location.href = '/nutritrack/login';
+      } else if (data.status === 'error') {
+        showFlashMessage({
+          type: 'error',
+          messages: data.message
+        });
+      }
+    } catch (err) {
+      console.error(err);
+    }
   }
 </script>

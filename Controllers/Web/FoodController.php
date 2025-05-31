@@ -1,4 +1,10 @@
 <?php
+
+namespace Controllers\Web;
+
+use PDO, PDOException, Exception;
+use Models\Food;
+
 require_once 'models/Food.php';
 
 class FoodController
