@@ -19,23 +19,34 @@
 <script>
   async function fetchFoods() {
     try {
-      const res = await fetch('/api/fetch-all-foods');
+      const res = await fetch('/api/fetch-all-foods', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          search: '',
+          perPage: 500,
+          page: 1
+        })
+      });
       const tBody = document.getElementById('foodTableBody');
       const data = await res.json();
-      const foods = data.data;
+      const foods = data.data[0];
+      console.log(foods);
       tBody.innerHTML = '';
 
       foods.forEach(food => {
         const row = document.createElement('tr');
         row.innerHTML = `
-        <td class="px-4 py-2 text-sm text-gray-700 border">${food.user_id}</td>
-        <td class="px-4 py-2 text-sm text-gray-700 border">${food.name}</td>
+        <td class="px-4 py-2 text-sm text-gray-700 border">${food.food_id}</td>
+        <td class="px-4 py-2 text-sm text-left text-gray-700 border">${food.nama_makanan}</td>
         <td class="px-4 py-2 text-center border">
-          <a href="update-user?user_id=${food.user_id}"
+          <a href="update-user?user_id=${food.food_id}"
             class="mr-2 text-yellow-500 transition hover:text-yellow-700">
             <i class="fas fa-edit"></i>
           </a>
-          <button onclick="unaliveFood(${food.user_id})"
+          <button onclick="unaliveFood(${food.food_id})"
             class="text-red-500 transition hover:text-red-700">
             <i class="fas fa-trash"></i>
           </button>
@@ -68,5 +79,5 @@
     }
   }
 
-  fetchUsers();
+  fetchFoods();
 </script>

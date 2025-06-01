@@ -13,10 +13,10 @@ class Nutrition
     $this->db = $db;
   }
 
-  public function getnutritions(): array
+  public function getNutritions(): array
   {
     try {
-      $stmt = $this->db->query("SELECT * FROM nutrisi ORDER BY id DESC");
+      $stmt = $this->db->query("SELECT * FROM nutrisi ORDER BY nutrition_id DESC");
       return $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (PDOException $e) {
       return [];

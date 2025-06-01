@@ -65,7 +65,8 @@ class AdminController
 
   public function getFoods()
   {
-    $foods = $this->food->getFoods();
+    $data = $this->getInputData();
+    $foods = $this->food->search($data['search'] ?? "",  $data['perPage'] ?? 50, $data['page'] ?? 1);
     $this->respond(true, 'Food list retrieved', $foods);
   }
 
@@ -99,8 +100,15 @@ class AdminController
   public function tambahMakanan()
   {
     $data = $this->getInputData();
+    extract($data);
+    $data = array('nama_makanan' => $nama_makanan, 'deskripsi' => $deskripsi, 'kategori' => $kategori);
     $success = $this->food->tambahMakanan($data);
-    $this->respond($success, $success ? 'Berhasil tambah makanan' : 'Gagal tambah makanan');
+    if ($success) {
+      $food_id = $this->food->getFoodId($data['nama_makanan']);
+      $inputDetail = $this->food->inputDetailMakanan($nutrisis, $food_id);
+    }
+
+    $this->respond($success && $inputDetail, $success ? 'Berhasil tambah makanan' : 'Gagal tambah makanan');
   }
 
   public function editMakanan()
@@ -110,7 +118,7 @@ class AdminController
     $this->respond($success, $success ? 'Berhasil edit makanan' : 'Gagal edit makanan');
   }
 
-  public function deleteMakanan()
+  public function deleteFood()
   {
     $data = $this->getInputData();
     $success = $this->food->deleteMakanan($data);

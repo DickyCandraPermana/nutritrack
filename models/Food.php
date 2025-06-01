@@ -2,7 +2,7 @@
 
 namespace Models;
 
-use PDO, PDOException, Exception; 
+use PDO, PDOException, Exception;
 
 class Food
 {
@@ -23,17 +23,20 @@ class Food
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
-  public function tambahMakanan($data){
+  public function tambahMakanan($data)
+  {
     try {
-      $stmt = $this->db->prepare("INSERT INTO makanan (food_id, nama_makanan) VALUES (?, ?)");
-      $stmt->execute([$data['food_id'], $data['nama_makanan']]);
+      extract($data);
+      $stmt = $this->db->prepare("INSERT INTO makanan (nama_makanan, deskripsi, kategori) VALUES (?, ?, ?)");
+      $stmt->execute([$nama_makanan, $deskripsi, $kategori]);
       return true;
     } catch (PDOException $e) {
       return false;
     }
   }
 
-  public function editMakanan($data){
+  public function editMakanan($data)
+  {
     try {
       $stmt = $this->db->prepare("UPDATE makanan SET nama_makanan = ? WHERE food_id = ?");
       $stmt->execute([$data['food_id'], $data['nama_makanan'], $data['id']]);
@@ -43,10 +46,11 @@ class Food
     }
   }
 
-  public function deleteMakanan($data){
+  public function deleteMakanan($data)
+  {
     try {
       $stmt = $this->db->prepare("DELETE FROM makanan WHERE food_id = ?");
-      $stmt->execute([$data['id']]);
+      $stmt->execute([$data['food_id']]);
       return true;
     } catch (PDOException $e) {
       return false;
@@ -90,7 +94,9 @@ class Food
             SELECT food_id, nama_makanan 
             FROM makanan 
             WHERE nama_makanan LIKE :search 
+            ORDER BY food_id DESC
             LIMIT :limit OFFSET :offset
+            
         ");
     $dataStmt->bindValue(':search', '%' . $search . '%', PDO::PARAM_STR);
     $dataStmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
@@ -99,6 +105,26 @@ class Food
     $foods = $dataStmt->fetchAll(PDO::FETCH_ASSOC);
 
     return [$foods, $totalPages];
+  }
+
+  public function inputDetailMakanan($nutrisis, $food_id)
+  {
+    try {
+      foreach ($nutrisis as $nutrition) {
+        $stmt = $this->db->prepare("INSERT INTO detail_nutrisi_makanan (food_id, nutrition_id, jumlah, satuan) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$food_id, $nutrition['nutrition_id'], $nutrition['jumlah'], $nutrition['satuan']]);
+      }
+      return true;
+    } catch (PDOException $e) {
+      return false;
+    }
+  }
+
+  public function getFoodId($nama_makanan)
+  {
+    $stmt = $this->db->prepare("SELECT food_id FROM makanan WHERE nama_makanan = ?");
+    $stmt->execute([$nama_makanan]);
+    return $stmt->fetchColumn();
   }
 
   /**

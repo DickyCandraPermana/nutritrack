@@ -79,6 +79,30 @@ $routes = [
     'api/user-delete' => [
       'handler' => [$adminController, 'deleteUser'],
       'params' => [$_POST]
+    ],
+    'api/fetch-all-foods' => [
+      'handler' => [$adminController, 'getFoods']
+    ],
+    'api/food-input' => [
+      'handler' => [$adminController, 'tambahMakanan'],
+    ],
+    'api/food-delete' => [
+      'handler' => [$adminController, 'deleteFood']
+    ],
+    'api/food-edit' => [
+      'handler' => [$adminController, 'editMakanan']
+    ],
+    'api/fetch-all-nutritions' => [
+      'handler' => [$adminController, 'getNutritions']
+    ],
+    'api/nutrition-input' => [
+      'handler' => [$adminController, 'tambahNutrisi']
+    ],
+    'api/nutrition-edit' => [
+      'handler' => [$adminController, 'editNutrisi']
+    ],
+    'api/nutrition-delete' => [
+      'handler' => [$adminController, 'deleteNutrisi']
     ]
   ]
 ];
