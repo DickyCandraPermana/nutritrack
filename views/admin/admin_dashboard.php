@@ -26,11 +26,17 @@
       <?php require_once 'components/admin/user/user_update.php'; ?>
     </div>
 
-    <div id="foods-tab" class="hidden tab-content">Selamat datang di Manajemen Makanan!</div>
+    <div id="foods-tab" class="hidden tab-content">
+      <?php require_once 'components/admin/food/food_table.php'; ?>
+    </div>
 
-    <div id="premium-tab" class="hidden tab-content">Selamat datang di Fitur Premium!</div>
+    <div id="tambah-food-tab" class="hidden tab-content">
+      <?php require_once 'components/admin/food/food_input.php'; ?>
+    </div>
 
-    <div id="analytics-tab" class="hidden tab-content">Selamat datang di Analytics!</div>
+    <div id="update-food-tab" class="hidden tab-content">
+      <?php require_once 'components/admin/food/food_update.php'; ?>
+    </div>
   </main>
 
   <!-- FOOTER SECTION -->
@@ -82,6 +88,10 @@
       const url = new URL(window.location.href);
       const tabId = url.pathname.split('/').pop();
       const allTabs = document.querySelectorAll('.tab-content');
+      if (tabId === 'logout') {
+        window.location.href = '<?= BASE_URL ?>logout';
+      }
+      console.log(tabId);
       allTabs.forEach(tab => tab.classList.add('hidden'));
 
       const targetTab = document.getElementById(`${tabId}-tab`);
