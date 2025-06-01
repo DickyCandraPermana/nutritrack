@@ -35,10 +35,8 @@ if (strpos($uri, '/api') === 0) {
   // Sertakan file router
   if (isset($_SESSION['role']) && strtolower($_SESSION['role']) === "admin") {
     require_once 'routes/admin.php';
-    //echo '<script>alert("Selamat datang, ' . $_SESSION['username'] . '!");</script>';
   } else {
     require_once 'routes/web.php';
-    //echo '<script>alert("' . $_SESSION['role'] . '");</script>';
   }
   ?>
 

@@ -38,6 +38,9 @@ $routes = [
     'nutritrack/admin' => [
       'handler' => [$adminController, 'index'],
     ],
+    'nutritrack/admin/tambah-user' => [
+      'handler' => [$adminController, 'tambahUser'],
+    ],
     'nutritrack/home' => [
       'handler' => fn() => header('Location: /nutritrack'),
     ],
@@ -50,6 +53,9 @@ $routes = [
 // Main route dispatcher
 if (isset($routes[$method][$uri])) {
   $route = $routes[$method][$uri];
+  dispatchRoute($route);
+} else if (strpos($uri, 'nutritrack/admin') === 0) {
+  $route = $routes[$method]['nutritrack/admin'];
   dispatchRoute($route);
 } else {
   http_response_code(404);

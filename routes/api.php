@@ -1,13 +1,16 @@
 <?php
 session_start();
 
+use Controllers\API\AdminController;
 use Controllers\API\AuthController;
 use Controllers\API\ProfileController;
 use Controllers\API\HomeController;
 use Controllers\API\FoodController;
 
 require_once 'config/koneksi.php';
+require_once 'config/helpers.php';
 
+require_once 'controllers/API/AdminController.php';
 require_once 'controllers/API/AuthController.php';
 require_once 'controllers/API/ProfileController.php';
 require_once 'controllers/API/HomeController.php';
@@ -17,13 +20,23 @@ $authController = new AuthController($db);
 $homeController = new HomeController($db);
 $profileController = new ProfileController($db);
 $foodController = new FoodController($db);
+$adminController = new AdminController($db);
 
 $parsedUrl = parse_url($_SERVER['REQUEST_URI']);
 $uri = isset($parsedUrl['path']) ? trim($parsedUrl['path'], '/') : '';
 $method = $_SERVER['REQUEST_METHOD'];
+$queryParams = [];
+if (isset($parsedUrl['query'])) {
+  parse_str($parsedUrl['query'], $queryParams); // Ubah jadi array asosiatif
+}
 
 // Routing table
 $routes = [
+  'GET' => [
+    'api/fetch-all-users' => [
+      'handler' => [$adminController, 'getUsers'],
+    ]
+  ],
   'POST' => [
     'api/login' => [
       'handler' => [$authController, 'login'],
@@ -48,6 +61,24 @@ $routes = [
     'api/get-user-tracking-data' => [
       'handler' => [$profileController, 'getUserTrackingData'],
       'params' => [$_POST],
+    ],
+    'api/get-user' => [
+      'handler' => [$adminController, 'getUserById']
+    ],
+    'api/user-input' => [
+      'handler' => [$adminController, 'tambahUser'],
+      'params' => [$_POST]
+    ],
+    'api/user-edit' => [
+      'handler' => [$adminController, 'editUser'],
+      'params' => [$_POST]
+    ],
+    'api/fetch-all-users' => [
+      'handler' => [$adminController, 'getUsers'],
+    ],
+    'api/user-delete' => [
+      'handler' => [$adminController, 'deleteUser'],
+      'params' => [$_POST]
     ]
   ]
 ];

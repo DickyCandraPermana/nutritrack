@@ -27,4 +27,9 @@ class AdminController
     }
     renderView('admin/admin_dashboard', compact('user') ?? []);
   }
+
+  public function tambahUser()
+  {
+    renderView('admin/admin_tambah_user');
+  }
 }

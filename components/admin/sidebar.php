@@ -1,9 +1,9 @@
 <?php
 $menuItems = [
-  ['icon' => 'chart-pie', 'label' => 'Dashboard', 'tab' => 'dashboard'],
-  ['icon' => 'users', 'label' => 'Manajemen User', 'tab' => 'users'],
-  ['icon' => 'utensils', 'label' => 'Manajemen Makanan', 'tab' => 'foods'],
-  ['icon' => 'crown', 'label' => 'Fitur Premium', 'tab' => 'premium'],
+  ['icon' => 'chart-pie', 'label' => 'Dashboard', 'tab' => 'dashboard', 'link' => 'admin/dashboard'],
+  ['icon' => 'users', 'label' => 'Manajemen User', 'tab' => 'users', 'link' => 'admin/users'],
+  ['icon' => 'utensils', 'label' => 'Manajemen Makanan', 'tab' => 'foods',  'link' => 'admin/foods'],
+  ['icon' => 'crown', 'label' => 'Fitur Premium', 'tab' => 'premium', 'link' => 'admin/premium'],
   ['icon' => 'sign-out', 'label' => 'Log out', 'tab' => 'logout'],
 ];
 ?>
@@ -28,10 +28,10 @@ $menuItems = [
     <!-- Navigation -->
     <nav class="flex-1 px-4 py-6 space-y-2">
       <?php foreach ($menuItems as $item): ?>
-        <a href="#"
+        <a href="<?= BASE_URL . $item['link'] ?>"
           class="flex items-center px-4 py-3 space-x-3 text-gray-700 rounded-lg hover:bg-emerald-50 hover:text-emerald-600 smooth-transition nav-item "
           <?php if (!empty($item['tab'])): ?>
-          onclick="showTab('<?php echo $item['tab']; ?>')"
+          onclick="showTab()"
           <?php endif; ?>>
           <i class="w-5 fas fa-<?php echo $item['icon']; ?>"></i>
           <span><?php echo $item['label']; ?></span>

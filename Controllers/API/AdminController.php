@@ -33,13 +33,14 @@ class AdminController
       'message' => is_array($messages) ? $messages : [$messages],
       'data' => $data
     ]);
+    exit();
   }
 
   private function getInputData()
   {
     $data = json_decode(file_get_contents('php://input'), true);
-    if (!$data || !is_array($data)) {
-      $this->respond(false, 'Invalid input data');
+    if (!$data) {
+      $this->respond(false, 'Invalid input data' . json_encode($data));
       exit;
     }
     return $data;
@@ -48,7 +49,18 @@ class AdminController
   public function getUsers()
   {
     $users = $this->user->getUsers();
+    if ($users == null || $users == []) {
+      $this->respond(false, 'User list is empty');
+    }
+
     $this->respond(true, 'User list retrieved', $users);
+  }
+
+  public function getUserById()
+  {
+    $data = $this->getInputData();
+    $user = $this->user->getUserById($data);
+    $this->respond(true, 'User list retrieved', $user);
   }
 
   public function getFoods()

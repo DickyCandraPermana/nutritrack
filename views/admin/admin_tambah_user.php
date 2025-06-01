@@ -9,28 +9,21 @@
   <!-- Dashboard Content -->
   <main class="p-6">
     <!-- Dashboard Tab -->
-    <div id="dashboard-tab" class="hidden tab-content">
+    <div id="dashboard-tab" class="tab-content">
       <?php require_once 'components/admin/dashboard.php' ?>
     </div>
 
     <!-- Users Tab -->
-    <div id="users-tab" class="hidden tab-content">
-      <?php require_once 'components/admin/user/user_table.php'; ?>
-    </div>
-
-    <div id="tambah-user-tab" class="hidden tab-content">
+    <div id="users-tab" class="tab-content">
       <?php require_once 'components/admin/user/user_input.php'; ?>
     </div>
 
-    <div id="update-user-tab" class="hidden tab-content">
-      <?php require_once 'components/admin/user/user_update.php'; ?>
-    </div>
 
-    <div id="foods-tab" class="hidden tab-content">Selamat datang di Manajemen Makanan!</div>
+    <div id="foods-tab" class="tab-content">Selamat datang di Manajemen Makanan!</div>
 
-    <div id="premium-tab" class="hidden tab-content">Selamat datang di Fitur Premium!</div>
+    <div id="premium-tab" class="tab-content">Selamat datang di Fitur Premium!</div>
 
-    <div id="analytics-tab" class="hidden tab-content">Selamat datang di Analytics!</div>
+    <div id="analytics-tab" class="tab-content">Selamat datang di Analytics!</div>
   </main>
 
   <!-- FOOTER SECTION -->
@@ -78,9 +71,7 @@
     setInterval(flickerStatusIndicators, 3000);
 
     // Fungsi tab switch
-    window.showTab = function() {
-      const url = new URL(window.location.href);
-      const tabId = url.pathname.split('/').pop();
+    window.showTab = function(tabId) {
       const allTabs = document.querySelectorAll('.tab-content');
       allTabs.forEach(tab => tab.classList.add('hidden'));
 
@@ -94,9 +85,7 @@
         users: 'Manajemen User',
         foods: 'Manajemen Makanan',
         premium: 'Fitur Premium',
-        analytics: 'Analytics',
-        "tambah-user": 'Tambah User Baru',
-        "update-user": "Edit Data User"
+        analytics: 'Analytics'
       };
 
       const subtitles = {
@@ -104,9 +93,7 @@
         users: 'Kelola data pengguna dan akses',
         foods: 'Atur data makanan dan kandungan',
         premium: 'Kelola fitur dan akses premium',
-        analytics: 'Analisa performa dan data pengguna',
-        "tambah-user": 'Tambah user baru ke database',
-        "update-user": "Edit data user"
+        analytics: 'Analisa performa dan data pengguna'
       };
 
       document.getElementById('pageTitle').innerText = titles[tabId] || '';
@@ -117,6 +104,8 @@
       }
     };
 
-    showTab();
+    // Secara default tampilkan dashboard
+    showTab('users');
+
   });
 </script>
