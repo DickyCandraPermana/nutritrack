@@ -24,8 +24,9 @@ class HomeController
   {
     if (isset($_SESSION['user_id'])) {
       $user = $this->profile->getUserById($_SESSION['user_id']) ?? [];
+      renderView('home', compact('user'));
     }
-    renderView('home', compact('user') ?? []);
+    renderView('home');
   }
 
   public function search($data, $page = 1)

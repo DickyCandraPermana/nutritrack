@@ -57,26 +57,26 @@ class ProfileController
     $id = $_SESSION['user_id'];
     $weeklyFoodData = $this->profile->getNutritionInWeekData($id);
     $user = $this->fetchUserData($id);
-    renderView('profile', compact('user', 'weeklyFoodData'));
+    renderView('profile/profile', compact('user', 'weeklyFoodData'));
   }
 
   public function profilePersonal($id)
   {
     $user = $this->fetchUserData($id);
-    renderView('profile_personal', compact('user'));
+    renderView('profile/profile_personal', compact('user'));
   }
 
   public function profileTracking()
   {
     $foodData = $this->profile->getDetailRegistrasiMakanan($_SESSION['user_id']);
 
-    renderView('profile_tracking', compact('foodData'));
+    renderView('profile/profile_tracking', compact('foodData'));
   }
 
   public function viewData($id)
   {
     $userData = $this->fetchUserData($id);
-    renderView('profile_view_data', compact('userData'));
+    renderView('profile/profile_view_data', compact('userData'));
   }
 
   public function tambahMakanan()
@@ -90,7 +90,7 @@ class ProfileController
       $foodData = new FoodController($this->db);
       $foodData = $foodData->fetchFoodData();
       $user = $this->fetchUserData($_SESSION['user_id']);
-      renderView('profile_input_makanan', compact('user', 'foodData'));
+      renderView('profile/profile_input_makanan', compact('user', 'foodData'));
     }
   }
 }

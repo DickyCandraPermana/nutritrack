@@ -83,6 +83,12 @@ $routes = [
     'api/fetch-all-foods' => [
       'handler' => [$adminController, 'getFoods']
     ],
+    'api/fetch-food' => [
+      'handler' => [$adminController, 'getFoodDetail']
+    ],
+    'api/fetch-food-biasa' => [
+      'handler' => [$adminController, 'fetchFoodBiasa']
+    ],
     'api/food-input' => [
       'handler' => [$adminController, 'tambahMakanan'],
     ],

@@ -38,9 +38,24 @@ class Food
   public function editMakanan($data)
   {
     try {
-      $stmt = $this->db->prepare("UPDATE makanan SET nama_makanan = ? WHERE food_id = ?");
-      $stmt->execute([$data['food_id'], $data['nama_makanan'], $data['id']]);
-      return true;
+      $stmt = $this->db->prepare("UPDATE makanan SET nama_makanan = ?, kategori = ?, deskripsi = ? WHERE food_id = ?");
+      $stmt->execute([$data['nama_makanan'], $data['kategori'], $data['deskripsi'], $data['food_id']]);
+
+      $result = $stmt->fetch();
+      if ($result) {
+        foreach ($data['nutritions'] as $nutrition) {
+          $stmt = $this->db->prepare("SELECT * FROM detail_nutrisi_makanan WHERE food_id = ? AND nutrition_id = ?");
+          $cek = $stmt->execute([$data['food_id'], $nutrition['nutrition_id']]);
+          if ($cek) {
+            $stmt = $this->db->prepare("UPDATE detail_nutrisi_makanan SET jumlah = ?, satuan = ? WHERE food_id = ? AND nutrition_id = ?");
+            $stmt->execute([$nutrition['jumlah'], $nutrition['satuan'], $data['food_id'], $nutrition['nutrition_id']]);
+          } else {
+            $stmt = $this->db->prepare("INSERT INTO detail_nutrisi_makanan (food_id, nutrition_id, jumlah, satuan) VALUES (?, ?, ?, ?)");
+            $stmt->execute([$data['food_id'], $nutrition['nutrition_id'], $nutrition['jumlah'], $nutrition['satuan']]);
+          }
+        }
+        return true;
+      }
     } catch (PDOException $e) {
       return false;
     }
@@ -140,13 +155,26 @@ class Food
                 makanan.nama_makanan AS makanan, 
                 detail_nutrisi_makanan.jumlah, 
                 detail_nutrisi_makanan.satuan, 
-                nutrisi.nama AS nutrisi
+                nutrisi.nama AS nutrisi,
+                nutrisi.nutrition_id
             FROM makanan 
             INNER JOIN detail_nutrisi_makanan ON makanan.food_id = detail_nutrisi_makanan.food_id 
             INNER JOIN nutrisi ON detail_nutrisi_makanan.nutrition_id = nutrisi.nutrition_id
             WHERE makanan.food_id = ?
         ");
     $stmt->execute([$id]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  public function fetchFoodBiasa($data)
+  {
+    $stmt = $this->db->prepare("
+            SELECT 
+                *
+            FROM makanan
+            WHERE makanan.food_id = ?
+        ");
+    $stmt->execute([$data['food_id']]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 }

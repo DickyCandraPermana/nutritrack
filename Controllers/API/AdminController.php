@@ -70,6 +70,30 @@ class AdminController
     $this->respond(true, 'Food list retrieved', $foods);
   }
 
+  public function getFoodDetail()
+  {
+    $data = $this->getInputData();
+    $food = $this->food->getFoodDetail($data['food_id']);
+    $res = [];
+    $temp = [];
+    foreach ($food as $nutrition) {
+      $temp['nutrition_id'] = $nutrition['nutrition_id'];
+      $temp['nama'] = $nutrition['nutrisi'];
+      $temp['jumlah'] = $nutrition['jumlah'];
+      $temp['satuan'] = $nutrition['satuan'];
+
+      $res[] = $temp;
+    }
+    $this->respond(true, 'Food detail retrieved', $res);
+  }
+
+  public function fetchFoodBiasa()
+  {
+    $data = $this->getInputData();
+    $food = $this->food->fetchFoodBiasa($data);
+    $this->respond(true, 'Food detail retrieved', $food);
+  }
+
   public function getNutritions()
   {
     $nutritions = $this->nutrition->getNutritions();

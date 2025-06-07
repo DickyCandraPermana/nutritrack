@@ -42,7 +42,7 @@
         <td class="px-4 py-2 text-sm text-gray-700 border">${food.food_id}</td>
         <td class="px-4 py-2 text-sm text-left text-gray-700 border">${food.nama_makanan}</td>
         <td class="px-4 py-2 text-center border">
-          <a href="update-user?user_id=${food.food_id}"
+          <a href="update-food?food_id=${food.food_id}"
             class="mr-2 text-yellow-500 transition hover:text-yellow-700">
             <i class="fas fa-edit"></i>
           </a>
