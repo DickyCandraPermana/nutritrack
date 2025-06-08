@@ -54,7 +54,7 @@
   async function getCurrentFood() {
     try {
       const food_id = window.location.search.split('=')[1];
-      const res = await fetch('/api/fetch-food-biasa', {
+      const res = await fetch('/nutritrack/api/fetch-food-biasa', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -74,7 +74,7 @@
   async function getFoodDetail() {
     try {
       const food_id = window.location.search.split('=')[1];
-      const res = await fetch('/api/fetch-food', {
+      const res = await fetch('/nutritrack/api/fetch-food', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -93,7 +93,7 @@
 
   async function loadNutritions() {
     try {
-      const res = await fetch('/api/fetch-all-nutritions', {
+      const res = await fetch('/nutritrack/api/fetch-all-nutritions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -171,7 +171,7 @@
 
       console.log(JSON.stringify(payload));
 
-      const res = await fetch('/api/food-edit', {
+      const res = await fetch('/nutritrack/api/food-edit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

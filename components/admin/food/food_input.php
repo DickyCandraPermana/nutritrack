@@ -53,7 +53,7 @@
 
   async function loadNutritions() {
     try {
-      const res = await fetch('/api/fetch-all-nutritions', {
+      const res = await fetch('/nutritrack/api/fetch-all-nutritions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -113,7 +113,7 @@
       payload.nutrisis = nutritionData;
 
       console.log(JSON.stringify(payload));
-      const res = await fetch('/api/food-input', {
+      const res = await fetch('/nutritrack/api/food-input', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

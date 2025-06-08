@@ -6,7 +6,8 @@ require_once 'config/helpers.php';
 // 2. Routing berdasar URI
 $uri = $_SERVER['REQUEST_URI'];
 
-if (strpos($uri, '/api') === 0) {
+
+if (strpos($uri, '/api') === 11) {
   require_once 'routes/api.php';
   exit;
 }
@@ -20,9 +21,9 @@ if (strpos($uri, '/api') === 0) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NutriTrack</title>
-  <link rel="icon" href="/public/assets/logo.png">
-  <link rel="stylesheet" href="/public/css/style.css">
-  <script src="/script.js"></script>
+  <link rel="icon" href="/nutritrack/public/assets/logo.png">
+  <link rel="stylesheet" href="/nutritrack/public/css/style.css">
+  <script src="/nutritrack/script.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">

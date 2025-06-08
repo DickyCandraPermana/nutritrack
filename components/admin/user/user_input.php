@@ -78,7 +78,7 @@
       const formData = new FormData(form);
       formData['profile_picture'] = 'rung ono';
       console.log(formData);
-      const response = await fetch('/api/user-input', {
+      const response = await fetch('/nutritrack/api/user-input', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -87,12 +87,7 @@
       });
       const data = await response.json();
       console.log(data);
-      if (data.status == 'success') {
-        showFlashMessage("success", data.message[0]);
-        window.location.href = '<?= BASE_URL ?>admin/users';
-      } else {
-        showFlashMessage("error", data.message[0]);
-      }
+      showFlashMessage(data.status, data.message[0]);
     } catch (error) {
       console.error('Error:', error);
     }

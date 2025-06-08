@@ -9,7 +9,7 @@
   <!-- Dashboard Content -->
   <main class="p-6">
     <!-- Dashboard Tab -->
-    <div id="dashboard-tab" class="hidden tab-content">
+    <div id="dashboard-tab" class="tab-content">
       <?php require_once 'components/admin/dashboard.php' ?>
     </div>
   </main>

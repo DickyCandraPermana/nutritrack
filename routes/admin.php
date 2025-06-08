@@ -38,6 +38,9 @@ $routes = [
     'nutritrack/admin' => [
       'handler' => [$adminController, 'index'],
     ],
+    'nutritrack/admin/dashboard' => [
+      'handler' => fn() => header('Location: /nutritrack/admin'),
+    ],
     'nutritrack/admin/users' => [
       'handler' => [$adminController, 'usersPage'],
     ],
@@ -59,7 +62,7 @@ $routes = [
     'nutritrack/home' => [
       'handler' => fn() => header('Location: /nutritrack'),
     ],
-    'nutritrack/logout' => [
+    'nutritrack/admin/logout' => [
       'handler' => [$authController, 'logout'],
     ]
   ]

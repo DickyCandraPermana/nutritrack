@@ -132,7 +132,7 @@
       formData['profile_picture'] = 'rung ono';
       formData['user_id'] = getParam('user_id');
       console.log(formData);
-      const response = await fetch('/api/user-edit', {
+      const response = await fetch('/nutritrack/api/user-edit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

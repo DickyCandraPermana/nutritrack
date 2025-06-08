@@ -1,10 +1,11 @@
-<!-- Stats Cards -->
+<?php isset($data) ?: $data = []; ?>
+
 <div class="grid grid-cols-1 gap-6 mb-8 md:grid-cols-2 lg:grid-cols-4">
   <div class="p-6 stats-card rounded-xl card-hover">
     <div class="flex items-center justify-between">
       <div>
         <p class="text-sm font-medium text-gray-600">Total Users</p>
-        <p class="text-3xl font-bold text-gray-800">2,847</p>
+        <p class="text-3xl font-bold text-gray-800"><?= $data['total_users'] ?></p>
         <p class="mt-1 text-sm text-emerald-600">
           <i class="mr-1 fas fa-arrow-up"></i>12% dari bulan lalu
         </p>
@@ -19,7 +20,7 @@
     <div class="flex items-center justify-between">
       <div>
         <p class="text-sm font-medium text-gray-600">Premium Users</p>
-        <p class="text-3xl font-bold text-gray-800">456</p>
+        <p class="text-3xl font-bold text-gray-800"><?= $data['total_premium_users'] ?></p>
         <p class="mt-1 text-sm text-emerald-600">
           <i class="mr-1 fas fa-arrow-up"></i>8% dari bulan lalu
         </p>
@@ -34,7 +35,7 @@
     <div class="flex items-center justify-between">
       <div>
         <p class="text-sm font-medium text-gray-600">Total Makanan</p>
-        <p class="text-3xl font-bold text-gray-800">1,234</p>
+        <p class="text-3xl font-bold text-gray-800"><?= $data['total_food'] ?></p>
         <p class="mt-1 text-sm text-emerald-600">
           <i class="mr-1 fas fa-arrow-up"></i>5% dari bulan lalu
         </p>
@@ -49,7 +50,7 @@
     <div class="flex items-center justify-between">
       <div>
         <p class="text-sm font-medium text-gray-600">Scan Hari Ini</p>
-        <p class="text-3xl font-bold text-gray-800">89</p>
+        <p class="text-3xl font-bold text-gray-800"><?= $data['total_scans'] ?></p>
         <p class="mt-1 text-sm text-emerald-600">
           <i class="mr-1 fas fa-arrow-up"></i>23% dari kemarin
         </p>

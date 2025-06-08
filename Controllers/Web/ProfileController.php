@@ -68,15 +68,10 @@ class ProfileController
 
   public function profileTracking()
   {
+    $user = $this->fetchUserData($_SESSION['user_id']);
     $foodData = $this->profile->getDetailRegistrasiMakanan($_SESSION['user_id']);
 
-    renderView('profile/profile_tracking', compact('foodData'));
-  }
-
-  public function viewData($id)
-  {
-    $userData = $this->fetchUserData($id);
-    renderView('profile/profile_view_data', compact('userData'));
+    renderView('profile/profile_tracking', compact('foodData', 'user'));
   }
 
   public function tambahMakanan()

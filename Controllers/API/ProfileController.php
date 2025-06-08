@@ -47,38 +47,6 @@ class ProfileController
     renderView('profile_edit', compact('user'));
   }
 
-  public function dashboard()
-  {
-    if (!isset($_SESSION['user_id'])) {
-      header("Location: /nutritrack/login");
-      exit;
-    }
-
-    $id = $_SESSION['user_id'];
-    $weeklyFoodData = $this->profile->getNutritionInWeekData($id);
-    $user = $this->fetchUserData($id);
-    renderView('profile', compact('user', 'weeklyFoodData'));
-  }
-
-  public function profilePersonal($id)
-  {
-    $user = $this->fetchUserData($id);
-    renderView('profile_personal', compact('user'));
-  }
-
-  public function profileTracking()
-  {
-    $foodData = $this->profile->getDetailRegistrasiMakanan($_SESSION['user_id']);
-
-    renderView('profile_tracking', compact('foodData'));
-  }
-
-  public function viewData($id)
-  {
-    $userData = $this->fetchUserData($id);
-    renderView('profile_view_data', compact('userData'));
-  }
-
   public function tambahMakanan()
   {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -96,24 +64,42 @@ class ProfileController
 
   public function userTrackingData()
   {
-    // if (!isset($_SESSION['user_id'])) {
-    //   header("Location: /nutritrack/login");
-    //   exit;
-    // }
 
     $data = json_decode(file_get_contents('php://input'), true);
 
     $consumedFoodData = $this->profile->getConsumedFoodData($data['user_id'], $data['tanggal']);
 
-    echo $consumedFoodData;
+    if (!$consumedFoodData) {
+      echo json_encode([
+        "status" => "error",
+        "message" => "Data tidak ditemukan"
+      ]);
+      exit;
+    }
+
+    echo json_encode([
+      "status" => "success",
+      "data" => $consumedFoodData
+    ]);
   }
 
-  public function getUserTrackingData() 
+  public function getUserTrackingData()
   {
     $data = json_decode(file_get_contents('php://input'), true);
 
     $trackedNutrient = $this->profile->getTrackedNutrient($data['user_id'], $data['tanggal']);
 
-    echo $trackedNutrient;
+    if (!$trackedNutrient) {
+      echo json_encode([
+        "status" => "error",
+        "message" => "Data tidak ditemukan"
+      ]);
+      exit;
+    }
+
+    echo json_encode([
+      "status" => "success",
+      "data" => $trackedNutrient
+    ]);
   }
 }

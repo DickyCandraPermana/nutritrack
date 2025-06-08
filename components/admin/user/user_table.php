@@ -21,7 +21,7 @@
 <script>
   async function fetchUsers() {
     try {
-      const res = await fetch('/api/fetch-all-users');
+      const res = await fetch('/nutritrack/api/fetch-all-users');
       const tBody = document.getElementById('userTableBody');
       const data = await res.json();
       const users = data.data;
@@ -55,7 +55,7 @@
 
   async function unaliveUser(user_id) {
     try {
-      const res = await fetch('/api/user-delete', {
+      const res = await fetch('/nutritrack/api/user-delete', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

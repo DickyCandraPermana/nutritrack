@@ -225,22 +225,27 @@ class Profile
     WHERE registrasi_makanan.user_id = ? AND tanggal = ?");
     $stmt->execute([$user_id, $tanggal]);
     $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    if (count($data) == 0) return null;
     return $data[0]['reg_id'];
   }
 
   public function getConsumedFoodData($id, $tanggal)
   {
-
     $reg_id = $this->getRegIdByUserIdTanggal($id, $tanggal);
 
+    if ($reg_id == null) {
+      return null;
+    }
+
     $stmt = $this->db->prepare(
-      "SELECT makanan.nama_makanan, detail_registrasi_makanan.jumlah_porsi, detail_registrasi_makanan.satuan, detail_registrasi_makanan.waktu_makan, detail_nutrisi_makanan.jumlah, detail_nutrisi_makanan.nutrition_id FROM detail_registrasi_makanan 
+      "SELECT makanan.nama_makanan, detail_registrasi_makanan.jumlah_porsi, detail_registrasi_makanan.satuan, detail_registrasi_makanan.waktu_makan, detail_nutrisi_makanan.jumlah, detail_nutrisi_makanan.nutrition_id 
+      FROM detail_registrasi_makanan 
       INNER JOIN makanan ON detail_registrasi_makanan.food_id = makanan.food_id
       INNER JOIN detail_nutrisi_makanan ON makanan.food_id = detail_nutrisi_makanan.food_id
       INNER JOIN nutrisi ON detail_nutrisi_makanan.nutrition_id = nutrisi.nutrition_id
       WHERE reg_id = ? AND nutrisi.nutrition_id IN (1, 2, 6, 8, 9)
       ORDER BY waktu_makan ASC"
-    );
+    ); // 1 = kalori, 2 = karbohidrat, 6 = protein, 8 = lemak
     $stmt->execute([$reg_id]);
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -279,13 +284,13 @@ class Profile
           $meals[$waktu]['totalCalories'] += (float)$row['jumlah'];
           break;
         case 2:
-          $meals[$waktu]['items'][$key]['carbs'] = (float)$row['jumlah'];
+          $meals[$waktu]['items'][$key]['fat'] = (float)$row['jumlah'];
           break;
         case 6:
-          $meals[$waktu]['items'][$key]['protein'] = (float)$row['jumlah'];
+          $meals[$waktu]['items'][$key]['carbs'] = (float)$row['jumlah'];
           break;
         case 8:
-          $meals[$waktu]['items'][$key]['fat'] = (float)$row['jumlah'];
+          $meals[$waktu]['items'][$key]['protein'] = (float)$row['jumlah'];
           break;
           // case 9 => fiber (serat) tidak digunakan di output
       }
@@ -298,12 +303,16 @@ class Profile
       $result[] = $meal;
     }
 
-    return json_encode($result);
+    return $result;
   }
 
   public function getTrackedNutrient($id, $tanggal)
   {
     $reg_id = $this->getRegIdByUserIdTanggal($id, $tanggal);
+
+    if ($reg_id == null) {
+      return null;
+    }
 
     $stmt = $this->db->prepare(
       "SELECT SUM(detail_nutrisi_makanan.jumlah) AS 'total_nutrisi', nutrisi.nama FROM detail_registrasi_makanan
@@ -321,6 +330,7 @@ class Profile
       $result[$row['nama']] = $row['total_nutrisi'];
     }
 
-    return json_encode($result);
+
+    return $result;
   }
 }

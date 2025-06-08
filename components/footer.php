@@ -2,7 +2,7 @@
   <!-- Bagian atas: Logo & Subscribe -->
   <div class="flex flex-wrap items-center justify-between w-full pb-8 border-b-2 border-green-300">
     <a class="flex items-center gap-3" href="<?= BASE_URL ?>">
-      <img src="/public/assets/logo.png" alt="Nutritrack Logo" class="w-8 h-8">
+      <img src="public/assets/logo.png" alt="Nutritrack Logo" class="w-8 h-8">
       <h3 class="text-xl font-bold text-white translate-y-[2px]">Nutritrack</h3>
     </a>
 

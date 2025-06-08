@@ -63,11 +63,6 @@ $routes = [
       'middleware' => ['auth'],
       'params' => [fn() => $_SESSION['user_id']],
     ],
-    'nutritrack/profile/data' => [
-      'handler' => [$profileController, 'viewData'],
-      'middleware' => ['auth'],
-      'params' => [fn() => $_SESSION['user_id']],
-    ],
     'nutritrack/profile/personal' => [
       'handler' => [$profileController, 'profilePersonal'],
       'middleware' => ['auth'],

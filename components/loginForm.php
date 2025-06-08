@@ -43,7 +43,7 @@
 <script>
   async function kirimData() {
     try {
-      const res = await fetch('/api/login', {
+      const res = await fetch('api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -54,8 +54,9 @@
         })
       });
 
+      console.log(res);
       const data = await res.json();
-      console.log(data);
+
 
       if (data.status === 'success') {
         if (data.role === 'admin') {

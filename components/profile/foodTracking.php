@@ -261,29 +261,29 @@
       label: 'Karbohidrat',
       icon: 'fas fa-bread-slice',
       color: 'bg-blue-500',
-      current: 180,
-      target: 250
+      current: 0,
+      target: 0
     },
     {
       label: 'Protein',
       icon: 'fas fa-drumstick-bite',
       color: 'bg-green-500',
-      current: 85,
-      target: 120
+      current: 0,
+      target: 0
     },
     {
       label: 'Lemak',
       icon: 'fas fa-oil-can',
       color: 'bg-yellow-500',
-      current: 45,
-      target: 65
+      current: 0,
+      target: 0
     },
     {
       label: 'Serat Pangan',
       icon: 'fas fa-seedling',
       color: 'bg-cyan-500',
-      current: 18,
-      target: 30
+      current: 0,
+      target: 0
     }
   ];
 
@@ -299,6 +299,11 @@
     },
     {
       name: "Makan Malam",
+      totalCalories: 0,
+      items: [],
+    },
+    {
+      name: "Snack",
       totalCalories: 0,
       items: [],
     },
@@ -319,11 +324,12 @@
     container.innerHTML = ''; // Kosongkan dulu
 
     nutrients.forEach(n => {
-      const percent = Math.round((n.current / n.target) * 100);
-      const item = document.createElement('div');
-      item.className = 'flex items-start space-x-3';
+      if (n.current > 0) {
+        const percent = Math.round((n.current / n.target) * 100);
+        const item = document.createElement('div');
+        item.className = 'flex items-start space-x-3';
 
-      item.innerHTML = `
+        item.innerHTML = `
       <div class="p-2 text-white ${n.color} rounded-full">
         <i class="${n.icon}"></i>
       </div>
@@ -337,14 +343,19 @@
         </div>
       </div>
     `;
-      container.appendChild(item);
+        container.appendChild(item);
+      }
     });
+
+    if (container.innerHTML === '') {
+      container.appendChild(document.createElement('p')).innerHTML = 'Belum ada data';
+    }
   }
 
 
   async function getUserTrackingData(user_id, tanggal) {
     try {
-      const response = await fetch('/api/get-user-tracking-data', {
+      const response = await fetch('/nutritrack/api/get-user-tracking-data', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -368,29 +379,52 @@
   }
 
   async function updatePage() {
-    const data = await getUserTrackingData(<?= $_SESSION["user_id"] ?>, new Date().toISOString().split('T')[0]);
-    const newMeals = await getFoodConsumed(<?= $_SESSION["user_id"] ?>, new Date().toISOString().split('T')[0]);
-    if (data && newMeals) {
-      nutrients.forEach(nutrient => {
-        const key = nutrient.label.toLowerCase();
-        if (data[key] !== undefined) {
-          nutrient.current = data[key];
+    try {
+      const rawNutrientData = await getUserTrackingData(<?= $_SESSION["user_id"] ?>, new Date().toISOString().split('T')[0]);
+      const rawMealData = await getFoodConsumed(<?= $_SESSION["user_id"] ?>, new Date().toISOString().split('T')[0]);
+
+      console.log(rawMealData);
+
+      if (rawNutrientData && rawMealData) {
+        if (rawNutrientData.status === 'success') {
+          const nutrientData = rawNutrientData.data;
+          nutrients.forEach(nutrient => {
+            const key = nutrient.label.toLowerCase();
+            if (nutrientData[key] !== undefined) {
+              nutrient.current = parseFloat(nutrientData[key]); // pastikan nilai numeric
+            }
+          });
         }
-      });
-      newMeals.forEach((mealData, i) => {
-        if (meals[i]) {
-          meals[i].totalCalories = mealData.totalCalories;
-          meals[i].items = mealData.items;
+
+        if (rawMealData.status === 'success') {
+          const mealData = rawMealData.data;
+          meals.forEach(meal => {
+            const matched = mealData.find(m => m.name.toLowerCase() === meal.name.toLowerCase());
+            if (matched) {
+              meal.totalCalories = matched.totalCalories;
+              meal.items = matched.items;
+            } else {
+              meal.totalCalories = 0;
+              meal.items = [];
+            }
+          });
         }
-      });
-      renderMealHistory(meals);
-      renderNutrientProgress(nutrients);
+
+        console.log(meals);
+        console.log(nutrients);
+
+        renderMealHistory(meals);
+        renderNutrientProgress(nutrients);
+      }
+    } catch (error) {
+      console.error('Error updating page:', error);
     }
   }
 
+
   async function getFoodConsumed(user_id, tanggal) {
     try {
-      const response = await fetch('/api/user-tracking-data', {
+      const response = await fetch('/nutritrack/api/user-tracking-data', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -415,7 +449,7 @@
 
   async function getUserGoal(user_id) {
     try {
-      const response = await fetch('/api/get-user-goal', {
+      const response = await fetch('/nutritrack/api/get-user-goal', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -440,6 +474,8 @@
   function renderMealHistory(meals) {
     const container = document.getElementById("mealHistoryContainer");
 
+    // Filter hanya meals yang punya item
+    const mealsWithItems = meals.filter(meal => meal.items && meal.items.length > 0);
     // Header
     container.innerHTML = `
     <div class="flex items-center justify-between px-4 py-3 border-b">
@@ -451,18 +487,20 @@
       </a>
     </div>
     <div class="px-4 py-5">
-      ${meals
-  .filter(meal => meal.items && meal.items.length > 0) // Cek kalau meal punya items
-  .map(
-    (meal) => `
-      <div class="mb-4">
-        <div class="flex items-center justify-between mb-3">
-          <h6 class="px-2 py-1 text-sm font-semibold text-gray-700 bg-yellow-200 rounded-full">${meal.name}</h6>
-          <span class="text-gray-600">${meal.totalCalories} kkal</span>
-        </div>
-        ${meal.items
-          .map(
-            (item) => `
+      ${
+        mealsWithItems.length === 0
+          ? `<p class="text-sm text-center text-gray-500">Belum ada data</p>`
+          : mealsWithItems
+              .map(
+                (meal) => `
+          <div class="mb-4">
+            <div class="flex items-center justify-between mb-3">
+              <h6 class="px-2 py-1 text-sm font-semibold text-gray-700 bg-yellow-200 rounded-full">${meal.name}</h6>
+              <span class="text-gray-600">${meal.totalCalories} kkal</span>
+            </div>
+            ${meal.items
+              .map(
+                (item) => `
               <div class="flex items-center justify-between mb-3">
                 <div>
                   <h6 class="text-sm font-semibold text-gray-700">${item.name}</h6>
@@ -478,12 +516,13 @@
                 </div>
               </div>
             `
-          )
-          .join("")}
-      </div>
-    `
-  )
-  .join("")}
+              )
+              .join("")}
+          </div>
+        `
+              )
+              .join("")
+      }
     </div>
   `;
   }

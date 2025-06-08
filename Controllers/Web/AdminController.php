@@ -30,42 +30,47 @@ class AdminController
     return $data;
   }
 
-  public function index()
+  private function renderAdminPage($view)
   {
     if (isset($_SESSION['user_id'])) {
       $user = $this->profile->getUserById($_SESSION['user_id']) ?? [];
     }
     $data = $this->getAdminPanelData();
-    renderView('admin/admin_dashboard', compact('user', 'data') ?? []);
+    renderView($view, compact('user', 'data') ?? []);
+  }
+
+  public function index()
+  {
+    $this->renderAdminPage('admin/admin_dashboard');
   }
 
   public function usersPage()
   {
-    renderView('admin/admin_users');
+    $this->renderAdminPage('admin/admin_user');
   }
 
   public function usersAddPage()
   {
-    renderView('admin/admin_tambah_user');
+    $this->renderAdminPage('admin/admin_user_tambah');
   }
 
   public function usersEditPage()
   {
-    renderView('admin/admin_edit_user');
+    $this->renderAdminPage('admin/admin_user_edit');
   }
 
   public function foodsPage()
   {
-    renderView('admin/admin_foods');
+    $this->renderAdminPage('admin/admin_food');
   }
 
   public function foodsAddPage()
   {
-    renderView('admin/admin_food_tambah');
+    $this->renderAdminPage('admin/admin_food_tambah');
   }
 
   public function foodsEditPage()
   {
-    renderView('admin/admin_food_edit');
+    $this->renderAdminPage('admin/admin_food_edit');
   }
 }

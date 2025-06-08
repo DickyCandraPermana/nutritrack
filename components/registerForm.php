@@ -65,7 +65,7 @@
 
   async function kirimData() {
     try {
-      const res = await fetch('/api/register', {
+      const res = await fetch('/nutritrack/api/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

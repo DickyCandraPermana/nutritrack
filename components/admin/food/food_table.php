@@ -19,7 +19,7 @@
 <script>
   async function fetchFoods() {
     try {
-      const res = await fetch('/api/fetch-all-foods', {
+      const res = await fetch('/nutritrack/api/fetch-all-foods', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -62,7 +62,7 @@
 
   async function unaliveFood(food_id) {
     try {
-      const res = await fetch('/api/food-delete', {
+      const res = await fetch('/nutritrack/api/food-delete', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

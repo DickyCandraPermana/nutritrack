@@ -33,81 +33,81 @@ if (isset($parsedUrl['query'])) {
 // Routing table
 $routes = [
   'GET' => [
-    'api/fetch-all-users' => [
+    'nutritrack/api/fetch-all-users' => [
       'handler' => [$adminController, 'getUsers'],
     ]
   ],
   'POST' => [
-    'api/login' => [
+    'nutritrack/api/login' => [
       'handler' => [$authController, 'login'],
       'params' => [$_POST],
     ],
-    'api/register' => [
+    'nutritrack/api/register' => [
       'handler' => [$authController, 'register'],
       'params' => [$_POST],
     ],
-    'api/update-user-profile' => [
+    'nutritrack/api/update-user-profile' => [
       'handler' => [$profileController, 'editProfile'],
       'params' => [$_POST],
     ],
-    'api/user-tambah-makanan' => [
+    'nutritrack/api/user-tambah-makanan' => [
       'handler' => [$profileController, 'tambahMakanan'],
       'params' => [$_POST],
     ],
-    'api/user-tracking-data' => [
+    'nutritrack/api/user-tracking-data' => [
       'handler' => [$profileController, 'userTrackingData'],
       'params' => [$_POST],
     ],
-    'api/get-user-tracking-data' => [
+    'nutritrack/api/get-user-tracking-data' => [
       'handler' => [$profileController, 'getUserTrackingData'],
       'params' => [$_POST],
     ],
-    'api/get-user' => [
+    'nutritrack/api/get-user' => [
       'handler' => [$adminController, 'getUserById']
     ],
-    'api/user-input' => [
+    'nutritrack/api/user-input' => [
       'handler' => [$adminController, 'tambahUser'],
       'params' => [$_POST]
     ],
-    'api/user-edit' => [
+    'nutritrack/api/user-edit' => [
       'handler' => [$adminController, 'editUser'],
       'params' => [$_POST]
     ],
-    'api/fetch-all-users' => [
+    'nutritrack/api/fetch-all-users' => [
       'handler' => [$adminController, 'getUsers'],
     ],
-    'api/user-delete' => [
+    'nutritrack/api/user-delete' => [
       'handler' => [$adminController, 'deleteUser'],
       'params' => [$_POST]
     ],
-    'api/fetch-all-foods' => [
+    'nutritrack/api/fetch-all-foods' => [
       'handler' => [$adminController, 'getFoods']
     ],
-    'api/fetch-food' => [
+    'nutritrack/api/fetch-food' => [
       'handler' => [$adminController, 'getFoodDetail']
     ],
-    'api/fetch-food-biasa' => [
+    'nutritrack/api/fetch-food-biasa' => [
       'handler' => [$adminController, 'fetchFoodBiasa']
     ],
-    'api/food-input' => [
+    'nutritrack/api/food-input' => [
       'handler' => [$adminController, 'tambahMakanan'],
     ],
-    'api/food-delete' => [
+    'nutritrack/api/food-delete' => [
       'handler' => [$adminController, 'deleteFood']
     ],
-    'api/food-edit' => [
+    'nutritrack/api/food-edit' => [
       'handler' => [$adminController, 'editMakanan']
     ],
-    'api/fetch-all-nutritions' => [
+    'nutritrack/api/fetch-all-nutritions' => [
       'handler' => [$adminController, 'getNutritions']
     ],
-    'api/nutrition-input' => [
+    'nutritrack/api/nutrition-input' => [
       'handler' => [$adminController, 'tambahNutrisi']
     ],
-    'api/nutrition-edit' => [
+    'nutritrack/api/nutrition-edit' => [
       'handler' => [$adminController, 'editNutrisi']
     ],
-    'api/nutrition-delete' => [
+    'nutritrack/api/nutrition-delete' => [
       'handler' => [$adminController, 'deleteNutrisi']
     ]
   ]
@@ -117,4 +117,10 @@ $routes = [
 if (isset($routes[$method][$uri])) {
   $route = $routes[$method][$uri];
   dispatchRoute($route);
+} else {
+  echo json_encode([
+    'status' => 'error',
+    'message' => 'Route not found'
+  ]);
+  exit();
 }

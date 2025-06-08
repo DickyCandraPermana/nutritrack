@@ -26,15 +26,15 @@
         </div>
         <div class="flex items-center space-x-6 text-white/90">
           <div class="text-center">
-            <div class="text-2xl font-bold" id="userCount">1,247</div>
+            <div class="text-2xl font-bold" id="userCount"><?= $data['total_users'] ?></div>
             <div class="text-xs">Total Users</div>
           </div>
           <div class="text-center">
-            <div class="text-2xl font-bold" id="foodCount">856</div>
+            <div class="text-2xl font-bold" id="foodCount"><?= $data['total_food'] ?></div>
             <div class="text-xs">Food Items</div>
           </div>
           <div class="text-center">
-            <div class="text-2xl font-bold text-yellow-300" id="premiumCount">189</div>
+            <div class="text-2xl font-bold text-yellow-300" id="premiumCount"><?= $data['total_premium_users'] ?></div>
             <div class="text-xs">Premium Users</div>
           </div>
         </div>

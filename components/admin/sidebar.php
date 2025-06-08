@@ -4,7 +4,7 @@ $menuItems = [
   ['icon' => 'users', 'label' => 'Manajemen User', 'tab' => 'users', 'link' => 'admin/users'],
   ['icon' => 'utensils', 'label' => 'Manajemen Makanan', 'tab' => 'foods',  'link' => 'admin/foods'],
   ['icon' => 'crown', 'label' => 'Fitur Premium', 'tab' => 'premium', 'link' => 'admin/premium'],
-  ['icon' => 'sign-out', 'label' => 'Log out', 'tab' => 'logout'],
+  ['icon' => 'sign-out', 'label' => 'Log out', 'tab' => 'logout', 'link' => 'admin/logout'],
 ];
 ?>
 
@@ -15,7 +15,7 @@ $menuItems = [
     <div class="p-6 gradient-bg">
       <div class="flex items-center space-x-3">
         <div class="p-2 bg-white rounded-xl">
-          <img src="/public/assets/logo.png" alt="Foto" class="object-cover w-8 h-8 rounded-md" />
+          <img src="public/assets/logo.png" alt="Foto" class="object-cover w-8 h-8 rounded-md" />
         </div>
 
         <div>
@@ -31,7 +31,6 @@ $menuItems = [
         <a href="<?= BASE_URL . $item['link'] ?>"
           class="flex items-center px-4 py-3 space-x-3 text-gray-700 rounded-lg hover:bg-emerald-50 hover:text-emerald-600 smooth-transition nav-item "
           <?php if (!empty($item['tab'])): ?>
-          onclick="showTab()"
           <?php endif; ?>>
           <i class="w-5 fas fa-<?php echo $item['icon']; ?>"></i>
           <span><?php echo $item['label']; ?></span>
@@ -42,7 +41,7 @@ $menuItems = [
     <!-- Admin Profile -->
     <div class="p-4 border-t border-gray-200">
       <div class="flex items-center space-x-3">
-        <img src="/public/assets/jasmine.jpg" alt="Admin" class="w-10 h-10 rounded-full">
+        <img src="public/assets/jasmine.jpg" alt="Admin" class="w-10 h-10 rounded-full">
         <div>
           <p class="text-sm font-medium text-gray-700">Admin</p>
           <p class="text-xs text-gray-500">admin@nutritrack.com</p>
