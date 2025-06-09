@@ -89,7 +89,7 @@
           type: 'success',
           messages: data.messxage
         });
-        //window.location.href = '/nutritrack/login';
+        window.location.href = '/nutritrack/login';
       } else if (data.status === 'error') {
         showFlashMessage({
           type: 'error',

@@ -9,7 +9,7 @@
     <form action="" class="flex items-center gap-2">
       <div class="relative">
         <i class="absolute text-gray-500 -translate-y-1/2 left-3 top-1/2 fa-solid fa-envelope"></i>
-        <input type="email" name="email" id="email" class="p-2 pl-10 text-black rounded-md focus:outline-none" placeholder="Masukkan email Anda">
+        <input type="email" name="footer-email" id="footer-email" class="p-2 pl-10 text-black rounded-md focus:outline-none" placeholder="Masukkan email Anda">
       </div>
       <button type="submit" class="flex items-center gap-2 px-4 py-2 text-white transition bg-blue-600 rounded-md hover:bg-blue-700">
         Subscribe <i class="fa-solid fa-paper-plane"></i>
