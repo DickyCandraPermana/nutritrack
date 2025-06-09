@@ -47,7 +47,7 @@ $routes = [
     'nutritrack/admin/tambah-user' => [
       'handler' => [$adminController, 'usersAddPage'],
     ],
-    'nutritrack/admin/edit-user' => [
+    'nutritrack/admin/update-user' => [
       'handler' => [$adminController, 'usersEditPage'],
     ],
     'nutritrack/admin/foods' => [
@@ -56,7 +56,7 @@ $routes = [
     'nutritrack/admin/tambah-food' => [
       'handler' => [$adminController, 'foodsAddPage'],
     ],
-    'nutritrack/admin/edit-food' => [
+    'nutritrack/admin/update-food' => [
       'handler' => [$adminController, 'foodsEditPage'],
     ],
     'nutritrack/home' => [

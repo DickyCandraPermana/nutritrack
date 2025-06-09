@@ -87,9 +87,9 @@
       if (data.status === 'success') {
         showFlashMessage({
           type: 'success',
-          messages: data.message
+          messages: data.messxage
         });
-        window.location.href = '/nutritrack/login';
+        //window.location.href = '/nutritrack/login';
       } else if (data.status === 'error') {
         showFlashMessage({
           type: 'error',

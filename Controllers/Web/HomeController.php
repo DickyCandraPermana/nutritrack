@@ -26,6 +26,7 @@ class HomeController
       $user = $this->profile->getUserById($_SESSION['user_id']) ?? [];
       renderView('home', compact('user'));
     }
+
     renderView('home');
   }
 

@@ -38,13 +38,34 @@ class ProfileController
     }
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-      $this->profile->updateProfile($_POST);
-      header('Location: /nutritrack/profile/personal');
-      exit;
+
+      if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === UPLOAD_ERR_OK) {
+        $fileTmp = $_FILES['profile_picture']['tmp_name'];
+        $fileName = basename($_FILES['profile_picture']['name']);
+        $fileExt = pathinfo($fileName, PATHINFO_EXTENSION);
+        $newFileName = uniqid('file_') . '.' . $fileExt;
+
+        $uploadDir = 'public/uploads/';
+        $uploadPath = $uploadDir . $newFileName;
+
+        if (move_uploaded_file($fileTmp, $uploadPath)) {
+          // path relatif untuk disimpan di DB
+          $dbPath = 'public/uploads/' . $newFileName;
+
+          $data = [...$_POST, 'profile_picture' => $dbPath];
+
+          $this->profile->updateProfile($data);
+          header('Location: /nutritrack/profile/personal');
+          exit;
+        } else {
+          echo "Error uploading file";
+          exit;
+        }
+      }
     }
 
     $user = $this->fetchUserData($id);
-    renderView('profile_edit', compact('user'));
+    renderView('profile/profile_edit', compact('user'));
   }
 
   public function dashboard()
@@ -70,8 +91,18 @@ class ProfileController
   {
     $user = $this->fetchUserData($_SESSION['user_id']);
     $foodData = $this->profile->getDetailRegistrasiMakanan($_SESSION['user_id']);
+    $totalCalories = $this->profile->getTotalCalories($_SESSION['user_id']);
 
-    renderView('profile/profile_tracking', compact('foodData', 'user'));
+    $bmr = hitungBMR($user['berat_badan'], $user['tinggi_badan'], hitungUmur($user['tanggal_lahir']), $user['jenis_kelamin']);
+
+    $tdee = hitungTDEE($bmr, $user['aktivitas']);
+
+    $data = [
+      'total_calories' => $totalCalories,
+      'target_calories' => $tdee,
+    ];
+
+    renderView('profile/profile_tracking', compact('foodData', 'user', 'data'));
   }
 
   public function tambahMakanan()

@@ -1,4 +1,4 @@
-<form action="<?= BASE_URL ?>profile/update" method="post" class="flex flex-col w-full gap-4 p-6 mx-auto bg-white rounded-lg shadow-md">
+<form action="<?= BASE_URL ?>profile/update" method="post" enctype="multipart/form-data" class="flex flex-col w-full gap-4 p-6 mx-auto bg-white rounded-lg shadow-md">
   <input type="hidden" name="user_id" value="<?= $user['user_id'] ?>">
 
   <div class="space-y-2">

@@ -93,6 +93,7 @@
 
   async function loadNutritions() {
     try {
+      nutritionList = [];
       const res = await fetch('/nutritrack/api/fetch-all-nutritions', {
         method: 'POST',
         headers: {

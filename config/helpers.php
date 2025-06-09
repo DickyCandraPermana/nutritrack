@@ -7,7 +7,7 @@ function hitungBMI($berat, $tinggi)
 
 function hitungBMR($berat, $tinggi, $umur, $jenis_kelamin)
 {
-  if ($jenis_kelamin == 'Laki-laki') {
+  if ($jenis_kelamin == 1) {
     return 88.36 + (13.4 * $berat) + (4.8 * $tinggi) - (5.7 * $umur);
   } else {
     return 447.6 + (9.2 * $berat) + (3.1 * $tinggi) - (4.3 * $umur);

@@ -47,9 +47,19 @@
     if (isset($_SESSION['user_id'])) {
     ?>
       <a href="<?= BASE_URL ?>profile">
-        <div class="flex items-center justify-center w-10 h-10 font-bold text-white bg-gray-300 rounded-full">
-          <?= substr($user["username"], 0, 1) ?>
-        </div>
+        <?php
+        if (isset($user['profile_picture']) && $user['profile_picture'] != '') {
+        ?>
+          <img src="<?= BASE_URL . $user['profile_picture'] ?>" alt="Profile Picture" class="w-10 h-10 rounded-full">
+        <?php
+        } else {
+        ?>
+          <div class="flex items-center justify-center w-10 h-10 font-bold text-white bg-gray-300 rounded-full">
+            <?= substr($user["username"], 0, 1) ?>
+          </div>
+        <?php
+        }
+        ?>
       </a>
     <?php
     } else {

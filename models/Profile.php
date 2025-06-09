@@ -333,4 +333,26 @@ class Profile
 
     return $result;
   }
+
+  public function getTotalCalories($id)
+  {
+    $reg_id = $this->getRegistrasiMakanan($id);
+    if (!$reg_id) {
+      return null;
+    } else {
+      $reg_id = $reg_id['reg_id'];
+    }
+    $stmt = $this->db->prepare(
+      "SELECT SUM(detail_nutrisi_makanan.jumlah) AS 'total_calories' FROM detail_registrasi_makanan 
+      INNER JOIN makanan ON detail_registrasi_makanan.food_id = makanan.food_id
+      INNER JOIN detail_nutrisi_makanan ON makanan.food_id = detail_nutrisi_makanan.food_id
+      INNER JOIN nutrisi ON detail_nutrisi_makanan.nutrition_id = nutrisi.nutrition_id
+      WHERE reg_id = ? AND nutrisi.nutrition_id = 1"
+    );
+    $stmt->execute([$reg_id]);
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+
+    return $row['total_calories'];
+  }
 }

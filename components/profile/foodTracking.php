@@ -1,3 +1,21 @@
+<?php
+$currentDate = date('l, j F Y');
+
+$total_calories = $data['total_calories'] ?? 0;
+$target_calories = $data['target_calories'];
+$calories_deff = $target_calories - $total_calories;
+$calories_percent = number_format(($total_calories / $target_calories) * 100, 2);
+
+if ($calories_percent > 100) {
+  $calories_percent = 100;
+}
+
+$carbs = number_format($target_calories * 0.5 / 4, 2);
+$protein = number_format($target_calories * 0.2 / 4, 2);
+$fat = number_format($target_calories * 0.3 / 9, 2);
+$fiber = (int) ($target_calories / 1000) * 14;
+?>
+
 <div class="container px-4 mx-auto mt-6">
   <!-- Header & Date Selector -->
   <div class="flex items-center justify-between mb-6">
@@ -6,7 +24,7 @@
       <button class="px-2 py-1 text-gray-500 border rounded hover:bg-gray-100">
         <i class="fas fa-chevron-left"></i>
       </button>
-      <h5 class="text-lg font-medium">Selasa, 18 Maret 2025</h5>
+      <h5 class="text-lg font-medium"><?= $currentDate ?></h5>
       <button class="px-2 py-1 text-gray-500 border rounded hover:bg-gray-100">
         <i class="fas fa-chevron-right"></i>
       </button>
@@ -22,18 +40,18 @@
           <div>
             <h5 class="mb-2 text-lg font-medium">Total Kalori Hari Ini</h5>
             <div class="flex items-end mb-2">
-              <h2 class="mr-2 text-3xl font-bold">1,450</h2>
-              <h4 class="text-xl text-gray-400">/ 2,000 kkal</h4>
+              <h2 class="mr-2 text-2xl font-bold"><?= $total_calories ?> kkal</h2>
+              <h4 class="text-lg text-gray-400">/ <?= $target_calories ?> kkal</h4>
             </div>
             <div class="w-full h-3 bg-gray-200 rounded-full">
-              <div class="h-3 bg-yellow-400 rounded-full" style="width: 72.5%"></div>
+              <div class="h-3 bg-yellow-400 rounded-full" style="width: <?= $calories_percent ?>%"></div>
             </div>
-            <p class="mt-2 text-sm text-gray-600">Anda masih membutuhkan 550 kkal untuk mencapai target</p>
+            <p class="mt-2 text-sm text-gray-600">Anda masih membutuhkan <?= $calories_deff ?> kkal untuk mencapai target</p>
           </div>
           <div class="relative">
             <canvas id="calorieGauge"></canvas>
             <div class="absolute inset-0 flex flex-col items-center justify-center">
-              <h6 class="text-xl font-semibold">72.5%</h6>
+              <h6 class="text-xl font-semibold"><?= $calories_percent  ?>%</h6>
               <small class="text-sm text-gray-500">dari target</small>
             </div>
           </div>
@@ -56,6 +74,7 @@
 
     <!-- Right Column -->
     <div class="space-y-6 lg:col-span-4">
+
       <!-- Konsumsi Air -->
       <div class="mb-6 bg-white rounded-lg shadow">
         <div class="px-4 py-3 border-b">
@@ -87,7 +106,9 @@
         </div>
       </div>
 
-      <!-- Tren Nutrisi -->
+      <?php
+      /*
+<!-- Tren Nutrisi -->
       <div class="mb-6 bg-white rounded-lg shadow">
         <div class="px-4 py-3 border-b">
           <h5 class="flex items-center text-lg font-semibold">
@@ -122,6 +143,8 @@
           </div>
         </div>
       </div>
+      */
+      ?>
 
       <!-- Pengingat -->
       <div class="mb-6 bg-white rounded-lg shadow">
@@ -262,28 +285,28 @@
       icon: 'fas fa-bread-slice',
       color: 'bg-blue-500',
       current: 0,
-      target: 0
+      target: <?= $carbs ?>
     },
     {
       label: 'Protein',
       icon: 'fas fa-drumstick-bite',
       color: 'bg-green-500',
       current: 0,
-      target: 0
+      target: <?= $protein ?>
     },
     {
       label: 'Lemak',
       icon: 'fas fa-oil-can',
       color: 'bg-yellow-500',
       current: 0,
-      target: 0
+      target: <?= $fat ?>
     },
     {
       label: 'Serat Pangan',
       icon: 'fas fa-seedling',
       color: 'bg-cyan-500',
       current: 0,
-      target: 0
+      target: <?= $fiber ?>
     }
   ];
 
@@ -325,7 +348,10 @@
 
     nutrients.forEach(n => {
       if (n.current > 0) {
-        const percent = Math.round((n.current / n.target) * 100);
+        let percent = Math.round((n.current / n.target) * 100);
+        if (percent > 100) {
+          n.color = 'bg-red-600';
+        };
         const item = document.createElement('div');
         item.className = 'flex items-start space-x-3';
 
@@ -339,7 +365,7 @@
           <span>${n.current}g / ${n.target}g</span><span>${percent}%</span>
         </div>
         <div class="w-full h-2 mt-1 bg-gray-200 rounded-full">
-          <div class="h-2 ${n.color} rounded-full" style="width: ${percent}%"></div>
+          <div class="h-2 ${n.color} rounded-full" style="width: ${(percent > 100) ? 100 : percent}%"></div>
         </div>
       </div>
     `;
@@ -420,7 +446,6 @@
       console.error('Error updating page:', error);
     }
   }
-
 
   async function getFoodConsumed(user_id, tanggal) {
     try {
