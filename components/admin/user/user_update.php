@@ -70,13 +70,16 @@
 
   async function getUser() {
     try {
-      const user_id = getParam('user_id'); // ganti ke fungsi yang benar
+      const user_id = getParam('user_id');
       if (!user_id) {
-        showFlashMessage('error', 'User ID is missing');
+        showFlashMessage({
+          type: 'error',
+          messages: 'User ID is missing'
+        });
         return;
       }
 
-      const response = await fetch(`/api/get-user`, {
+      const response = await fetch(`/nutritrack/api/get-user`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -87,7 +90,10 @@
       });
 
       if (!response.ok) {
-        showFlashMessage('error', 'Failed to fetch user data');
+        showFlashMessage({
+          type: 'error',
+          messages: 'Failed to fetch user data'
+        });
         return;
       }
 
@@ -97,7 +103,10 @@
 
       if (result.status !== 'success' || !user) {
         const message = Array.isArray(result.message) ? result.message[0] : 'User not found';
-        showFlashMessage('error', message);
+        showFlashMessage({
+          type: 'error',
+          messages: message
+        });
         return;
       }
 
@@ -108,9 +117,7 @@
       document.getElementById('edit-email').value = user.email || '';
       document.getElementById('edit-tanggal_lahir').value = user.tanggal_lahir || '';
       document.getElementById('edit-phone_number').value = user.phone_number || '';
-      document.getElementById('edit-password').value = '';
-
-      document.getElementById('password').value = '';
+      document.getElementById('edit-password').value = ''; // Clear password field
 
       // Set radio button jenis kelamin
       if (user.jenis_kelamin === "1" || user.jenis_kelamin === 1) {
@@ -121,7 +128,10 @@
 
     } catch (err) {
       console.error('getUser() error:', err);
-      showFlashMessage('error', 'An unexpected error occurred.');
+      showFlashMessage({
+        type: 'error',
+        messages: 'An unexpected error occurred.'
+      });
     }
   }
 
@@ -129,26 +139,42 @@
     try {
       const form = document.getElementById('edit-formEditUser');
       const formData = new FormData(form);
-      formData['profile_picture'] = 'rung ono';
-      formData['user_id'] = getParam('user_id');
-      console.log(formData);
+      
+      // Convert FormData to a plain object for JSON.stringify, excluding file
+      const data = {};
+      for (let [key, value] of formData.entries()) {
+        if (key !== 'profile_picture') { // Exclude file from JSON body
+          data[key] = value;
+        }
+      }
+
       const response = await fetch('/nutritrack/api/user-edit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(Object.fromEntries(formData))
+        body: JSON.stringify(data)
       });
-      const data = await response.json();
-      console.log(data);
-      if (data.status == 'success') {
-        showFlashMessage("success", data.message[0]);
-        window.location.href = '<?= BASE_URL ?>admin/users';
+      const result = await response.json();
+      // console.log(result); // Removed debugging log
+      if (result.status === 'success') {
+        showFlashMessage({
+          type: 'success',
+          messages: result.message
+        });
+        window.location.href = BASE_URL_JS + 'admin/users';
       } else {
-        showFlashMessage("error", data.message[0]);
+        showFlashMessage({
+          type: 'error',
+          messages: result.message
+        });
       }
     } catch (error) {
       console.error('Error:', error);
+      showFlashMessage({
+        type: 'error',
+        messages: 'An unexpected error occurred.'
+      });
     }
   }
 

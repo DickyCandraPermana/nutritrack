@@ -3,44 +3,54 @@
 require_once 'config/config.php';
 require_once 'config/helpers.php';
 
+// Start session and include error handling at the very top
+session_start();
+include_once 'components/errorHandling.php';
+
 // 2. Routing berdasar URI
 $uri = $_SERVER['REQUEST_URI'];
 
+// Remove BASE_URL from URI for routing purposes
+$base_url_path = parse_url(BASE_URL, PHP_URL_PATH);
+if (strpos($uri, $base_url_path) === 0) {
+    $uri = substr($uri, strlen($base_url_path));
+}
+$uri = trim($uri, '/');
 
-if (strpos($uri, '/api') === 11) {
+
+if (strpos($uri, 'api') === 0) { // Check if it's an API route
   require_once 'routes/api.php';
   exit;
 }
 
+// Main route dispatcher
+$routeResult = null;
+
+if (isset($_SESSION['role']) && strtolower($_SESSION['role']) === "admin") {
+    // Admin routes
+    require_once 'routes/admin.php'; // This file should define $adminRoutes
+    if (isset($adminRoutes[$uri])) {
+        $route = $adminRoutes[$uri];
+        $routeResult = dispatchRoute($route);
+    }
+} else {
+    // Web routes
+    require_once 'routes/web.php'; // This file should define $webRoutes
+    if (isset($webRoutes[$uri])) {
+        $route = $webRoutes[$uri];
+        $routeResult = dispatchRoute($route);
+    }
+}
+
+if ($routeResult && is_array($routeResult) && isset($routeResult['view'])) {
+    // If a view is returned from the controller, render it within the layout
+    renderLayout($routeResult['view'], $routeResult['data'] ?? []);
+} else if (!$routeResult) {
+    // If no route found or dispatchRoute didn't return a view, load 404 page within the layout
+    renderLayout('404'); // Assuming 404.php exists in views/
+}
+// If $routeResult is not an array with 'view' (e.g., a redirect or API response),
+// dispatchRoute or the controller should have handled it (e.g., by exiting or sending headers).
+// No further action needed here.
+
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NutriTrack</title>
-  <link rel="icon" href="/nutritrack/public/assets/logo.png">
-  <link rel="stylesheet" href="/nutritrack/public/css/style.css">
-  <script src="/nutritrack/script.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-</head>
-
-<body>
-  <?php
-  session_start();
-
-  // Sertakan file router
-  if (isset($_SESSION['role']) && strtolower($_SESSION['role']) === "admin") {
-    require_once 'routes/admin.php';
-  } else {
-    require_once 'routes/web.php';
-  }
-  ?>
-
-</body>
-
-</html>

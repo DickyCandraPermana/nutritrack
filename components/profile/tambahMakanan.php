@@ -1,7 +1,7 @@
 <div class="p-6 bg-gray-100 rounded-lg shadow-md">
   <h2 class="mb-4 text-xl font-semibold text-gray-800">Makanan Dikonsumsi</h2>
 
-  <form action="" method="POST" class="space-y-4">
+  <form id="tambahMakananForm" onsubmit="addFoodEntry(); return false;" class="space-y-4">
     <input type="hidden" name="user_id" value="<?= $user['user_id'] ?>">
     <!-- Dropdown Alpine -->
     <div x-data="dropdownData()" class="relative w-64">
@@ -84,6 +84,49 @@
       get filteredItems() {
         return this.items.filter(i => i.nama_makanan.toLowerCase().includes(this.search.toLowerCase()));
       }
+    }
+  }
+
+  async function addFoodEntry() {
+    try {
+      const form = document.getElementById('tambahMakananForm');
+      const formData = new FormData(form);
+
+      const data = {};
+      for (let [key, value] of formData.entries()) {
+        data[key] = value;
+      }
+
+      const res = await fetch(BASE_URL_JS + 'api/user-tambah-makanan', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+
+      const result = await res.json();
+      console.log(result);
+
+      if (result.status === 'success') {
+        showFlashMessage({
+          type: 'success',
+          messages: result.message
+        });
+        console.log('Attempting redirect to:', BASE_URL_JS + 'profile/tracking');
+        window.location.href = BASE_URL_JS + 'profile/tracking';
+      } else {
+        showFlashMessage({
+          type: 'error',
+          messages: result.message
+        });
+      }
+    } catch (err) {
+      console.error('Error:', err);
+      showFlashMessage({
+        type: 'error',
+        messages: 'An unexpected error occurred.'
+      });
     }
   }
 </script>

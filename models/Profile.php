@@ -149,25 +149,52 @@ class Profile
 
   public function updateProfile($data)
   {
-    extract($data);
-    $umur = hitungUmur($tanggal_lahir);
+    // Do not use extract($data) directly, it can lead to undefined variable warnings
+    // and makes it harder to track variables. Access $data keys directly.
+    $umur = hitungUmur($data['tanggal_lahir']);
 
-    $stmt = $this->db->prepare("UPDATE users SET username = ?, bio = ?, profile_picture = ?, first_name = ?, last_name = ?, email = ?, phone_number = ?, jenis_kelamin = ?, tanggal_lahir = ?, tinggi_badan = ?, berat_badan = ?, aktivitas = ? WHERE user_id = ?");
+    $sql = "UPDATE users SET username = ?, bio = ?, first_name = ?, last_name = ?, email = ?, phone_number = ?, jenis_kelamin = ?, tanggal_lahir = ?, tinggi_badan = ?, berat_badan = ?, aktivitas = ? ";
+    $params = [
+      $data['username'],
+      $data['bio'],
+      $data['first_name'],
+      $data['last_name'],
+      $data['email'],
+      $data['phone_number'],
+      $data['jenis_kelamin'],
+      $data['tanggal_lahir'],
+      $data['tinggi_badan'],
+      $data['berat_badan'],
+      $data['aktivitas']
+    ];
 
-    $stmt->execute([$username, $bio, $profile_picture, $first_name, $last_name, $email, $phone_number, $jenis_kelamin, $tanggal_lahir, $tinggi_badan, $berat_badan, $aktivitas, $user_id]);
-
-    if ($stmt->rowCount() > 0) {
-      echo "Update berhasil!";
-    } else {
-      echo "Gak ada perubahan data.";
+    // Conditionally add profile_picture if it exists in data
+    if (isset($data['profile_picture'])) {
+        $sql .= ", profile_picture = ? ";
+        $params[] = $data['profile_picture'];
     }
 
+    $sql .= "WHERE user_id = ?";
+    $params[] = $data['user_id'];
+
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute($params);
+
+    // Do not echo here. Return a status or boolean.
+    // The API controller will handle the JSON response.
+    $updated = $stmt->rowCount() > 0;
+
+    // Update session data if needed, but this might be better handled in the controller
+    // after successful update and re-fetching user data.
+    // For now, keeping it as is, but be aware of potential inconsistencies if update fails.
     $_SESSION['bmi'] = hitungBMI($data['berat_badan'], $data['tinggi_badan']);
     $_SESSION['bmi_status'] = $_SESSION['bmi'] < 18.5 ? 'Kurus' : ($_SESSION['bmi'] < 25 ? 'Normal' : 'Gemuk');
 
     $_SESSION['bmr'] = hitungBMR($data['berat_badan'], $data['tinggi_badan'], $umur, $data['jenis_kelamin']);
 
     $_SESSION['tdee'] = hitungTDEE($_SESSION['bmr'], $data['aktivitas']);
+
+    return $updated; // Return true if updated, false otherwise
   }
 
   public function cekRegistrasiMakanan($id)

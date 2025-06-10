@@ -32,45 +32,46 @@ class AdminController
 
   private function renderAdminPage($view)
   {
+    $user = null;
     if (isset($_SESSION['user_id'])) {
-      $user = $this->profile->getUserById($_SESSION['user_id']) ?? [];
+      $user = $this->profile->getUserById($_SESSION['user_id']);
     }
     $data = $this->getAdminPanelData();
-    renderView($view, compact('user', 'data') ?? []);
+    return ['view' => $view, 'data' => compact('user', 'data')];
   }
 
   public function index()
   {
-    $this->renderAdminPage('admin/admin_dashboard');
+    return $this->renderAdminPage('admin/admin_dashboard');
   }
 
   public function usersPage()
   {
-    $this->renderAdminPage('admin/admin_user');
+    return $this->renderAdminPage('admin/admin_user');
   }
 
   public function usersAddPage()
   {
-    $this->renderAdminPage('admin/admin_user_tambah');
+    return $this->renderAdminPage('admin/admin_user_tambah');
   }
 
   public function usersEditPage()
   {
-    $this->renderAdminPage('admin/admin_user_edit');
+    return $this->renderAdminPage('admin/admin_user_edit');
   }
 
   public function foodsPage()
   {
-    $this->renderAdminPage('admin/admin_food');
+    return $this->renderAdminPage('admin/admin_food');
   }
 
   public function foodsAddPage()
   {
-    $this->renderAdminPage('admin/admin_food_tambah');
+    return $this->renderAdminPage('admin/admin_food_tambah');
   }
 
   public function foodsEditPage()
   {
-    $this->renderAdminPage('admin/admin_food_edit');
+    return $this->renderAdminPage('admin/admin_food_edit');
   }
 }

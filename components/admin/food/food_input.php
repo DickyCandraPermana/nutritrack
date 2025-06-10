@@ -58,7 +58,7 @@
         headers: {
           'Content-Type': 'application/json'
         }
-      }); // Ganti sesuai endpoint lo
+      });
       const data = await res.json();
       nutritionList.push(...data.data);
 
@@ -71,6 +71,10 @@
       });
     } catch (err) {
       console.error('Failed to fetch nutritions:', err);
+      showFlashMessage({
+        type: 'error',
+        messages: 'Failed to load nutritions.'
+      });
     }
   }
 
@@ -112,7 +116,7 @@
       const payload = Object.fromEntries(formData);
       payload.nutrisis = nutritionData;
 
-      console.log(JSON.stringify(payload));
+      // console.log(JSON.stringify(payload)); // Removed debugging log
       const res = await fetch('/nutritrack/api/food-input', {
         method: 'POST',
         headers: {
@@ -122,16 +126,26 @@
       });
 
       const result = await res.json();
-      console.log(result);
+      // console.log(result); // Removed debugging log
 
       if (result.status === 'success') {
-        showFlashMessage("success", result.message[0]);
-        window.location.href = '<?= BASE_URL ?>admin/foods';
+        showFlashMessage({
+          type: 'success',
+          messages: result.message
+        });
+        window.location.href = BASE_URL_JS + 'admin/foods';
       } else {
-        showFlashMessage("error", result.message[0]);
+        showFlashMessage({
+          type: 'error',
+          messages: result.message
+        });
       }
     } catch (err) {
       console.error('Submit error:', err);
+      showFlashMessage({
+        type: 'error',
+        messages: 'An unexpected error occurred during food input.'
+      });
     }
   }
 

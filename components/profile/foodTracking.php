@@ -409,8 +409,6 @@ $fiber = (int) ($target_calories / 1000) * 14;
       const rawNutrientData = await getUserTrackingData(<?= $_SESSION["user_id"] ?>, new Date().toISOString().split('T')[0]);
       const rawMealData = await getFoodConsumed(<?= $_SESSION["user_id"] ?>, new Date().toISOString().split('T')[0]);
 
-      console.log(rawMealData);
-
       if (rawNutrientData && rawMealData) {
         if (rawNutrientData.status === 'success') {
           const nutrientData = rawNutrientData.data;

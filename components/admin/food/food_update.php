@@ -51,9 +51,14 @@
   const currentFoodDetail = [];
   const currentFood = [];
 
+  function getParam(name) {
+    const url = new URL(window.location.href);
+    return url.searchParams.get(name);
+  }
+
   async function getCurrentFood() {
     try {
-      const food_id = window.location.search.split('=')[1];
+      const food_id = getParam('food_id');
       const res = await fetch('/nutritrack/api/fetch-food-biasa', {
         method: 'POST',
         headers: {
@@ -64,16 +69,20 @@
         })
       });
       const data = await res.json();
-      console.log(data);
+      // console.log(data); // Removed debugging log
       currentFood.push(...data.data);
     } catch (err) {
       console.error('Failed to fetch food:', err);
+      showFlashMessage({
+        type: 'error',
+        messages: 'Failed to fetch food data.'
+      });
     }
   }
 
   async function getFoodDetail() {
     try {
-      const food_id = window.location.search.split('=')[1];
+      const food_id = getParam('food_id');
       const res = await fetch('/nutritrack/api/fetch-food', {
         method: 'POST',
         headers: {
@@ -84,16 +93,21 @@
         })
       });
       const data = await res.json();
-      console.log(data);
+      // console.log(data); // Removed debugging log
       currentFoodDetail.push(...data.data);
     } catch (err) {
-      console.error('Failed to fetch food:', err);
+      console.error('Failed to fetch food details:', err);
+      showFlashMessage({
+        type: 'error',
+        messages: 'Failed to fetch food details.'
+      });
     }
   }
 
   async function loadNutritions() {
     try {
-      nutritionList = [];
+      // Re-initialize nutritionList to ensure it's fresh
+      nutritionList.length = 0; 
       const res = await fetch('/nutritrack/api/fetch-all-nutritions', {
         method: 'POST',
         headers: {
@@ -104,6 +118,7 @@
       nutritionList.push(...data.data);
 
       const select = document.getElementById('edit-nutrition-select');
+      select.innerHTML = ''; // Clear existing options
       data.data.forEach(nutri => {
         const option = document.createElement('option');
         option.value = nutri.nutrition_id;
@@ -112,6 +127,10 @@
       });
     } catch (err) {
       console.error('Failed to fetch nutritions:', err);
+      showFlashMessage({
+        type: 'error',
+        messages: 'Failed to load nutritions.'
+      });
     }
   }
 
@@ -135,7 +154,7 @@
 
   function renderNutritionFields() {
     const fieldContainer = document.getElementById('edit-nutrition-fields');
-    console.log(Object.values(currentFoodDetail));
+    // console.log(Object.values(currentFoodDetail)); // Removed debugging log
     Object.values(currentFoodDetail).forEach(nutrition => {
       const div = document.createElement('div');
       div.className = 'flex items-center gap-4';
@@ -170,7 +189,7 @@
       const payload = Object.fromEntries(formData);
       payload.nutrisis = nutritionData;
 
-      console.log(JSON.stringify(payload));
+      // console.log(JSON.stringify(payload)); // Removed debugging log
 
       const res = await fetch('/nutritrack/api/food-edit', {
         method: 'POST',
@@ -181,20 +200,30 @@
       });
 
       const result = await res.json();
-      if (result.status) {
-        showFlashMessage("success", result.message[0]);
-        window.location.href = '<?= BASE_URL ?>admin/foods';
+      if (result.status === 'success') {
+        showFlashMessage({
+          type: 'success',
+          messages: result.message
+        });
+        window.location.href = BASE_URL_JS + 'admin/foods';
       } else {
-        showFlashMessage("error", result.message[0]);
+        showFlashMessage({
+          type: 'error',
+          messages: result.message
+        });
       }
     } catch (err) {
       console.error('Submit error:', err);
+      showFlashMessage({
+        type: 'error',
+        messages: 'An unexpected error occurred during food edit.'
+      });
     }
   }
 
   loadNutritions();
   getFoodDetail().then(renderNutritionFields).then(getCurrentFood).then(() => {
-    console.log(currentFood[0].nama_makanan);
+    // console.log(currentFood[0].nama_makanan); // Removed debugging log
     document.getElementById('edit-nama_makanan').value = currentFood[0].nama_makanan;
     document.getElementById('edit-deskripsi').value = currentFood[0].deskripsi;
     document.getElementById('edit-kategori').value = currentFood[0].kategori;

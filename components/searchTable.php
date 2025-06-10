@@ -1,6 +1,5 @@
 <?php
 $perPage = 10;
-$total = count($foods);
 $totalPages = $foods[1];
 
 // Ambil halaman aktif

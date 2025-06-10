@@ -46,11 +46,6 @@ $routes = [
       'handler' => [$authController, 'register'],
       'middleware' => ['guest'],
     ],
-    [
-      'nutritrack/premium' => [
-        'handler' => [$authController, 'premiumPage'],
-      ]
-    ],
     'nutritrack/profile' => [
       'handler' => [$profileController, 'dashboard'],
       'middleware' => ['auth']
@@ -94,33 +89,17 @@ $routes = [
       'handler' => [$authController, 'logout'],
     ],
   ],
-
-  //! To be deleted!!
-  'POST' => [
-    'nutritrack/login' => [
-      'handler' => [$authController, 'login'],
-      'params' => [$_POST],
-    ],
-    'nutritrack/register' => [
-      'handler' => [$authController, 'register'],
-      'params' => [$_POST],
-    ],
-    'nutritrack/profile/update' => [
-      'handler' => [$profileController, 'editProfile'],
-      'params' => [$_POST],
-    ],
-    'nutritrack/profile/tambah-makanan' => [
-      'handler' => [$profileController, 'tambahMakanan'],
-      'params' => [$_POST],
-    ],
-  ]
 ];
 
 // Main route dispatcher
 if (isset($routes[$method][$uri])) {
   $route = $routes[$method][$uri];
-  dispatchRoute($route);
+  $routeResult = dispatchRoute($route);
+
+  if ($routeResult && is_array($routeResult) && isset($routeResult['view'])) {
+    renderLayout($routeResult['view'], $routeResult['data'] ?? []);
+  }
 } else {
   http_response_code(404);
-  require 'views/404.php';
+  renderLayout('404');
 }

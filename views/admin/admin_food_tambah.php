@@ -1,4 +1,3 @@
-<?php require_once 'components/errorHandling.php'; ?>
 <?php require_once 'components/admin/sidebar.php'; ?>
 
 <!-- Main Content -->

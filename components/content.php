@@ -5,7 +5,7 @@
   <?php require 'components/landing/premium.php'; ?>
 
   <div class="review">
-
+  
   </div>
 
   <div class="faq">

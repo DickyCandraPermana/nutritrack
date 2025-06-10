@@ -40,35 +40,24 @@ class FoodController
    * Tampilkan halaman detail makanan berdasarkan ID.
    *
    * @param int|string $id
-   * @return void
+   * @return array
    */
-  public function foodDetail($id): void
+  public function foodDetail($id): array
   {
     if (!$id || !is_numeric($id)) {
       setFlash('error', 'ID makanan tidak valid.');
-      header('Location: /foods');
+      header('Location: ' . BASE_URL . 'search');
       exit;
     }
 
     $result = $this->food->getFoodDetail($id);
 
     if ($result && count($result)) {
-      renderView('food_details', ['details' => $result]);
+      return ['view' => 'food_details', 'data' => ['details' => $result]];
     } else {
       setFlash('error', 'Makanan yang dicari tidak ditemukan.');
-      header('Location: /foods');
+      header('Location: ' . BASE_URL . 'search');
       exit;
     }
-  }
-
-  /**
-   * Tampilkan halaman pencarian makanan.
-   *
-   * @return void
-   */
-  public function showFoodPage(): void
-  {
-    $foodData = $this->fetchFoodData();
-    renderView('search', ['foodData' => $foodData]);
   }
 }

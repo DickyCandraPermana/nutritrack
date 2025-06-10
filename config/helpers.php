@@ -94,3 +94,13 @@ function getCurrentTime()
 {
   return date('H:i:s');
 }
+
+function renderLayout($view, $data = [])
+{
+  extract($data); // Extract data for the view
+  ob_start(); // Start output buffering
+  require_once "views/{$view}.php"; // Include the actual view file
+  $viewContent = ob_get_clean(); // Get the buffered content
+
+  require_once 'views/layout/app.php'; // Include the layout
+}

@@ -50,6 +50,10 @@
 
     } catch (error) {
       console.error('Error fetching users:', error);
+      showFlashMessage({
+        type: 'error',
+        messages: 'Failed to fetch users.'
+      });
     }
   }
 
@@ -65,10 +69,25 @@
         })
       });
       const data = await res.json();
-      console.log(data);
+      // console.log(data); // Removed debugging log
+      if (data.status === 'success') {
+        showFlashMessage({
+          type: 'success',
+          messages: data.message
+        });
+      } else {
+        showFlashMessage({
+          type: 'error',
+          messages: data.message
+        });
+      }
       fetchUsers();
     } catch (error) {
-      console.error('Error fetching users:', error);
+      console.error('Error deleting user:', error);
+      showFlashMessage({
+        type: 'error',
+        messages: 'Failed to delete user.'
+      });
     }
   }
 

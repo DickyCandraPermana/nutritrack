@@ -1,4 +1,4 @@
-<form action="<?= BASE_URL ?>profile/update" method="post" enctype="multipart/form-data" class="flex flex-col w-full gap-4 p-6 mx-auto bg-white rounded-lg shadow-md">
+<form onsubmit="updateProfileData(); return false;" class="flex flex-col w-full gap-4 p-6 mx-auto bg-white rounded-lg shadow-md">
   <input type="hidden" name="user_id" value="<?= $user['user_id'] ?>">
 
   <div class="space-y-2">
@@ -79,3 +79,60 @@
 
   <button type="submit" class="w-full p-3 font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700">Simpan</button>
 </form>
+
+<script>
+  async function updateProfileData() {
+    try {
+      const form = document.querySelector('form');
+      const data = {
+        user_id: document.querySelector('input[name="user_id"]').value,
+        username: document.getElementById('username').value,
+        first_name: document.getElementById('first_name').value,
+        last_name: document.getElementById('last_name').value,
+        email: document.getElementById('email').value,
+        bio: document.getElementById('bio').value,
+        jenis_kelamin: document.querySelector('input[name="jenis_kelamin"]:checked').value,
+        phone_number: document.getElementById('phone_number').value,
+        tanggal_lahir: document.getElementById('tanggal_lahir').value,
+        berat_badan: document.getElementById('berat_badan').value,
+        tinggi_badan: document.getElementById('tinggi_badan').value,
+        aktivitas: document.getElementById('aktivitas').value
+      };
+      // Note: profile_picture is not handled via JSON. It requires multipart/form-data or a separate upload.
+      // For now, this form will not send the profile picture.
+
+      const res = await fetch('/nutritrack/api/update-user-profile', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+
+      const result = await res.json();
+      console.log('API Response (result):', result);
+      console.log('Result Status:', result.status);
+      console.log('Result Message:', result.message);
+
+      if (result.status === 'success') {
+        showFlashMessage({
+          type: 'success',
+          messages: result.message
+        });
+        // Optionally redirect or refresh part of the page
+        window.location.href = BASE_URL_JS + 'profile/personal'; // Redirect to personal profile to see changes
+      } else {
+        showFlashMessage({
+          type: 'error',
+          messages: result.message
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      showFlashMessage({
+        type: 'error',
+        messages: 'An unexpected error occurred.'
+      });
+    }
+  }
+</script>

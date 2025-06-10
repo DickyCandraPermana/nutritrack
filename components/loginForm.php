@@ -54,15 +54,17 @@
         })
       });
 
-      console.log(res);
+      console.log('Fetch response:', res);
       const data = await res.json();
+
+      console.log('Parsed data:', data);
 
 
       if (data.status === 'success') {
         if (data.role === 'admin') {
-          window.location.href = '/nutritrack/admin';
+          window.location.href = BASE_URL_JS + 'admin';
         } else {
-          window.location.href = '/nutritrack/profile';
+          window.location.href = BASE_URL_JS + 'profile';
         }
       } else if (data.status === 'error') {
         showFlashMessage({

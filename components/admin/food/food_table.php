@@ -33,7 +33,7 @@
       const tBody = document.getElementById('foodTableBody');
       const data = await res.json();
       const foods = data.data[0];
-      console.log(foods);
+      // console.log(foods); // Removed debugging log
       tBody.innerHTML = '';
 
       foods.forEach(food => {
@@ -56,7 +56,11 @@
       });
 
     } catch (error) {
-      console.error('Error fetching users:', error);
+      console.error('Error fetching foods:', error);
+      showFlashMessage({
+        type: 'error',
+        messages: 'Failed to fetch food list.'
+      });
     }
   }
 
@@ -72,10 +76,25 @@
         })
       });
       const data = await res.json();
-      console.log(data);
+      // console.log(data); // Removed debugging log
+      if (data.status === 'success') {
+        showFlashMessage({
+          type: 'success',
+          messages: data.message
+        });
+      } else {
+        showFlashMessage({
+          type: 'error',
+          messages: data.message
+        });
+      }
       fetchFoods();
     } catch (error) {
-      console.error('Error fetching users:', error);
+      console.error('Error deleting food:', error);
+      showFlashMessage({
+        type: 'error',
+        messages: 'Failed to delete food.'
+      });
     }
   }
 

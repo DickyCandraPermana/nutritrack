@@ -30,36 +30,43 @@ class ProfileController
     return $userData;
   }
 
-  public function editProfile($id)
+  public function editProfile()
   {
-    if (!isset($_SESSION['user_id'])) {
-      header("Location: /nutritrack/login");
-      exit;
-    }
+    error_log("editProfile: Method started.");
+    $data = json_decode(file_get_contents('php://input'), true);
+    error_log("editProfile: Received data: " . print_r($data, true));
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-      $this->profile->updateProfile($_POST);
-      header('Location: /nutritrack/profile/personal');
-      exit;
-    }
+    try {
+      $updateResult = $this->profile->updateProfile($data);
+      error_log("editProfile: updateProfile result: " . print_r($updateResult, true));
 
-    $user = $this->fetchUserData($id);
-    renderView('profile_edit', compact('user'));
+      $response = [
+        'status' => 'success',
+        'message' => ['Profile updated successfully']
+      ];
+      error_log("editProfile: Sending response: " . json_encode($response));
+      echo json_encode($response);
+      exit();
+    } catch (Exception $e) {
+      error_log("editProfile: Error: " . $e->getMessage());
+      http_response_code(500);
+      echo json_encode([
+        'status' => 'error',
+        'message' => ['An error occurred: ' . $e->getMessage()]
+      ]);
+      exit();
+    }
   }
 
   public function tambahMakanan()
   {
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-      $data = $_POST;
-      $this->profile->tambahDetailRegistrasiMakanan($data);
-      header('Location: /nutritrack/profile/tracking');
-      exit;
-    } else {
-      $foodData = new FoodController($this->db);
-      $foodData = $foodData->fetchFoodData();
-      $user = $this->fetchUserData($_SESSION['user_id']);
-      renderView('profile_input_makanan', compact('user', 'foodData'));
-    }
+    $data = json_decode(file_get_contents('php://input'), true);
+    $this->profile->tambahDetailRegistrasiMakanan($data);
+    echo json_encode([
+      'status' => 'success',
+      'message' => ['Food added successfully']
+    ]);
+    exit();
   }
 
   public function userTrackingData()
@@ -101,5 +108,31 @@ class ProfileController
       "status" => "success",
       "data" => $trackedNutrient
     ]);
+  }
+
+  public function getUserGoal()
+  {
+    $data = json_decode(file_get_contents('php://input'), true);
+    $user_id = $data['user_id'];
+
+    $user = $this->profile->getUserById($user_id);
+
+    if (!$user || !isset($user['bmi']) || !isset($user['bmr']) || !isset($user['tdee'])) {
+      echo json_encode([
+        "status" => "error",
+        "message" => "User goal data not found or incomplete"
+      ]);
+      exit;
+    }
+
+    echo json_encode([
+      "status" => "success",
+      "data" => [
+        'bmi' => $user['bmi'],
+        'bmr' => $user['bmr'],
+        'tdee' => $user['tdee']
+      ]
+    ]);
+    exit;
   }
 }

@@ -44,6 +44,14 @@
         <label for="tanggal_lahir" class="block font-medium text-gray-700">Birth Date</label>
         <input type="date" name="tanggal_lahir" id="tanggal_lahir" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400">
       </div>
+      <div>
+        <label for="phone_number" class="block font-medium text-gray-700">Phone Number</label>
+        <input type="text" name="phone_number" id="phone_number" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" placeholder="Your phone number">
+      </div>
+      <div>
+        <label for="bio" class="block font-medium text-gray-700">Bio</label>
+        <textarea name="bio" id="bio" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" placeholder="Tell us about yourself"></textarea>
+      </div>
     </div>
     <div class="flex w-full gap-4 mt-4">
       <button type="button" onclick="backStep()" class="w-full py-2 text-white transition bg-gray-500 rounded-lg hover:bg-gray-600">Back</button>
@@ -64,6 +72,18 @@
   }
 
   async function kirimData() {
+    // Client-side validation for confirmPassword
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+
+    if (password !== confirmPassword) {
+      showFlashMessage({
+        type: 'error',
+        messages: 'Password and Confirm Password do not match.'
+      });
+      return; // Stop execution if passwords don't match
+    }
+
     try {
       const res = await fetch('/nutritrack/api/register', {
         method: 'POST',
@@ -77,7 +97,9 @@
           first_name: document.getElementById('first_name').value,
           last_name: document.getElementById('last_name').value,
           jenis_kelamin: document.querySelector('input[name="jenis_kelamin"]:checked').value,
-          tanggal_lahir: document.getElementById('tanggal_lahir').value
+          tanggal_lahir: document.getElementById('tanggal_lahir').value,
+          phone_number: document.getElementById('phone_number').value, // Added
+          bio: document.getElementById('bio').value // Added
         })
       });
 
@@ -87,9 +109,9 @@
       if (data.status === 'success') {
         showFlashMessage({
           type: 'success',
-          messages: data.messxage
+          messages: data.message
         });
-        window.location.href = '/nutritrack/login';
+        window.location.href = BASE_URL_JS + 'login';
       } else if (data.status === 'error') {
         showFlashMessage({
           type: 'error',

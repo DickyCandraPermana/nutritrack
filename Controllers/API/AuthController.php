@@ -67,33 +67,24 @@ class AuthController
 
   public function register()
   {
-    if (isset($_SESSION['user_id'])) {
-      header("Location: /nutritrack/profile");
-      exit();
-    }
+    $data = json_decode(file_get_contents('php://input'), true);
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-      $data = json_decode(file_get_contents('php://input'), true);
+    $errors = $this->auth->validateRegister($data);
 
-      $errors = $this->auth->validateRegister($data);
-
-      if (!empty($errors)) {
-        echo json_encode([
-          'status' => 'error',
-          'message' => $errors
-        ]);
-        exit();
-      }
-
-      $this->auth->register($data);
-
+    if (!empty($errors)) {
       echo json_encode([
-        'status' => 'success',
-        'message' => ['Berhasil register']
+        'status' => 'error',
+        'message' => $errors
       ]);
       exit();
-    } else {
-      renderView('register');
     }
+
+    $this->auth->register($data);
+
+    echo json_encode([
+      'status' => 'success',
+      'message' => ['Berhasil register']
+    ]);
+    exit();
   }
 }

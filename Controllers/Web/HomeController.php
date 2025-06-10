@@ -22,24 +22,26 @@ class HomeController
 
   public function index()
   {
+    $user = null;
     if (isset($_SESSION['user_id'])) {
-      $user = $this->profile->getUserById($_SESSION['user_id']) ?? [];
-      renderView('home', compact('user'));
+      $user = $this->profile->getUserById($_SESSION['user_id']);
     }
-
-    renderView('home');
+    return ['view' => 'home', 'data' => compact('user')];
   }
 
   public function search($data, $page = 1)
   {
     $food = new Food($this->db);
     $foods = $food->search($data, 10, $page);
-    renderView('search', compact("foods"));
+    return ['view' => 'search', 'data' => compact("foods")];
   }
 
   public function premiumPage()
   {
-    $user = $this->profile->getUserById($_SESSION['user_id']) ?? [];
-    renderView('premium_page', compact('user') ?? []);
+    $user = null;
+    if (isset($_SESSION['user_id'])) {
+      $user = $this->profile->getUserById($_SESSION['user_id']);
+    }
+    return ['view' => 'premium_page', 'data' => compact('user')];
   }
 }

@@ -32,59 +32,27 @@ class ProfileController
 
   public function editProfile($id)
   {
-    if (!isset($_SESSION['user_id'])) {
-      header("Location: /nutritrack/login");
-      exit;
-    }
-
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-      if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === UPLOAD_ERR_OK) {
-        $fileTmp = $_FILES['profile_picture']['tmp_name'];
-        $fileName = basename($_FILES['profile_picture']['name']);
-        $fileExt = pathinfo($fileName, PATHINFO_EXTENSION);
-        $newFileName = uniqid('file_') . '.' . $fileExt;
-
-        $uploadDir = 'public/uploads/';
-        $uploadPath = $uploadDir . $newFileName;
-
-        if (move_uploaded_file($fileTmp, $uploadPath)) {
-          // path relatif untuk disimpan di DB
-          $dbPath = 'public/uploads/' . $newFileName;
-
-          $data = [...$_POST, 'profile_picture' => $dbPath];
-
-          $this->profile->updateProfile($data);
-          header('Location: /nutritrack/profile/personal');
-          exit;
-        } else {
-          echo "Error uploading file";
-          exit;
-        }
-      }
-    }
-
     $user = $this->fetchUserData($id);
-    renderView('profile/profile_edit', compact('user'));
+    return ['view' => 'profile/profile_edit', 'data' => compact('user')];
   }
 
   public function dashboard()
   {
     if (!isset($_SESSION['user_id'])) {
-      header("Location: /nutritrack/login");
+      header("Location: " . BASE_URL . "login");
       exit;
     }
 
     $id = $_SESSION['user_id'];
     $weeklyFoodData = $this->profile->getNutritionInWeekData($id);
     $user = $this->fetchUserData($id);
-    renderView('profile/profile', compact('user', 'weeklyFoodData'));
+    return ['view' => 'profile/profile', 'data' => compact('user', 'weeklyFoodData')];
   }
 
   public function profilePersonal($id)
   {
     $user = $this->fetchUserData($id);
-    renderView('profile/profile_personal', compact('user'));
+    return ['view' => 'profile/profile_personal', 'data' => compact('user')];
   }
 
   public function profileTracking()
@@ -102,21 +70,14 @@ class ProfileController
       'target_calories' => $tdee,
     ];
 
-    renderView('profile/profile_tracking', compact('foodData', 'user', 'data'));
+    return ['view' => 'profile/profile_tracking', 'data' => compact('foodData', 'user', 'data')];
   }
 
   public function tambahMakanan()
   {
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-      $data = $_POST;
-      $this->profile->tambahDetailRegistrasiMakanan($data);
-      header('Location: /nutritrack/profile/tracking');
-      exit;
-    } else {
-      $foodData = new FoodController($this->db);
-      $foodData = $foodData->fetchFoodData();
-      $user = $this->fetchUserData($_SESSION['user_id']);
-      renderView('profile/profile_input_makanan', compact('user', 'foodData'));
-    }
+    $foodData = new FoodController($this->db);
+    $foodData = $foodData->fetchFoodData();
+    $user = $this->fetchUserData($_SESSION['user_id']);
+    return ['view' => 'profile/profile_input_makanan', 'data' => compact('user', 'foodData')];
   }
 }

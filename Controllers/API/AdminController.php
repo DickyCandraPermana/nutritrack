@@ -41,7 +41,6 @@ class AdminController
     $data = json_decode(file_get_contents('php://input'), true);
     if (!$data) {
       $this->respond(false, 'Invalid input data' . json_encode($data));
-      exit;
     }
     return $data;
   }
@@ -49,10 +48,6 @@ class AdminController
   public function getUsers()
   {
     $users = $this->user->getUsers();
-    if ($users == null || $users == []) {
-      $this->respond(false, 'User list is empty');
-    }
-
     $this->respond(true, 'User list retrieved', $users);
   }
 
@@ -124,15 +119,21 @@ class AdminController
   public function tambahMakanan()
   {
     $data = $this->getInputData();
-    extract($data);
-    $data = array('nama_makanan' => $nama_makanan, 'deskripsi' => $deskripsi, 'kategori' => $kategori);
-    $success = $this->food->tambahMakanan($data);
+    $nama_makanan = $data['nama_makanan'];
+    $deskripsi = $data['deskripsi'];
+    $kategori = $data['kategori'];
+    $nutrisis = $data['nutrisis']; // Assuming 'nutrisis' is always present
+
+    $foodData = array('nama_makanan' => $nama_makanan, 'deskripsi' => $deskripsi, 'kategori' => $kategori);
+    $success = $this->food->tambahMakanan($foodData);
+
+    $inputDetail = false; // Initialize $inputDetail
     if ($success) {
-      $food_id = $this->food->getFoodId($data['nama_makanan']);
+      $food_id = $this->food->getFoodId($foodData['nama_makanan']);
       $inputDetail = $this->food->inputDetailMakanan($nutrisis, $food_id);
     }
 
-    $this->respond($success && $inputDetail, $success ? 'Berhasil tambah makanan' : 'Gagal tambah makanan');
+    $this->respond($success && $inputDetail, $success && $inputDetail ? 'Berhasil tambah makanan' : 'Gagal tambah makanan');
   }
 
   public function editMakanan()

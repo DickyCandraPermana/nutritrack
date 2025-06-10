@@ -39,7 +39,7 @@ $routes = [
       'handler' => [$adminController, 'index'],
     ],
     'nutritrack/admin/dashboard' => [
-      'handler' => fn() => header('Location: /nutritrack/admin'),
+      'handler' => fn() => header('Location: ' . BASE_URL . 'admin'),
     ],
     'nutritrack/admin/users' => [
       'handler' => [$adminController, 'usersPage'],
@@ -59,9 +59,6 @@ $routes = [
     'nutritrack/admin/update-food' => [
       'handler' => [$adminController, 'foodsEditPage'],
     ],
-    'nutritrack/home' => [
-      'handler' => fn() => header('Location: /nutritrack'),
-    ],
     'nutritrack/admin/logout' => [
       'handler' => [$authController, 'logout'],
     ]
@@ -71,8 +68,12 @@ $routes = [
 // Main route dispatcher
 if (isset($routes[$method][$uri])) {
   $route = $routes[$method][$uri];
-  dispatchRoute($route);
+  $routeResult = dispatchRoute($route);
+
+  if ($routeResult && is_array($routeResult) && isset($routeResult['view'])) {
+    renderLayout($routeResult['view'], $routeResult['data'] ?? []);
+  }
 } else {
   http_response_code(404);
-  require 'views/404.php';
+  renderLayout('404');
 }

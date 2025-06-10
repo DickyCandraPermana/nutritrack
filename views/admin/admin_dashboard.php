@@ -1,4 +1,4 @@
-<?php require_once 'components/errorHandling.php'; ?>
+
 <?php require_once 'components/admin/sidebar.php'; ?>
 
 <!-- Main Content -->
@@ -38,9 +38,10 @@
 
     // Jalankan counter saat tab Dashboard dibuka
     function runDashboardCounters() {
-      animateCounter(document.getElementById('userCount'), 1247);
-      animateCounter(document.getElementById('foodCount'), 856);
-      animateCounter(document.getElementById('premiumCount'), 189);
+      const adminData = <?= json_encode($data) ?>; // Get data from PHP
+      animateCounter(document.getElementById('userCount'), adminData.userCount);
+      animateCounter(document.getElementById('foodCount'), adminData.foodCount);
+      animateCounter(document.getElementById('premiumCount'), adminData.premiumCount);
     }
 
     // Simulasi flicker status indikator hanya di dashboard
@@ -56,6 +57,8 @@
       });
     }
 
+    // Call runDashboardCounters on DOMContentLoaded
+    runDashboardCounters();
     setInterval(flickerStatusIndicators, 3000);
 
   });
