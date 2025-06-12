@@ -10,11 +10,22 @@ class Profile
 {
   private $db;
 
+  /**
+   * Constructor for Profile model.
+   *
+   * @param PDO $db The database connection object.
+   */
   public function __construct($db)
   {
     $this->db = $db;
   }
 
+  /**
+   * Retrieves user data by user ID, including calculated BMI, BMR, and TDEE.
+   *
+   * @param int $id The ID of the user.
+   * @return array An associative array containing user data.
+   */
   public function getUserById($id)
   {
     $stmt = $this->db->prepare("SELECT * FROM users WHERE user_id = ?");
@@ -32,6 +43,12 @@ class Profile
     return $data;
   }
 
+  /**
+   * Retrieves weekly nutrition data for a specific user.
+   *
+   * @param int $userId The ID of the user.
+   * @return array An associative array containing weekly calorie, protein, carbs, and fat data.
+   */
   public function getNutritionInWeekData($userId)
   {
     $today = date('Y-m-d');
@@ -96,6 +113,12 @@ class Profile
     return $data;
   }
 
+  /**
+   * Retrieves detailed food registration data for a specific user.
+   *
+   * @param int $id The ID of the user.
+   * @return array An associative array of food registration details, grouped by meal.
+   */
   public function getDetailRegistrasiMakanan($id)
   {
     $stmt = $this->db->prepare(
@@ -147,6 +170,12 @@ class Profile
     return $data;
   }
 
+  /**
+   * Updates a user's profile information.
+   *
+   * @param array $data An associative array containing user profile data.
+   * @return bool True if the profile was updated, false otherwise.
+   */
   public function updateProfile($data)
   {
     // Do not use extract($data) directly, it can lead to undefined variable warnings
@@ -197,6 +226,12 @@ class Profile
     return $updated; // Return true if updated, false otherwise
   }
 
+  /**
+   * Checks if a food registration entry exists for a user on the current date.
+   *
+   * @param int $id The ID of the user.
+   * @return int The number of rows found (0 or 1).
+   */
   public function cekRegistrasiMakanan($id)
   {
     $user_id = $id;
@@ -206,6 +241,12 @@ class Profile
     return $stmt->rowCount();
   }
 
+  /**
+   * Adds a new food registration entry for a user on the current date.
+   *
+   * @param int $id The ID of the user.
+   * @return void
+   */
   public function tambahRegistrasiMakanan($id)
   {
     $user_id = $id;
@@ -214,6 +255,12 @@ class Profile
     $stmt->execute([$user_id, $tanggal]);
   }
 
+  /**
+   * Retrieves the food registration entry for a user on the current date.
+   *
+   * @param int $id The ID of the user.
+   * @return array|false An associative array representing the registration entry, or false if not found.
+   */
   public function getRegistrasiMakanan($id)
   {
     $user_id = $id;
@@ -223,6 +270,13 @@ class Profile
     return $stmt->fetch(PDO::FETCH_ASSOC);
   }
 
+  /**
+   * Adds a new detailed food registration entry for a user.
+   * Creates a new main registration entry if one doesn't exist for the current date.
+   *
+   * @param array $data An associative array containing food_id, waktu_makan, jumlah_porsi, satuan, and optional catatan.
+   * @return void
+   */
   public function tambahDetailRegistrasiMakanan($data)
   {
     $user_id = $data['user_id'];
@@ -246,6 +300,13 @@ class Profile
     $stmt->execute([$reg_id, $makanan, $jam, $jumlah_porsi, $satuan, $catatan]);
   }
 
+  /**
+   * Retrieves the registration ID for a user on a specific date.
+   *
+   * @param int $user_id The ID of the user.
+   * @param string $tanggal The date in 'YYYY-MM-DD' format.
+   * @return int|null The registration ID, or null if not found.
+   */
   public function getRegIdByUserIdTanggal($user_id, $tanggal)
   {
     $stmt = $this->db->prepare("SELECT registrasi_makanan.reg_id FROM registrasi_makanan 
@@ -256,6 +317,13 @@ class Profile
     return $data[0]['reg_id'];
   }
 
+  /**
+   * Retrieves consumed food data for a user on a specific date, grouped by meal time.
+   *
+   * @param int $id The ID of the user.
+   * @param string $tanggal The date in 'YYYY-MM-DD' format.
+   * @return array|null An array of consumed food data, grouped by meal, or null if no data found.
+   */
   public function getConsumedFoodData($id, $tanggal)
   {
     $reg_id = $this->getRegIdByUserIdTanggal($id, $tanggal);
@@ -333,6 +401,13 @@ class Profile
     return $result;
   }
 
+  /**
+   * Retrieves tracked nutrient totals for a user on a specific date.
+   *
+   * @param int $id The ID of the user.
+   * @param string $tanggal The date in 'YYYY-MM-DD' format.
+   * @return array|null An associative array of total nutrients (e.g., 'calories', 'protein'), or null if no data found.
+   */
   public function getTrackedNutrient($id, $tanggal)
   {
     $reg_id = $this->getRegIdByUserIdTanggal($id, $tanggal);
@@ -361,6 +436,12 @@ class Profile
     return $result;
   }
 
+  /**
+   * Retrieves the total calories consumed by a user on the current date.
+   *
+   * @param int $id The ID of the user.
+   * @return float|null The total calories, or null if no data found.
+   */
   public function getTotalCalories($id)
   {
     $reg_id = $this->getRegistrasiMakanan($id);

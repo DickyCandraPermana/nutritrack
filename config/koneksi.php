@@ -1,4 +1,10 @@
 <?php
+/**
+ * Database connection configuration and establishment.
+ *
+ * This file defines the database connection parameters and establishes a PDO connection.
+ */
+
 $host = "localhost"; // Ganti sesuai kebutuhan
 $dbname = "nutritrack"; // Nama database
 $username = "root"; // Username MySQL (default: root)

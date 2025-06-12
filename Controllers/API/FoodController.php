@@ -12,6 +12,11 @@ class FoodController
   private PDO $db;
   private Food $food;
 
+  /**
+   * Constructor for FoodController.
+   *
+   * @param PDO $db The database connection object.
+   */
   public function __construct(PDO $db)
   {
     $this->db = $db;
@@ -19,9 +24,9 @@ class FoodController
   }
 
   /**
-   * Ambil semua data makanan, throw error kalau kosong.
+   * Fetches all food data.
    *
-   * @return array
+   * @return array An array of food data.
    */
   public function fetchFoodData(): array
   {
@@ -37,9 +42,9 @@ class FoodController
   }
 
   /**
-   * Tampilkan halaman detail makanan berdasarkan ID.
+   * Displays the food detail page based on the provided ID.
    *
-   * @param int|string $id
+   * @param int|string $id The ID of the food item.
    * @return void
    */
   public function foodDetail($id): void
@@ -62,7 +67,7 @@ class FoodController
   }
 
   /**
-   * Tampilkan halaman pencarian makanan.
+   * Displays the food search page.
    *
    * @return void
    */

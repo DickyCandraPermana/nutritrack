@@ -50,6 +50,7 @@
 <script>
   const currentFoodDetail = [];
   const currentFood = [];
+  const nutritionList = []; // Declare nutritionList
 
   function getParam(name) {
     const url = new URL(window.location.href);

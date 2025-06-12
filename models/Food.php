@@ -8,14 +8,19 @@ class Food
 {
   private PDO $db;
 
+  /**
+   * Constructor for Food model.
+   *
+   * @param PDO $db The database connection object.
+   */
   public function __construct(PDO $db)
   {
     $this->db = $db;
   }
 
   /**
-   * Ambil semua data makanan.
-   * @return array
+   * Fetches all food data.
+   * @return array An array of all food items.
    */
   public function getFoods(): array
   {
@@ -23,6 +28,12 @@ class Food
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
+  /**
+   * Adds a new food item to the database.
+   *
+   * @param array $data An associative array containing food details (nama_makanan, deskripsi, kategori).
+   * @return bool True on success, false on failure.
+   */
   public function tambahMakanan($data)
   {
     try {
@@ -35,6 +46,12 @@ class Food
     }
   }
 
+  /**
+   * Edits an existing food item and its nutritional details in the database.
+   *
+   * @param array $data An associative array containing food_id, nama_makanan, kategori, deskripsi, and nutritions (array of nutrition details).
+   * @return bool True on success, false on failure.
+   */
   public function editMakanan($data)
   {
     try {
@@ -61,6 +78,12 @@ class Food
     }
   }
 
+  /**
+   * Deletes a food item from the database.
+   *
+   * @param array $data An associative array containing the food_id to delete.
+   * @return bool True on success, false on failure.
+   */
   public function deleteMakanan($data)
   {
     try {
@@ -73,8 +96,8 @@ class Food
   }
 
   /**
-   * Ambil semua nama makanan dan ID-nya.
-   * @return array
+   * Fetches all food names and their corresponding IDs.
+   * @return array An array of associative arrays, each containing 'food_id' and 'nama_makanan'.
    */
   public function getNamaMakananDanID(): array
   {
@@ -84,12 +107,12 @@ class Food
   }
 
   /**
-   * Cari makanan berdasarkan keyword, paginated.
+   * Searches for food items based on a keyword, with pagination.
    *
-   * @param string $search
-   * @param int $perPage
-   * @param int $page
-   * @return array [array $foods, int $totalPages]
+   * @param string $search The search keyword.
+   * @param int $perPage The number of items per page.
+   * @param int $page The current page number.
+   * @return array An array containing two elements: an array of food items and the total number of pages.
    */
   public function search(string $search, int $perPage, int $page): array
   {
@@ -122,6 +145,13 @@ class Food
     return [$foods, $totalPages];
   }
 
+  /**
+   * Inserts detailed nutrition information for a food item.
+   *
+   * @param array $nutrisis An array of nutrition details to insert.
+   * @param int $food_id The ID of the food item.
+   * @return bool True on success, false on failure.
+   */
   public function inputDetailMakanan($nutrisis, $food_id)
   {
     try {
@@ -135,6 +165,12 @@ class Food
     }
   }
 
+  /**
+   * Retrieves the food ID for a given food name.
+   *
+   * @param string $nama_makanan The name of the food.
+   * @return int|false The food ID on success, or false if not found.
+   */
   public function getFoodId($nama_makanan)
   {
     $stmt = $this->db->prepare("SELECT food_id FROM makanan WHERE nama_makanan = ?");
@@ -143,10 +179,10 @@ class Food
   }
 
   /**
-   * Ambil detail makanan berdasarkan ID.
+   * Fetches detailed information for a specific food item by ID.
    *
-   * @param int|string $id
-   * @return array
+   * @param int|string $id The ID of the food item.
+   * @return array An array of associative arrays containing food and nutrition details.
    */
   public function getFoodDetail($id): array
   {
@@ -166,6 +202,12 @@ class Food
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
+  /**
+   * Fetches basic food information by food ID.
+   *
+   * @param array $data An associative array containing the food_id.
+   * @return array An array of associative arrays containing basic food information.
+   */
   public function fetchFoodBiasa($data)
   {
     $stmt = $this->db->prepare("

@@ -2,8 +2,8 @@
 
 namespace Controllers\API;
 
-use PDO, PDOException, Exception;
 use Models\Profile;
+use PDO, PDOException, Exception;
 
 require_once 'models/Profile.php';
 require_once 'controllers/API/FoodController.php';
@@ -13,13 +13,23 @@ class ProfileController
   private $db;
   private $profile;
 
+  /**
+   * Constructor for ProfileController.
+   *
+   * @param PDO $db The database connection object.
+   */
   public function __construct($db)
   {
     $this->db = $db;
     $this->profile = new Profile($this->db);
   }
 
-  // Helper buat fetch data user
+  /**
+   * Helper function to fetch user data by ID.
+   *
+   * @param int $id The ID of the user.
+   * @return array The user data.
+   */
   private function fetchUserData($id)
   {
     $userData = $this->profile->getUserById($id);
@@ -30,6 +40,12 @@ class ProfileController
     return $userData;
   }
 
+  /**
+   * Handles profile editing.
+   * Updates user profile information based on input data.
+   *
+   * @return void
+   */
   public function editProfile()
   {
     error_log("editProfile: Method started.");
@@ -58,6 +74,11 @@ class ProfileController
     }
   }
 
+  /**
+   * Adds food consumption details for a user.
+   *
+   * @return void
+   */
   public function tambahMakanan()
   {
     $data = json_decode(file_get_contents('php://input'), true);
@@ -69,6 +90,11 @@ class ProfileController
     exit();
   }
 
+  /**
+   * Retrieves a user's food tracking data for a specific date.
+   *
+   * @return void
+   */
   public function userTrackingData()
   {
 
@@ -90,6 +116,11 @@ class ProfileController
     ]);
   }
 
+  /**
+   * Retrieves tracked nutrient data for a user on a specific date.
+   *
+   * @return void
+   */
   public function getUserTrackingData()
   {
     $data = json_decode(file_get_contents('php://input'), true);
@@ -110,6 +141,11 @@ class ProfileController
     ]);
   }
 
+  /**
+   * Retrieves a user's BMI, BMR, and TDEE goals.
+   *
+   * @return void
+   */
   public function getUserGoal()
   {
     $data = json_decode(file_get_contents('php://input'), true);

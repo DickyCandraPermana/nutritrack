@@ -5,6 +5,7 @@ namespace Controllers\API;
 use Models\Food;
 use Models\User;
 use Models\Nutrition;
+use PDO;
 
 require_once 'models/Food.php';
 require_once 'models/User.php';
@@ -17,6 +18,11 @@ class AdminController
   private $user;
   private $nutrition;
 
+  /**
+   * Constructor for AdminController.
+   *
+   * @param PDO $db The database connection object.
+   */
   public function __construct($db)
   {
     $this->db = $db;
@@ -25,6 +31,14 @@ class AdminController
     $this->nutrition = new Nutrition($this->db);
   }
 
+  /**
+   * Responds to API requests with a JSON formatted output.
+   *
+   * @param bool $success Indicates if the operation was successful.
+   * @param string|array $messages A message or array of messages to be included in the response.
+   * @param mixed $data Optional data to be returned in the response.
+   * @return void
+   */
   private function respond($success, $messages = [], $data = null)
   {
     header('Content-Type: application/json');
@@ -36,6 +50,11 @@ class AdminController
     exit();
   }
 
+  /**
+   * Retrieves input data from the request body.
+   *
+   * @return array The decoded JSON input data.
+   */
   private function getInputData()
   {
     $data = json_decode(file_get_contents('php://input'), true);
@@ -45,12 +64,22 @@ class AdminController
     return $data;
   }
 
+  /**
+   * Fetches all users from the database and responds with the list.
+   *
+   * @return void
+   */
   public function getUsers()
   {
     $users = $this->user->getUsers();
     $this->respond(true, 'User list retrieved', $users);
   }
 
+  /**
+   * Fetches a user by their ID from the database and responds with the user data.
+   *
+   * @return void
+   */
   public function getUserById()
   {
     $data = $this->getInputData();
@@ -58,6 +87,11 @@ class AdminController
     $this->respond(true, 'User list retrieved', $user);
   }
 
+  /**
+   * Fetches foods based on search criteria and pagination parameters.
+   *
+   * @return void
+   */
   public function getFoods()
   {
     $data = $this->getInputData();
@@ -65,6 +99,11 @@ class AdminController
     $this->respond(true, 'Food list retrieved', $foods);
   }
 
+  /**
+   * Fetches detailed information for a specific food item.
+   *
+   * @return void
+   */
   public function getFoodDetail()
   {
     $data = $this->getInputData();
@@ -82,6 +121,11 @@ class AdminController
     $this->respond(true, 'Food detail retrieved', $res);
   }
 
+  /**
+   * Fetches basic food information.
+   *
+   * @return void
+   */
   public function fetchFoodBiasa()
   {
     $data = $this->getInputData();
@@ -89,12 +133,22 @@ class AdminController
     $this->respond(true, 'Food detail retrieved', $food);
   }
 
+  /**
+   * Fetches all nutrition types from the database.
+   *
+   * @return void
+   */
   public function getNutritions()
   {
     $nutritions = $this->nutrition->getNutritions();
     $this->respond(true, 'Nutrition list retrieved', $nutritions);
   }
 
+  /**
+   * Adds a new user to the database.
+   *
+   * @return void
+   */
   public function tambahUser()
   {
     $data = $this->getInputData();
@@ -102,6 +156,11 @@ class AdminController
     $this->respond($success, $success ? 'Berhasil tambah user' : 'Gagal tambah user');
   }
 
+  /**
+   * Edits an existing user in the database.
+   *
+   * @return void
+   */
   public function editUser()
   {
     $data = $this->getInputData();
@@ -109,6 +168,11 @@ class AdminController
     $this->respond($success, $success ? 'Berhasil edit user' : 'Gagal edit user');
   }
 
+  /**
+   * Deletes a user from the database.
+   *
+   * @return void
+   */
   public function deleteUser()
   {
     $data = $this->getInputData();
@@ -116,6 +180,11 @@ class AdminController
     $this->respond($success, $success ? 'Berhasil delete user' : 'Gagal delete user');
   }
 
+  /**
+   * Adds a new food item and its nutritional details to the database.
+   *
+   * @return void
+   */
   public function tambahMakanan()
   {
     $data = $this->getInputData();
@@ -136,6 +205,11 @@ class AdminController
     $this->respond($success && $inputDetail, $success && $inputDetail ? 'Berhasil tambah makanan' : 'Gagal tambah makanan');
   }
 
+  /**
+   * Edits an existing food item in the database.
+   *
+   * @return void
+   */
   public function editMakanan()
   {
     $data = $this->getInputData();
@@ -143,6 +217,11 @@ class AdminController
     $this->respond($success, $success ? 'Berhasil edit makanan' : 'Gagal edit makanan');
   }
 
+  /**
+   * Deletes a food item from the database.
+   *
+   * @return void
+   */
   public function deleteFood()
   {
     $data = $this->getInputData();
@@ -150,6 +229,11 @@ class AdminController
     $this->respond($success, $success ? 'Berhasil delete makanan' : 'Gagal delete makanan');
   }
 
+  /**
+   * Adds a new nutrition entry to the database.
+   *
+   * @return void
+   */
   public function tambahNutrisi()
   {
     $data = $this->getInputData();
@@ -157,6 +241,11 @@ class AdminController
     $this->respond($success, $success ? 'Berhasil tambah nutrisi' : 'Gagal tambah nutrisi');
   }
 
+  /**
+   * Edits an existing nutrition entry in the database.
+   *
+   * @return void
+   */
   public function editNutrisi()
   {
     $data = $this->getInputData();
@@ -164,6 +253,11 @@ class AdminController
     $this->respond($success, $success ? 'Berhasil edit nutrisi' : 'Gagal edit nutrisi');
   }
 
+  /**
+   * Deletes a nutrition entry from the database.
+   *
+   * @return void
+   */
   public function deleteNutrisi()
   {
     $data = $this->getInputData();

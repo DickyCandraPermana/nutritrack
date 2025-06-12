@@ -7,11 +7,21 @@ use PDO, PDOException, Exception;
 class Admin
 {
   public $db;
+  /**
+   * Constructor for Admin model.
+   *
+   * @param PDO $db The database connection object.
+   */
   public function __construct(PDO $db)
   {
     $this->db = $db;
   }
 
+  /**
+   * Retrieves various statistics for the admin panel.
+   *
+   * @return array An associative array containing total users, total premium users, total food items, and total scans.
+   */
   public function getAdminPanelData()
   {
     $stmt = $this->db->query("SELECT COUNT(*) FROM users");

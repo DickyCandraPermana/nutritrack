@@ -1,10 +1,26 @@
 <?php
+/**
+ * Calculates the Body Mass Index (BMI).
+ *
+ * @param float $berat The weight in kilograms.
+ * @param float $tinggi The height in centimeters.
+ * @return float The calculated BMI.
+ */
 function hitungBMI($berat, $tinggi)
 {
   $tinggi_m = $tinggi / 100;
   return $berat / ($tinggi_m * $tinggi_m);
 }
 
+/**
+ * Calculates the Basal Metabolic Rate (BMR).
+ *
+ * @param float $berat The weight in kilograms.
+ * @param float $tinggi The height in centimeters.
+ * @param int $umur The age in years.
+ * @param int $jenis_kelamin The gender (1 for male, 0 for female).
+ * @return float The calculated BMR.
+ */
 function hitungBMR($berat, $tinggi, $umur, $jenis_kelamin)
 {
   if ($jenis_kelamin == 1) {
@@ -14,6 +30,13 @@ function hitungBMR($berat, $tinggi, $umur, $jenis_kelamin)
   }
 }
 
+/**
+ * Calculates the Total Daily Energy Expenditure (TDEE).
+ *
+ * @param float $bmr The Basal Metabolic Rate.
+ * @param string $aktivitas The activity level (e.g., 'sangat ringan', 'ringan', 'sedang', 'aktif', 'sangat aktif').
+ * @return float The calculated TDEE.
+ */
 function hitungTDEE($bmr, $aktivitas)
 {
   $faktor_aktivitas = [
@@ -26,6 +49,12 @@ function hitungTDEE($bmr, $aktivitas)
   return $bmr * ($faktor_aktivitas[$aktivitas] ?? 1.2);
 }
 
+/**
+ * Calculates the age from a given birth date.
+ *
+ * @param string $tanggal_lahir The birth date in a format recognized by DateTime (e.g., 'YYYY-MM-DD').
+ * @return int The age in years.
+ */
 function hitungUmur($tanggal_lahir)
 {
   $lahir = new DateTime($tanggal_lahir);
@@ -34,11 +63,23 @@ function hitungUmur($tanggal_lahir)
   return $umur->y; // Ambil umur dalam tahun
 }
 
+/**
+ * Returns the current date in 'YYYY-MM-DD' format.
+ *
+ * @return string The current date.
+ */
 function getCurrentDate()
 {
   return date('Y-m-d');
 }
 
+/**
+ * Dispatches a route by executing its middleware and handler.
+ *
+ * @param array $route An associative array containing 'handler', 'middleware' (optional), and 'params' (optional).
+ * @return mixed The result of the handler execution.
+ * @throws Exception If the handler is invalid or an internal server error occurs.
+ */
 function dispatchRoute($route)
 {
   try {
@@ -68,6 +109,13 @@ function dispatchRoute($route)
   }
 }
 
+/**
+ * Sets a flash message in the session.
+ *
+ * @param string $type The type of the message (e.g., 'success', 'error', 'warning').
+ * @param string $message The message content.
+ * @return void
+ */
 function setFlash($type, $message)
 {
   $_SESSION['message'] = [
@@ -76,6 +124,13 @@ function setFlash($type, $message)
   ];
 }
 
+/**
+ * Renders a view file.
+ *
+ * @param string $view The name of the view file (without .php extension).
+ * @param array $data An associative array of data to extract and make available in the view.
+ * @return void
+ */
 function renderView($view, $data = [])
 {
 
@@ -89,12 +144,23 @@ function renderView($view, $data = [])
   require_once "views/{$view}.php";
 }
 
-
+/**
+ * Returns the current time in 'HH:MM:SS' format.
+ *
+ * @return string The current time.
+ */
 function getCurrentTime()
 {
   return date('H:i:s');
 }
 
+/**
+ * Renders a view within the main application layout.
+ *
+ * @param string $view The name of the view file (without .php extension).
+ * @param array $data An associative array of data to extract and make available in the view.
+ * @return void
+ */
 function renderLayout($view, $data = [])
 {
   extract($data); // Extract data for the view

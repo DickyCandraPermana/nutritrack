@@ -7,11 +7,21 @@ use PDO, PDOException, Exception;
 class User
 {
   private $db;
+  /**
+   * Constructor for User model.
+   *
+   * @param PDO $db The database connection object.
+   */
   public function __construct($db)
   {
     $this->db = $db;
   }
 
+  /**
+   * Retrieves all active users from the database.
+   *
+   * @return array An array of associative arrays, each representing a user.
+   */
   public function getUsers()
   {
     try {
@@ -24,6 +34,12 @@ class User
     }
   }
 
+  /**
+   * Retrieves a user by their ID.
+   *
+   * @param array $id An associative array containing the 'user_id'.
+   * @return array|false An associative array representing the user, or false if not found.
+   */
   public function getUserById($id)
   {
     try {
@@ -37,6 +53,12 @@ class User
     }
   }
 
+  /**
+   * Adds a new user to the database.
+   *
+   * @param array $data An associative array containing user details for registration.
+   * @return bool True on success, false if username already exists or on database error.
+   */
   public function tambahUser($data)
   {
     if ($this->adaUsername($data['username'])) return false;
@@ -59,6 +81,12 @@ class User
     }
   }
 
+  /**
+   * Edits an existing user's information in the database.
+   *
+   * @param array $data An associative array containing user details to update, including 'user_id'.
+   * @return bool True on success, false on database error.
+   */
   public function editUser($data)
   {
     try {
@@ -92,7 +120,12 @@ class User
     }
   }
 
-
+  /**
+   * Deletes a user by setting their status to 0 (inactive).
+   *
+   * @param array $data An associative array containing the 'user_id' to delete.
+   * @return bool True on success, false on database error.
+   */
   public function deleteUser($data)
   {
     try {
@@ -104,6 +137,12 @@ class User
     }
   }
 
+  /**
+   * Checks if a username already exists in the database.
+   *
+   * @param string $username The username to check.
+   * @return bool True if the username exists, false otherwise or on database error.
+   */
   public function adaUsername($username)
   {
     try {
