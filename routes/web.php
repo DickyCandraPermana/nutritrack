@@ -65,7 +65,7 @@ $routes = [
     ],
     'nutritrack/search' => [
       'handler' => fn() => $homeController->search(
-        $_GET['search'] ?? '',
+        $_GET['q'] ?? '',
         $_GET['page'] ?? 1
       ),
     ],

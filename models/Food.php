@@ -58,21 +58,20 @@ class Food
       $stmt = $this->db->prepare("UPDATE makanan SET nama_makanan = ?, kategori = ?, deskripsi = ? WHERE food_id = ?");
       $stmt->execute([$data['nama_makanan'], $data['kategori'], $data['deskripsi'], $data['food_id']]);
 
-      $result = $stmt->fetch();
-      if ($result) {
-        foreach ($data['nutritions'] as $nutrition) {
-          $stmt = $this->db->prepare("SELECT * FROM detail_nutrisi_makanan WHERE food_id = ? AND nutrition_id = ?");
-          $cek = $stmt->execute([$data['food_id'], $nutrition['nutrition_id']]);
-          if ($cek) {
-            $stmt = $this->db->prepare("UPDATE detail_nutrisi_makanan SET jumlah = ?, satuan = ? WHERE food_id = ? AND nutrition_id = ?");
-            $stmt->execute([$nutrition['jumlah'], $nutrition['satuan'], $data['food_id'], $nutrition['nutrition_id']]);
-          } else {
-            $stmt = $this->db->prepare("INSERT INTO detail_nutrisi_makanan (food_id, nutrition_id, jumlah, satuan) VALUES (?, ?, ?, ?)");
-            $stmt->execute([$data['food_id'], $nutrition['nutrition_id'], $nutrition['jumlah'], $nutrition['satuan']]);
-          }
+      foreach ($data['nutritions'] as $nutrition) {
+        $stmt = $this->db->prepare("SELECT * FROM detail_nutrisi_makanan WHERE food_id = ? AND nutrition_id = ?");
+        $stmt->execute([$data['food_id'], $nutrition['nutrition_id']]);
+        $cek = $stmt->fetch(); // Check if a record exists
+
+        if ($cek) {
+          $stmt = $this->db->prepare("UPDATE detail_nutrisi_makanan SET jumlah = ?, satuan = ? WHERE food_id = ? AND nutrition_id = ?");
+          $stmt->execute([$nutrition['jumlah'], $nutrition['satuan'], $data['food_id'], $nutrition['nutrition_id']]);
+        } else {
+          $stmt = $this->db->prepare("INSERT INTO detail_nutrisi_makanan (food_id, nutrition_id, jumlah, satuan) VALUES (?, ?, ?, ?)");
+          $stmt->execute([$data['food_id'], $nutrition['nutrition_id'], $nutrition['jumlah'], $nutrition['satuan']]);
         }
-        return true;
       }
+      return true;
     } catch (PDOException $e) {
       return false;
     }
@@ -120,7 +119,7 @@ class Food
     $countStmt = $this->db->prepare("
             SELECT COUNT(*) 
             FROM makanan 
-            WHERE nama_makanan LIKE :search
+            WHERE nama_makanan LIKE :search OR deskripsi LIKE :search
         ");
     $countStmt->execute(['search' => '%' . $search . '%']);
     $totalItems = (int) $countStmt->fetchColumn();
@@ -129,9 +128,9 @@ class Food
     // Ambil data dengan limit dan offset
     $offset = ($page - 1) * $perPage;
     $dataStmt = $this->db->prepare("
-            SELECT food_id, nama_makanan 
-            FROM makanan 
-            WHERE nama_makanan LIKE :search 
+            SELECT food_id AS id, nama_makanan AS nama, deskripsi
+            FROM makanan
+            WHERE nama_makanan LIKE :search OR deskripsi LIKE :search
             ORDER BY food_id DESC
             LIMIT :limit OFFSET :offset
             

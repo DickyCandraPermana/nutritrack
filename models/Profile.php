@@ -178,52 +178,67 @@ class Profile
    */
   public function updateProfile($data)
   {
-    // Do not use extract($data) directly, it can lead to undefined variable warnings
-    // and makes it harder to track variables. Access $data keys directly.
-    $umur = hitungUmur($data['tanggal_lahir']);
+    // Ensure user_id is present
+    if (!isset($data['user_id'])) {
+      // This should ideally be handled by the controller with a proper error response
+      return false;
+    }
+
+
+    // Use null coalescing operator to safely access data and provide defaults
+    $username = $data['username'] ?? null;
+    $bio = $data['bio'] ?? null;
+    $first_name = $data['first_name'] ?? null;
+    $last_name = $data['last_name'] ?? null;
+    $email = $data['email'] ?? null;
+    $phone_number = $data['phone_number'] ?? null;
+    $jenis_kelamin = $data['jenis_kelamin'] ?? null;
+    $tanggal_lahir = $data['tanggal_lahir'] ?? null;
+    $tinggi_badan = (float)($data['tinggi_badan'] ?? 0); // Cast to float, default to 0
+    $berat_badan = (float)($data['berat_badan'] ?? 0);   // Cast to float, default to 0
+    $aktivitas = $data['aktivitas'] ?? null;
+    $user_id = $data['user_id'];
+
+    $umur = hitungUmur($tanggal_lahir); // hitungUmur already handles null/empty
 
     $sql = "UPDATE users SET username = ?, bio = ?, first_name = ?, last_name = ?, email = ?, phone_number = ?, jenis_kelamin = ?, tanggal_lahir = ?, tinggi_badan = ?, berat_badan = ?, aktivitas = ? ";
     $params = [
-      $data['username'],
-      $data['bio'],
-      $data['first_name'],
-      $data['last_name'],
-      $data['email'],
-      $data['phone_number'],
-      $data['jenis_kelamin'],
-      $data['tanggal_lahir'],
-      $data['tinggi_badan'],
-      $data['berat_badan'],
-      $data['aktivitas']
+      $username,
+      $bio,
+      $first_name,
+      $last_name,
+      $email,
+      $phone_number,
+      $jenis_kelamin,
+      $tanggal_lahir,
+      $tinggi_badan,
+      $berat_badan,
+      $aktivitas
     ];
 
     // Conditionally add profile_picture if it exists in data
     if (isset($data['profile_picture'])) {
-        $sql .= ", profile_picture = ? ";
-        $params[] = $data['profile_picture'];
+      $sql .= ", profile_picture = ? ";
+      $params[] = $data['profile_picture'];
     }
 
     $sql .= "WHERE user_id = ?";
-    $params[] = $data['user_id'];
+    $params[] = $user_id;
 
     $stmt = $this->db->prepare($sql);
     $stmt->execute($params);
 
-    // Do not echo here. Return a status or boolean.
-    // The API controller will handle the JSON response.
     $updated = $stmt->rowCount() > 0;
 
-    // Update session data if needed, but this might be better handled in the controller
-    // after successful update and re-fetching user data.
-    // For now, keeping it as is, but be aware of potential inconsistencies if update fails.
-    $_SESSION['bmi'] = hitungBMI($data['berat_badan'], $data['tinggi_badan']);
+    // Update session data - ensure these calculations also use the safely accessed variables
+    $_SESSION['bmi'] = hitungBMI($berat_badan, $tinggi_badan);
     $_SESSION['bmi_status'] = $_SESSION['bmi'] < 18.5 ? 'Kurus' : ($_SESSION['bmi'] < 25 ? 'Normal' : 'Gemuk');
 
-    $_SESSION['bmr'] = hitungBMR($data['berat_badan'], $data['tinggi_badan'], $umur, $data['jenis_kelamin']);
+    $_SESSION['bmr'] = hitungBMR($berat_badan, $tinggi_badan, $umur, $jenis_kelamin);
 
-    $_SESSION['tdee'] = hitungTDEE($_SESSION['bmr'], $data['aktivitas']);
+    $_SESSION['tdee'] = hitungTDEE($_SESSION['bmr'], $aktivitas);
 
-    return $updated; // Return true if updated, false otherwise
+    return $updated;
   }
 
   /**
@@ -422,6 +437,11 @@ class Profile
       INNER JOIN nutrisi ON detail_nutrisi_makanan.nutrition_id = nutrisi.nutrition_id
       WHERE reg_id = ? AND nutrisi.nutrition_id IN (1, 2, 6, 8, 9)
       GROUP BY detail_nutrisi_makanan.nutrition_id"
+      // 1 => kalori
+      // 2 => lemak
+      // 6 => karbohidrat
+      // 8 => protein
+      // 9 => serat pangan
     );
     $stmt->execute([$reg_id]);
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);

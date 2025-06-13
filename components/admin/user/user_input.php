@@ -1,5 +1,5 @@
 <form id="formInputUser" onsubmit="inputUser(); return false;"
-  class="w-full p-8 space-y-8 bg-white shadow rounded-xl">
+  class="w-full p-8 space-y-8 bg-white shadow rounded-xl" enctype="multipart/form-data">
 
   <h2 class="mb-2 text-3xl font-bold text-gray-800">Tambah user baru</h2>
 
@@ -55,6 +55,12 @@
       <input type="text" name="phone_number" id="phone_number"
         class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
     </div>
+
+    <div>
+      <label for="profile_picture" class="block mb-1 font-semibold text-gray-700">Foto Profil</label>
+      <input type="file" name="profile_picture" id="profile_picture"
+        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+    </div>
   </div>
 
   <div class="pt-4">
@@ -71,18 +77,9 @@
       const form = document.getElementById('formInputUser');
       const formData = new FormData(form);
       
-      // Convert FormData to a plain object for JSON.stringify
-      const data = {};
-      for (let [key, value] of formData.entries()) {
-        data[key] = value;
-      }
-
       const response = await fetch('/nutritrack/api/user-input', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
+        body: formData // Send FormData directly
       });
       const result = await response.json();
       // console.log(result); // Removed debugging log

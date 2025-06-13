@@ -1,4 +1,4 @@
-<form id="edit-formEditUser" onsubmit="editUser(); return false;" class="w-full p-8 space-y-8 bg-white shadow rounded-xl">
+<form id="edit-formEditUser" onsubmit="editUser(); return false;" class="w-full p-8 space-y-8 bg-white shadow rounded-xl" enctype="multipart/form-data">
   <h2 class="mb-2 text-3xl font-bold text-gray-800">Tambah user baru</h2>
 
   <div class="grid grid-cols-2 gap-6">
@@ -140,20 +140,9 @@
       const form = document.getElementById('edit-formEditUser');
       const formData = new FormData(form);
       
-      // Convert FormData to a plain object for JSON.stringify, excluding file
-      const data = {};
-      for (let [key, value] of formData.entries()) {
-        if (key !== 'profile_picture') { // Exclude file from JSON body
-          data[key] = value;
-        }
-      }
-
       const response = await fetch('/nutritrack/api/user-edit', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
+        body: formData // Send FormData directly
       });
       const result = await response.json();
       // console.log(result); // Removed debugging log

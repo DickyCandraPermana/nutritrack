@@ -1,4 +1,4 @@
-<form onsubmit="updateProfileData(); return false;" class="flex flex-col w-full gap-4 p-6 mx-auto bg-white rounded-lg shadow-md">
+<form onsubmit="updateProfileData(); return false;" class="flex flex-col w-full gap-4 p-6 mx-auto bg-white rounded-lg shadow-md" enctype="multipart/form-data" id="update-profile-form">
   <input type="hidden" name="user_id" value="<?= $user['user_id'] ?>">
 
   <div class="space-y-2">
@@ -82,31 +82,14 @@
 
 <script>
   async function updateProfileData() {
+    console.log('updateProfileData function called.');
     try {
-      const form = document.querySelector('form');
-      const data = {
-        user_id: document.querySelector('input[name="user_id"]').value,
-        username: document.getElementById('username').value,
-        first_name: document.getElementById('first_name').value,
-        last_name: document.getElementById('last_name').value,
-        email: document.getElementById('email').value,
-        bio: document.getElementById('bio').value,
-        jenis_kelamin: document.querySelector('input[name="jenis_kelamin"]:checked').value,
-        phone_number: document.getElementById('phone_number').value,
-        tanggal_lahir: document.getElementById('tanggal_lahir').value,
-        berat_badan: document.getElementById('berat_badan').value,
-        tinggi_badan: document.getElementById('tinggi_badan').value,
-        aktivitas: document.getElementById('aktivitas').value
-      };
-      // Note: profile_picture is not handled via JSON. It requires multipart/form-data or a separate upload.
-      // For now, this form will not send the profile picture.
+      const form = document.querySelector('#update-profile-form');
+      const formData = new FormData(form); // Use FormData to include file input
 
       const res = await fetch('/nutritrack/api/update-user-profile', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
+        body: formData // Send FormData directly, no Content-Type header needed
       });
 
       const result = await res.json();

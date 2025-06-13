@@ -9,6 +9,9 @@
 function hitungBMI($berat, $tinggi)
 {
   $tinggi_m = $tinggi / 100;
+  if ($tinggi_m == 0) {
+    return 0; // Prevent division by zero if height is 0
+  }
   return $berat / ($tinggi_m * $tinggi_m);
 }
 
@@ -57,6 +60,9 @@ function hitungTDEE($bmr, $aktivitas)
  */
 function hitungUmur($tanggal_lahir)
 {
+  if (empty($tanggal_lahir)) {
+    return 0; // Return 0 or null if birth date is not provided
+  }
   $lahir = new DateTime($tanggal_lahir);
   $hari_ini = new DateTime(); // Tanggal sekarang
   $umur = $hari_ini->diff($lahir);

@@ -48,11 +48,18 @@ class HomeController
    * @param int $page The current page number for pagination.
    * @return array
    */
-  public function search($data, $page = 1)
+  public function search($keyword, $page = 1)
   {
     $food = new Food($this->db);
-    $foods = $food->search($data, 10, $page);
-    return ['view' => 'search', 'data' => compact("foods")];
+    $perPage = 10; // This should ideally come from a config or be passed as a parameter
+    $searchResult = $food->search($keyword, $perPage, $page);
+
+    $paginated_items = $searchResult[0];
+    $total_pages = $searchResult[1];
+    $current_page = $page;
+    $offset = ($page - 1) * $perPage;
+
+    return ['view' => 'search', 'data' => compact("paginated_items", "total_pages", "current_page", "keyword", "offset")];
   }
 
   /**

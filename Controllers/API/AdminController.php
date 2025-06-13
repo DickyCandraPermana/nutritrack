@@ -151,7 +151,27 @@ class AdminController
    */
   public function tambahUser()
   {
-    $data = $this->getInputData();
+    $data = $_POST; // Get data from POST
+    $profilePicturePath = null;
+
+    if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === UPLOAD_ERR_OK) {
+      $fileTmpPath = $_FILES['profile_picture']['tmp_name'];
+      $fileName = $_FILES['profile_picture']['name'];
+      $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+      $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
+      $uploadFileDir = 'public/uploads/';
+      $dest_path = $uploadFileDir . $newFileName;
+
+      if (move_uploaded_file($fileTmpPath, $dest_path)) {
+        $profilePicturePath = $dest_path;
+      } else {
+        $this->respond(false, 'Failed to upload profile picture.');
+      }
+    }
+
+    $data['profile_picture'] = $profilePicturePath; // Add path to data array
+
     $success = $this->user->tambahUser($data);
     $this->respond($success, $success ? 'Berhasil tambah user' : 'Gagal tambah user');
   }
@@ -163,7 +183,34 @@ class AdminController
    */
   public function editUser()
   {
-    $data = $this->getInputData();
+    $data = $_POST; // Get data from POST
+    $profilePicturePath = null;
+
+    if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === UPLOAD_ERR_OK) {
+      $fileTmpPath = $_FILES['profile_picture']['tmp_name'];
+      $fileName = $_FILES['profile_picture']['name'];
+      $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+      $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
+      $uploadFileDir = 'public/uploads/';
+      $dest_path = $uploadFileDir . $newFileName;
+
+      if (move_uploaded_file($fileTmpPath, $dest_path)) {
+        $profilePicturePath = $dest_path;
+      } else {
+        $this->respond(false, 'Failed to upload profile picture.');
+      }
+    }
+
+    // Only update profile_picture if a new one was uploaded
+    if ($profilePicturePath !== null) {
+        $data['profile_picture'] = $profilePicturePath;
+    } else {
+        // If no new picture is uploaded, ensure the existing one is not overwritten with null
+        // This might require fetching the current profile picture from the DB if not already in $data
+        // For now, we assume the model handles not updating if the key is missing or null
+    }
+
     $success = $this->user->editUser($data);
     $this->respond($success, $success ? 'Berhasil edit user' : 'Gagal edit user');
   }
