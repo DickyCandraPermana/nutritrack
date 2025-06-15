@@ -55,24 +55,52 @@ class Food
   public function editMakanan($data)
   {
     try {
+      // Start a transaction
+      $this->db->beginTransaction();
+
+      // Update main food details
       $stmt = $this->db->prepare("UPDATE makanan SET nama_makanan = ?, kategori = ?, deskripsi = ? WHERE food_id = ?");
-      $stmt->execute([$data['nama_makanan'], $data['kategori'], $data['deskripsi'], $data['food_id']]);
+      $foodUpdateSuccess = $stmt->execute([$data['nama_makanan'], $data['kategori'], $data['deskripsi'], $data['food_id']]);
 
-      foreach ($data['nutritions'] as $nutrition) {
-        $stmt = $this->db->prepare("SELECT * FROM detail_nutrisi_makanan WHERE food_id = ? AND nutrition_id = ?");
-        $stmt->execute([$data['food_id'], $nutrition['nutrition_id']]);
-        $cek = $stmt->fetch(); // Check if a record exists
+      if (!$foodUpdateSuccess) {
+        $this->db->rollBack();
+        return false; // Main food update failed
+      }
 
-        if ($cek) {
-          $stmt = $this->db->prepare("UPDATE detail_nutrisi_makanan SET jumlah = ?, satuan = ? WHERE food_id = ? AND nutrition_id = ?");
-          $stmt->execute([$nutrition['jumlah'], $nutrition['satuan'], $data['food_id'], $nutrition['nutrition_id']]);
-        } else {
-          $stmt = $this->db->prepare("INSERT INTO detail_nutrisi_makanan (food_id, nutrition_id, jumlah, satuan) VALUES (?, ?, ?, ?)");
-          $stmt->execute([$data['food_id'], $nutrition['nutrition_id'], $nutrition['jumlah'], $nutrition['satuan']]);
+      $nutritionUpdateSuccess = true; // Assume success if no nutritions or all succeed
+      if (isset($data['nutritions']) && is_array($data['nutritions'])) {
+        foreach ($data['nutritions'] as $nutrition) {
+          // Check if nutrition_id, jumlah, and satuan are set and valid
+          if (!isset($nutrition['nutrition_id']) || !isset($nutrition['jumlah']) || !isset($nutrition['satuan'])) {
+            // Log error or skip this nutrition, but don't fail the whole transaction yet
+            error_log("Invalid nutrition data for food_id " . $data['food_id'] . ": " . json_encode($nutrition));
+            $nutritionUpdateSuccess = false; // Mark as partial failure
+            continue;
+          }
+
+          $stmt = $this->db->prepare("SELECT * FROM detail_nutrisi_makanan WHERE food_id = ? AND nutrition_id = ?");
+          $stmt->execute([$data['food_id'], $nutrition['nutrition_id']]);
+          $cek = $stmt->fetch();
+
+          if ($cek) {
+            $stmt = $this->db->prepare("UPDATE detail_nutrisi_makanan SET jumlah = ?, satuan = ? WHERE food_id = ? AND nutrition_id = ?");
+            if (!$stmt->execute([$nutrition['jumlah'], $nutrition['satuan'], $data['food_id'], $nutrition['nutrition_id']])) {
+              $nutritionUpdateSuccess = false; // Mark as partial failure
+            }
+          } else {
+            $stmt = $this->db->prepare("INSERT INTO detail_nutrisi_makanan (food_id, nutrition_id, jumlah, satuan) VALUES (?, ?, ?, ?)");
+            if (!$stmt->execute([$data['food_id'], $nutrition['nutrition_id'], $nutrition['jumlah'], $nutrition['satuan']])) {
+              $nutritionUpdateSuccess = false; // Mark as partial failure
+            }
+          }
         }
       }
-      return true;
+
+      $this->db->commit();
+      return $foodUpdateSuccess && $nutritionUpdateSuccess; // Return true if both main food and all nutritions succeeded
     } catch (PDOException $e) {
+      $this->db->rollBack();
+      error_log("Error editing food: " . $e->getMessage()); // Log the actual error
       return false;
     }
   }

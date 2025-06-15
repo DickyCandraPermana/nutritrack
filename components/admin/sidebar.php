@@ -15,7 +15,7 @@ $menuItems = [
     <div class="p-6 gradient-bg">
       <div class="flex items-center space-x-3">
         <div class="p-2 bg-white rounded-xl">
-          <img src="public/assets/logo.png" alt="Foto" class="object-cover w-8 h-8 rounded-md" />
+          <img src="<?= BASE_URL ?>public/assets/logo.png" alt="Foto" class="object-cover w-8 h-8 rounded-md" />
         </div>
 
         <div>
@@ -41,10 +41,16 @@ $menuItems = [
     <!-- Admin Profile -->
     <div class="p-4 border-t border-gray-200">
       <div class="flex items-center space-x-3">
-        <img src="public/assets/jasmine.jpg" alt="Admin" class="w-10 h-10 rounded-full">
+        <?php if (isset($user['profile_picture']) && !empty($user['profile_picture'])): ?>
+          <img src="<?= BASE_URL . $user['profile_picture'] ?>" alt="Profile Picture" class="object-cover w-10 h-10 rounded-full">
+        <?php else: ?>
+          <div class="flex items-center justify-center w-10 h-10 text-lg font-semibold text-white bg-blue-500 rounded-full">
+            <?= strtoupper(substr($user['username'] ?? 'A', 0, 1)) ?>
+          </div>
+        <?php endif; ?>
         <div>
-          <p class="text-sm font-medium text-gray-700">Admin</p>
-          <p class="text-xs text-gray-500">admin@nutritrack.com</p>
+          <p class="text-sm font-medium text-gray-700"><?= $user['username'] ?? 'Admin' ?></p>
+          <p class="text-xs text-gray-500"><?= $user['email'] ?? 'admin@example.com' ?></p>
         </div>
       </div>
     </div>

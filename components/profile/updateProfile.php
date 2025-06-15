@@ -58,11 +58,11 @@
   <div class="grid grid-cols-2 gap-4">
     <div class="space-y-2">
       <label for="berat_badan" class="font-semibold">Berat Badan (kg)</label>
-      <input type="number" name="berat_badan" id="berat_badan" class="p-2 border rounded-md shadow-sm" value="<?= $user['berat_badan'] ?>">
+      <input type="number" name="berat_badan" id="berat_badan" class="p-2 border rounded-md shadow-sm" value="<?= $user['berat_badan'] ?>" min="0">
     </div>
     <div class="space-y-2">
       <label for="tinggi_badan" class="font-semibold">Tinggi Badan (cm)</label>
-      <input type="number" name="tinggi_badan" id="tinggi_badan" class="p-2 border rounded-md shadow-sm" value="<?= $user['tinggi_badan'] ?>">
+      <input type="number" name="tinggi_badan" id="tinggi_badan" class="p-2 border rounded-md shadow-sm" value="<?= $user['tinggi_badan'] ?>" min="0">
     </div>
   </div>
 

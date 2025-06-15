@@ -137,8 +137,21 @@ function setFlash($type, $message)
  * @param array $data An associative array of data to extract and make available in the view.
  * @return void
  */
+require_once 'config/koneksi.php';
+require_once 'models/Profile.php';
+
 function renderView($view, $data = [])
 {
+  global $db; // Access the global database connection
+
+  // Fetch user data if logged in
+  if (isset($_SESSION['user_id'])) {
+    $profileModel = new Models\Profile($db);
+    $user = $profileModel->getUserById($_SESSION['user_id']);
+    if ($user) {
+      $data['user'] = $user; // Add user data to the data array
+    }
+  }
 
   extract($data);
 
@@ -169,6 +182,17 @@ function getCurrentTime()
  */
 function renderLayout($view, $data = [])
 {
+  global $db; // Access the global database connection
+
+  // Fetch user data if logged in
+  if (isset($_SESSION['user_id'])) {
+    $profileModel = new Models\Profile($db);
+    $user = $profileModel->getUserById($_SESSION['user_id']);
+    if ($user) {
+      $data['user'] = $user; // Add user data to the data array
+    }
+  }
+
   extract($data); // Extract data for the view
   ob_start(); // Start output buffering
   require_once "views/{$view}.php"; // Include the actual view file

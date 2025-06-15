@@ -243,12 +243,47 @@ class ProfileController
   public function tambahMakanan()
   {
     $data = json_decode(file_get_contents('php://input'), true);
-    $this->profile->tambahDetailRegistrasiMakanan($data);
-    echo json_encode([
-      'status' => 'success',
-      'message' => ['Food added successfully']
-    ]);
-    exit();
+    $errors = [];
+
+    // Validate food_id
+    if (!isset($data['food_id']) || !is_numeric($data['food_id']) || $data['food_id'] <= 0) {
+      $errors[] = 'Food selection is required.';
+    }
+
+    // Validate jumlah_porsi
+    if (!isset($data['jumlah_porsi']) || !is_numeric($data['jumlah_porsi']) || $data['jumlah_porsi'] <= 0) {
+      $errors[] = 'Portion must be a positive number.';
+    }
+
+    // Validate satuan
+    if (!isset($data['satuan']) || trim($data['satuan']) === '') {
+      $errors[] = 'Portion unit is required.';
+    }
+
+    if (!empty($errors)) {
+      http_response_code(400);
+      echo json_encode([
+        'status' => 'error',
+        'message' => $errors
+      ]);
+      exit();
+    }
+
+    try {
+      $this->profile->tambahDetailRegistrasiMakanan($data);
+      echo json_encode([
+        'status' => 'success',
+        'message' => ['Food added successfully']
+      ]);
+      exit();
+    } catch (Exception $e) {
+      http_response_code(500);
+      echo json_encode([
+        'status' => 'error',
+        'message' => ['An error occurred while adding food: ' . $e->getMessage()]
+      ]);
+      exit();
+    }
   }
 
   /**

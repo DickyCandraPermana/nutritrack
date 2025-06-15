@@ -235,18 +235,46 @@ class AdminController
   public function tambahMakanan()
   {
     $data = $this->getInputData();
-    $nama_makanan = $data['nama_makanan'];
-    $deskripsi = $data['deskripsi'];
-    $kategori = $data['kategori'];
-    $nutrisis = $data['nutrisis']; // Assuming 'nutrisis' is always present
+    $errors = [];
+
+    $nama_makanan = trim($data['nama_makanan'] ?? '');
+    $deskripsi = trim($data['deskripsi'] ?? '');
+    $kategori = trim($data['kategori'] ?? '');
+    $nutrisis = $data['nutrisis'] ?? [];
+
+    if (empty($nama_makanan)) {
+      $errors[] = 'Nama makanan wajib diisi.';
+    }
+
+    if (empty($nutrisis)) {
+      $errors[] = 'Setidaknya satu nutrisi wajib ditambahkan.';
+    } else {
+      foreach ($nutrisis as $index => $nutrisi) {
+        if (!isset($nutrisi['jumlah']) || !is_numeric($nutrisi['jumlah']) || $nutrisi['jumlah'] <= 0) {
+          $errors[] = 'Jumlah nutrisi untuk ' . ($nutrisi['nama'] ?? 'item ' . ($index + 1)) . ' harus angka positif.';
+        }
+        if (!isset($nutrisi['satuan']) || trim($nutrisi['satuan']) === '') {
+          $errors[] = 'Satuan nutrisi untuk ' . ($nutrisi['nama'] ?? 'item ' . ($index + 1)) . ' wajib diisi.';
+        }
+      }
+    }
+
+    if (!empty($errors)) {
+      $this->respond(false, $errors);
+    }
 
     $foodData = array('nama_makanan' => $nama_makanan, 'deskripsi' => $deskripsi, 'kategori' => $kategori);
     $success = $this->food->tambahMakanan($foodData);
 
-    $inputDetail = false; // Initialize $inputDetail
+    $inputDetail = false;
     if ($success) {
       $food_id = $this->food->getFoodId($foodData['nama_makanan']);
-      $inputDetail = $this->food->inputDetailMakanan($nutrisis, $food_id);
+      if ($food_id) {
+        $inputDetail = $this->food->inputDetailMakanan($nutrisis, $food_id);
+      } else {
+        $errors[] = 'Gagal mendapatkan ID makanan baru.';
+        $this->respond(false, $errors);
+      }
     }
 
     $this->respond($success && $inputDetail, $success && $inputDetail ? 'Berhasil tambah makanan' : 'Gagal tambah makanan');

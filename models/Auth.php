@@ -42,6 +42,8 @@ class Auth
 
     if (empty($data['email'])) {
       $errors[] = 'Email wajib diisi.';
+    } else if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+      $errors[] = 'Format email tidak valid.';
     } else {
       $stmt = $this->db->prepare("SELECT user_id FROM users WHERE email = ?");
       $stmt->execute([$data['email']]);
