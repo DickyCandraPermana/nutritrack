@@ -72,8 +72,6 @@ class Food
         foreach ($data['nutritions'] as $nutrition) {
           // Check if nutrition_id, jumlah, and satuan are set and valid
           if (!isset($nutrition['nutrition_id']) || !isset($nutrition['jumlah']) || !isset($nutrition['satuan'])) {
-            // Log error or skip this nutrition, but don't fail the whole transaction yet
-            error_log("Invalid nutrition data for food_id " . $data['food_id'] . ": " . json_encode($nutrition));
             $nutritionUpdateSuccess = false; // Mark as partial failure
             continue;
           }
@@ -100,7 +98,6 @@ class Food
       return $foodUpdateSuccess && $nutritionUpdateSuccess; // Return true if both main food and all nutritions succeeded
     } catch (PDOException $e) {
       $this->db->rollBack();
-      error_log("Error editing food: " . $e->getMessage()); // Log the actual error
       return false;
     }
   }

@@ -29,7 +29,6 @@ class Nutrition
       $stmt = $this->db->query("SELECT * FROM nutrisi ORDER BY nutrition_id DESC");
       return $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (PDOException $e) {
-      error_log("Database error in getNutritions: " . $e->getMessage());
       return [];
     }
   }

@@ -402,7 +402,6 @@ class Profile
         case 8:
           $meals[$waktu]['items'][$key]['protein'] = (float)$row['jumlah'];
           break;
-          // case 9 => fiber (serat) tidak digunakan di output
       }
     }
 
@@ -437,11 +436,6 @@ class Profile
       INNER JOIN nutrisi ON detail_nutrisi_makanan.nutrition_id = nutrisi.nutrition_id
       WHERE reg_id = ? AND nutrisi.nutrition_id IN (1, 2, 6, 8, 9)
       GROUP BY detail_nutrisi_makanan.nutrition_id"
-      // 1 => kalori
-      // 2 => lemak
-      // 6 => karbohidrat
-      // 8 => protein
-      // 9 => serat pangan
     );
     $stmt->execute([$reg_id]);
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);

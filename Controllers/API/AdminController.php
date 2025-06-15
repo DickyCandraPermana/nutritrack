@@ -58,10 +58,6 @@ class AdminController
   private function getInputData()
   {
     $data = json_decode(file_get_contents('php://input'), true);
-    // For debugging: Log the raw input and decoded data
-    // For debugging: Log the raw input and decoded data
-    // error_log("Raw input: " . file_get_contents('php://input'));
-    // error_log("Decoded input: " . print_r($data, true));
 
     if (json_last_error() !== JSON_ERROR_NONE) {
         $this->respond(false, 'Invalid JSON input: ' . json_last_error_msg());

@@ -34,7 +34,6 @@ class User
   {
     try {
       $offset = ($page - 1) * $perPage;
-      $offset = ($page - 1) * $perPage;
       $sql = "SELECT * FROM users WHERE status = 1";
 
       if (!empty($search)) {
@@ -73,7 +72,7 @@ class User
       return $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (PDOException $e) {
       return [
-        "error" => "jir",
+        "error" => "Database error: " . $e->getMessage(),
       ];
     }
   }
@@ -92,7 +91,7 @@ class User
       return $stmt->fetch(PDO::FETCH_ASSOC);
     } catch (PDOException $e) {
       return [
-        "error" => "jir",
+        "error" => "Database error: " . $e->getMessage(),
       ];
     }
   }

@@ -3,28 +3,26 @@
 ini_set('display_errors', 'Off');
 error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING);
 
-// No session_start() here, it's handled in index.php
-
 use Controllers\API\AdminController;
 use Controllers\API\AuthController;
 use Controllers\API\ProfileController;
-use Controllers\API\FoodController; // Added
-use Controllers\API\HomeController; // Added
+use Controllers\API\FoodController;
+use Controllers\API\HomeController;
 
-require_once 'config/koneksi.php'; // Added
-require_once 'config/helpers.php'; // Added, might be needed for dispatchRoute or other helpers
+require_once 'config/koneksi.php';
+require_once 'config/helpers.php';
 
-require_once 'controllers/API/AdminController.php'; // Added
+require_once 'controllers/API/AdminController.php';
 require_once 'controllers/API/AuthController.php';
 require_once 'controllers/API/ProfileController.php';
-require_once 'controllers/API/FoodController.php'; // Added
-require_once 'controllers/API/HomeController.php'; // Added
+require_once 'controllers/API/FoodController.php';
+require_once 'controllers/API/HomeController.php';
 
 $authController = new AuthController($db);
 $profileController = new ProfileController($db);
 $adminController = new AdminController($db);
-$foodController = new FoodController($db); // Added
-$homeController = new HomeController($db); // Added
+$foodController = new FoodController($db);
+$homeController = new HomeController($db);
 
 $parsedUrl = parse_url($_SERVER['REQUEST_URI']);
 $uri = isset($parsedUrl['path']) ? trim($parsedUrl['path'], '/') : '';

@@ -49,8 +49,5 @@ if ($routeResult && is_array($routeResult) && isset($routeResult['view'])) {
     // If no route found or dispatchRoute didn't return a view, load 404 page within the layout
     renderLayout('404'); // Assuming 404.php exists in views/
 }
-// If $routeResult is not an array with 'view' (e.g., a redirect or API response),
-// dispatchRoute or the controller should have handled it (e.g., by exiting or sending headers).
-// No further action needed here.
 
 ?>

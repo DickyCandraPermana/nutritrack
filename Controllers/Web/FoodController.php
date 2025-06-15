@@ -33,7 +33,6 @@ class FoodController
     $foodData = $this->food->getNamaMakananDanID();
 
     if (empty($foodData)) {
-      // Jangan asal echo, kirim ke flash dan redirect lebih baik
       setFlash('error', 'Tidak ada data makanan ditemukan!');
       exit;
     }

@@ -6,7 +6,6 @@ use Models\Profile;
 use PDO, PDOException, Exception, Throwable, ErrorException, DateTime;
 
 require_once 'models/Profile.php';
-// require_once 'controllers/API/FoodController.php'; // This include seems irrelevant for ProfileController
 
 // Custom error handler to convert errors into exceptions
 set_error_handler(function ($severity, $message, $file, $line) {
@@ -20,7 +19,6 @@ set_error_handler(function ($severity, $message, $file, $line) {
 // Custom exception handler to ensure JSON response for all uncaught exceptions
 set_exception_handler(function (Throwable $exception) {
   http_response_code(500);
-  // error_log("Fatal Error/Unhandled Exception: " . $exception->getMessage() . " in " . $exception->getFile() . " on line " . $exception->getLine()); // Commented out for production
   echo json_encode([
     'status' => 'error',
     'message' => ['An unexpected server error occurred.'] // Generic message for production
@@ -68,14 +66,10 @@ class ProfileController
    */
   public function editProfile()
   {
-    // error_log("editProfile: Method started. Request Method: " . $_SERVER['REQUEST_METHOD']); // Commented out for production
     $data = $_POST;
-    // error_log("editProfile: Raw POST data: " . print_r($data, true)); // Commented out for production
-    // error_log("editProfile: Raw FILES data: " . print_r($_FILES, true)); // Commented out for production
 
     // Check if POST data is empty, which might indicate a problem with FormData submission
     if (empty($data) && empty($_FILES)) {
-      // error_log("editProfile: WARNING: POST and FILES data are both empty. Form submission might be incorrect."); // Commented out for production
       http_response_code(400);
       echo json_encode([
         'status' => 'error',
