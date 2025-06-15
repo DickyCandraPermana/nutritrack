@@ -58,8 +58,17 @@ class AdminController
   private function getInputData()
   {
     $data = json_decode(file_get_contents('php://input'), true);
-    if (!$data) {
-      $this->respond(false, 'Invalid input data' . json_encode($data));
+    // For debugging: Log the raw input and decoded data
+    // For debugging: Log the raw input and decoded data
+    // error_log("Raw input: " . file_get_contents('php://input'));
+    // error_log("Decoded input: " . print_r($data, true));
+
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        $this->respond(false, 'Invalid JSON input: ' . json_last_error_msg());
+    }
+    if (!is_array($data)) {
+        // If data is not an array, it might be empty or not valid JSON for our purpose
+        $data = []; // Treat as empty array to allow default values to kick in
     }
     return $data;
   }
@@ -71,7 +80,12 @@ class AdminController
    */
   public function getUsers()
   {
-    $users = $this->user->getUsers();
+    $data = $this->getInputData();
+    $search = $data['search'] ?? "";
+    $perPage = $data['perPage'] ?? 50;
+    $page = $data['page'] ?? 1;
+
+    $users = $this->user->searchUsers($search, $perPage, $page);
     $this->respond(true, 'User list retrieved', $users);
   }
 

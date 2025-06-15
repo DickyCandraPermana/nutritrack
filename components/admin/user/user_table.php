@@ -4,6 +4,10 @@
 
 <div class="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
   <h4 class="mb-4 text-lg font-semibold">Daftar User</h4>
+  <div class="mb-4">
+    <input type="text" id="userSearchInput" placeholder="Cari user..."
+      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+  </div>
   <table class="min-w-full border border-gray-300 table-auto">
     <thead class="bg-gray-100">
       <tr>
@@ -20,8 +24,21 @@
 
 <script>
   async function fetchUsers() {
+    const searchInput = document.getElementById('userSearchInput');
+    const searchValue = searchInput ? searchInput.value : '';
+
     try {
-      const res = await fetch('/nutritrack/api/fetch-all-users');
+      const res = await fetch('/nutritrack/api/fetch-all-users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          search: searchValue,
+          perPage: 500,
+          page: 1
+        })
+      });
       const tBody = document.getElementById('userTableBody');
       const data = await res.json();
       const users = data.data;
@@ -92,4 +109,11 @@
   }
 
   fetchUsers();
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('userSearchInput');
+    if (searchInput) {
+      searchInput.addEventListener('input', fetchUsers);
+    }
+  });
 </script>

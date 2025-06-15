@@ -22,6 +22,50 @@ class User
    *
    * @return array An array of associative arrays, each representing a user.
    */
+  /**
+   * Retrieves all active users from the database with search and pagination.
+   *
+   * @param string $search The search term for filtering users.
+   * @param int $perPage The number of users per page.
+   * @param int $page The current page number.
+   * @return array An array of associative arrays, each representing a user.
+   */
+  public function searchUsers($search = "", $perPage = 50, $page = 1)
+  {
+    try {
+      $offset = ($page - 1) * $perPage;
+      $offset = ($page - 1) * $perPage;
+      $sql = "SELECT * FROM users WHERE status = 1";
+
+      if (!empty($search)) {
+        $sql .= " AND (username LIKE :search_term_username OR email LIKE :search_term_email)";
+      }
+
+      $sql .= " ORDER BY user_id ASC LIMIT :perPage OFFSET :offset";
+      $stmt = $this->db->prepare($sql);
+
+      if (!empty($search)) {
+        $stmt->bindValue(':search_term_username', "%" . $search . "%", PDO::PARAM_STR);
+        $stmt->bindValue(':search_term_email', "%" . $search . "%", PDO::PARAM_STR);
+      }
+
+      $stmt->bindValue(':perPage', (int)$perPage, PDO::PARAM_INT);
+      $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+
+      $stmt->execute();
+      return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+      return [
+        "error" => $e->getMessage(),
+      ];
+    }
+  }
+
+  /**
+   * Retrieves all active users from the database.
+   *
+   * @return array An array of associative arrays, each representing a user.
+   */
   public function getUsers()
   {
     try {

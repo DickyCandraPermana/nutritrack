@@ -1029,6 +1029,10 @@ video {
   width: 100%;
 }
 
+.w-4\/5{
+  width: 80%;
+}
+
 .min-w-\[250px\]{
   min-width: 250px;
 }
@@ -1071,6 +1075,10 @@ video {
 
 .max-w-xl{
   max-width: 36rem;
+}
+
+.max-w-\[80\%\]{
+  max-width: 80%;
 }
 
 .flex-1{
@@ -1854,6 +1862,21 @@ video {
 .py-8{
   padding-top: 2rem;
   padding-bottom: 2rem;
+}
+
+.px-10{
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
+}
+
+.px-16{
+  padding-left: 4rem;
+  padding-right: 4rem;
+}
+
+.py-12{
+  padding-top: 3rem;
+  padding-bottom: 3rem;
 }
 
 .pb-2{

@@ -6,9 +6,6 @@
     </div>
     <div class="flex items-center space-x-4">
       <div class="relative">
-        <i class="absolute text-gray-400 transform -translate-y-1/2 fas fa-search left-3 top-1/2"></i>
-        <input type="text" placeholder="Cari..."
-          class="py-2 pl-10 pr-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
       </div>
       <button class="relative p-2 text-gray-400 hover:text-gray-600">
         <i class="text-xl fas fa-bell"></i>

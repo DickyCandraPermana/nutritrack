@@ -56,20 +56,39 @@
     if (window[canvasId + 'Instance']) {
       window[canvasId + 'Instance'].destroy();
     }
+
+    // Find the first index where consumed value is not zero
+    let startIndex = 0;
+    for (let i = 0; i < consumed.length; i++) {
+      if (consumed[i] !== 0) {
+        startIndex = i;
+        break;
+      }
+    }
+
+    // If all values are zero, show only the last day's data (or handle as per original behavior if preferred)
+    // For this task, we'll show all zeros if no non-zero data exists, but start from the first non-zero if it does.
+    // If all are zero, startIndex will remain 0, and the chart will show all 7 days with zero values.
+    // If only today has data, startIndex will be 6, and it will show only today's data.
+
+    const labels = getLast7Days().slice(startIndex);
+    const filteredConsumed = consumed.slice(startIndex);
+    const filteredNeeded = needed.slice(startIndex); // Ensure needed array matches the length
+
     window[canvasId + 'Instance'] = new Chart(ctx, {
       type: 'line',
       data: {
-        labels: getLast7Days(),
+        labels: labels,
         datasets: [{
             label: label1,
-            data: consumed,
+            data: filteredConsumed,
             borderColor: colors[0],
             backgroundColor: colors[1],
             tension: 0.1
           },
           {
             label: label2,
-            data: needed,
+            data: filteredNeeded,
             borderColor: colors[2],
             backgroundColor: colors[3],
             borderDash: [5, 5]

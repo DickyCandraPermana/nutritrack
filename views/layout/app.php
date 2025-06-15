@@ -13,7 +13,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 
-<body>
+<body class="flex flex-col min-h-screen">
   <div id="flash-container" class="fixed top-20 left-1/2 -translate-x-1/2 z-[9999] flex flex-col gap-2">
   </div>
   <script>
