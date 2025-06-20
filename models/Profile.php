@@ -477,4 +477,51 @@ class Profile
 
     return $row['total_calories'];
   }
+
+  public function addReminder($data)
+  {
+    try {
+      $stmt = $this->db->prepare("INSERT INTO user_reminder (user_id, judul, waktu) VALUES (?, ?, ?)");
+      $stmt->execute([$data['user_id'], $data['judul'], $data['waktu']]);
+
+      return $this->db->lastInsertId();
+    } catch (PDOException $e) {
+      return [
+        'error' => $e->getMessage()
+      ];
+    }
+  }
+
+  public function getUserReminder($user_id)
+  {
+    $stmt = $this->db->prepare("SELECT * FROM user_reminder WHERE user_id = ?");
+    $stmt->execute([$user_id]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  public function deleteReminder($reminder_id)
+  {
+    try {
+      $stmt = $this->db->prepare("DELETE FROM user_reminder WHERE id_reminder = ?");
+      $stmt->execute([$reminder_id]);
+      return true;
+    } catch (PDOException $e) {
+      return [
+        'error' => $e->getMessage()
+      ];
+    }
+  }
+
+  public function completeReminder($reminder_id)
+  {
+    try {
+      $stmt = $this->db->prepare("UPDATE user_reminder SET completed = 1 WHERE id_reminder = ?");
+      $stmt->execute([$reminder_id]);
+      return true;
+    } catch (PDOException $e) {
+      return [
+        'error' => $e->getMessage()
+      ];
+    }
+  }
 }

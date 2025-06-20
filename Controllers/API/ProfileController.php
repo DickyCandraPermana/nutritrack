@@ -361,4 +361,70 @@ class ProfileController
     ]);
     exit;
   }
+
+  public function addReminder()
+  {
+    $data = json_decode(file_get_contents('php://input'), true);
+    $res = $this->profile->addReminder($data);
+    if (isset($res['error'])) {
+      echo json_encode([
+        "status" => "error",
+        "message" => $res['error']
+      ]);
+      exit;
+    }
+    echo json_encode([
+      "status" => "success",
+      "message" => "Reminder added successfully"
+    ]);
+    exit;
+  }
+
+  public function getUserReminder()
+  {
+    $data = json_decode(file_get_contents('php://input'), true);
+    $user_id = $data['user_id'];
+    $reminders = $this->profile->getUserReminder($user_id);
+    echo json_encode([
+      "status" => "success",
+      "data" => $reminders
+    ]);
+    exit;
+  }
+
+  public function deleteReminder()
+  {
+    $data = json_decode(file_get_contents('php://input'), true);
+    $res = $this->profile->deleteReminder($data['reminder_id']);
+    if (isset($res['error'])) {
+      echo json_encode([
+        "status" => "error",
+        "message" => $res['error']
+      ]);
+      exit;
+    }
+    echo json_encode([
+      "status" => "success",
+      "message" => "Reminder deleted successfully"
+    ]);
+    exit;
+  }
+
+  public function completeReminder()
+  {
+    $data = json_decode(file_get_contents('php://input'), true);
+    $res = $this->profile->completeReminder($data['reminder_id']);
+    if (isset($res['error'])) {
+      echo json_encode([
+        "status" => "error",
+        "message" => $res['error']
+      ]);
+      exit;
+    }
+    echo json_encode([
+      "status" => "success",
+      "message" => "Reminder completed successfully"
+    ]);
+    exit;
+  }
 }

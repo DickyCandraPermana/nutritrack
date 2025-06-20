@@ -14,6 +14,8 @@ $carbs = number_format($target_calories * 0.5 / 4, 2);
 $protein = number_format($target_calories * 0.2 / 4, 2);
 $fat = number_format($target_calories * 0.3 / 9, 2);
 $fiber = (int) ($target_calories / 1000) * 14;
+
+require 'addReminder.php';
 ?>
 
 <div class="container px-4 mx-auto mt-6">
@@ -75,140 +77,8 @@ $fiber = (int) ($target_calories / 1000) * 14;
     <!-- Right Column -->
     <div class="space-y-6 lg:col-span-4">
 
-      <!-- Konsumsi Air -->
-      <div class="mb-6 bg-white rounded-lg shadow">
-        <div class="px-4 py-3 border-b">
-          <h5 class="flex items-center text-lg font-semibold">
-            <i class="mr-2 text-blue-500 fas fa-tint"></i> Konsumsi Air
-          </h5>
-        </div>
-        <div class="px-4 py-5 text-center">
-          <h6 class="mb-2 text-sm text-gray-600">Target: 8 gelas (2000ml)</h6>
-          <div class="w-full h-3 mb-2 bg-gray-200 rounded-full">
-            <div class="h-3 rounded-full bg-cyan-400" style="width: 62.5%"></div>
-          </div>
-          <p class="mb-4 text-sm text-gray-700">5 dari 8 gelas (1250ml)</p>
 
-          <div class="flex items-center justify-between mb-4">
-            <i class="text-xl fas fa-glass-water text-cyan-500"></i>
-            <i class="text-xl fas fa-glass-water text-cyan-500"></i>
-            <i class="text-xl fas fa-glass-water text-cyan-500"></i>
-            <i class="text-xl fas fa-glass-water text-cyan-500"></i>
-            <i class="text-xl fas fa-glass-water text-cyan-500"></i>
-            <i class="text-xl text-gray-400 fas fa-glass-water"></i>
-            <i class="text-xl text-gray-400 fas fa-glass-water"></i>
-            <i class="text-xl text-gray-400 fas fa-glass-water"></i>
-          </div>
 
-          <button class="w-full px-4 py-2 font-medium text-white rounded bg-cyan-500 hover:bg-cyan-600">
-            <i class="mr-2 fas fa-plus"></i> Tambah Air
-          </button>
-        </div>
-      </div>
-
-      <?php
-      /*
-<!-- Tren Nutrisi -->
-      <div class="mb-6 bg-white rounded-lg shadow">
-        <div class="px-4 py-3 border-b">
-          <h5 class="flex items-center text-lg font-semibold">
-            <i class="mr-2 text-green-500 fas fa-chart-line"></i> Tren Nutrisi
-          </h5>
-        </div>
-        <div class="px-4 py-5">
-          <!-- Tab Navigation -->
-          <ul class="flex mb-4 border-b">
-            <li class="mr-2">
-              <button class="px-4 py-2 text-sm font-medium text-gray-600 border-b-2 border-transparent hover:text-cyan-500 hover:border-cyan-500 active" id="weekly-tab" data-bs-toggle="tab" data-bs-target="#weekly" type="button" role="tab">
-                Minggu Ini
-              </button>
-            </li>
-            <li class="mr-2">
-              <button class="px-4 py-2 text-sm font-medium text-gray-600 border-b-2 border-transparent hover:text-cyan-500 hover:border-cyan-500" id="monthly-tab" data-bs-toggle="tab" data-bs-target="#monthly" type="button" role="tab">
-                Bulanan
-              </button>
-            </li>
-          </ul>
-
-          <!-- Tab Content -->
-          <div class="tab-content">
-            <!-- Minggu Ini -->
-            <div class="tab-pane fade show active" id="weekly" role="tabpanel">
-              <canvas id="weeklyTrendChart" height="250"></canvas>
-            </div>
-            <!-- Bulanan -->
-            <div class="tab-pane fade" id="monthly" role="tabpanel">
-              <canvas id="monthlyTrendChart" height="250"></canvas>
-            </div>
-          </div>
-        </div>
-      </div>
-      */
-      ?>
-
-      <!-- Pengingat -->
-      <div class="mb-6 bg-white rounded-lg shadow">
-        <div class="flex items-center justify-between px-4 py-3 border-b">
-          <h5 class="flex items-center text-lg font-semibold">
-            <i class="mr-2 fas fa-bell"></i> Pengingat
-          </h5>
-          <button class="flex items-center px-3 py-2 text-xs text-white rounded-md bg-cyan-500">
-            <i class="mr-1 fas fa-plus"></i> Tambah Pengingat
-          </button>
-        </div>
-
-        <div class="px-4 py-5">
-          <!-- Reminder 1 -->
-          <div class="flex items-center justify-between mb-4">
-            <div>
-              <h6 class="text-sm font-semibold text-gray-700">Minum Air</h6>
-              <small class="text-gray-500">10:00 AM</small>
-            </div>
-            <div class="flex space-x-2">
-              <button class="px-2 py-1 text-xs text-white bg-yellow-500 rounded-full">Aktif</button>
-              <button class="px-2 py-1 text-xs text-white bg-red-500 rounded-full">Hapus</button>
-            </div>
-          </div>
-
-          <!-- Reminder 2 -->
-          <div class="flex items-center justify-between mb-4">
-            <div>
-              <h6 class="text-sm font-semibold text-gray-700">Sarapan</h6>
-              <small class="text-gray-500">07:30 AM</small>
-            </div>
-            <div class="flex space-x-2">
-              <button class="px-2 py-1 text-xs text-white bg-yellow-500 rounded-full">Aktif</button>
-              <button class="px-2 py-1 text-xs text-white bg-red-500 rounded-full">Hapus</button>
-            </div>
-          </div>
-
-          <!-- Reminder 3 -->
-          <div class="flex items-center justify-between mb-4">
-            <div>
-              <h6 class="text-sm font-semibold text-gray-700">Makan Siang</h6>
-              <small class="text-gray-500">12:00 PM</small>
-            </div>
-            <div class="flex space-x-2">
-              <button class="px-2 py-1 text-xs text-white bg-yellow-500 rounded-full">Aktif</button>
-              <button class="px-2 py-1 text-xs text-white bg-red-500 rounded-full">Hapus</button>
-            </div>
-          </div>
-
-          <!-- Reminder 4 -->
-          <div class="flex items-center justify-between mb-4">
-            <div>
-              <h6 class="text-sm font-semibold text-gray-700">Makan Malam</h6>
-              <small class="text-gray-500">07:00 PM</small>
-            </div>
-            <div class="flex space-x-2">
-              <button class="px-2 py-1 text-xs text-white bg-yellow-500 rounded-full">Aktif</button>
-              <button class="px-2 py-1 text-xs text-white bg-red-500 rounded-full">Hapus</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <?php /*
       <!-- Rekomendasi Gizi -->
       <div class="p-5 mb-6 bg-white rounded-lg shadow-lg">
         <div class="mb-5 text-center">
@@ -272,7 +142,98 @@ $fiber = (int) ($target_calories / 1000) * 14;
             </div>
           </div>
         </div>
-      </div> */ ?>
+      </div>
+
+      <!-- Konsumsi Air -->
+      <div class="mb-6 bg-white rounded-lg shadow">
+        <div class="px-4 py-3 border-b">
+          <h5 class="flex items-center text-lg font-semibold">
+            <i class="mr-2 text-blue-500 fas fa-tint"></i> Konsumsi Air
+          </h5>
+        </div>
+        <div class="px-4 py-5 text-center">
+          <h6 class="mb-2 text-sm text-gray-600">Target: 8 gelas (2000ml)</h6>
+          <div class="w-full h-3 mb-2 bg-gray-200 rounded-full">
+            <div class="h-3 rounded-full bg-cyan-400" style="width: 0%"></div>
+          </div>
+          <p class="mb-4 text-sm text-gray-700">0 dari 8 gelas (0ml)</p>
+
+          <div class="flex items-center justify-between mb-4">
+            <i class="text-xl text-gray-400 fas fa-glass-water"></i>
+            <i class="text-xl text-gray-400 fas fa-glass-water"></i>
+            <i class="text-xl text-gray-400 fas fa-glass-water"></i>
+            <i class="text-xl text-gray-400 fas fa-glass-water"></i>
+            <i class="text-xl text-gray-400 fas fa-glass-water"></i>
+            <i class="text-xl text-gray-400 fas fa-glass-water"></i>
+            <i class="text-xl text-gray-400 fas fa-glass-water"></i>
+            <i class="text-xl text-gray-400 fas fa-glass-water"></i>
+          </div>
+
+          <button class="w-full px-4 py-2 font-medium text-white rounded bg-cyan-500 hover:bg-cyan-600">
+            <i class="mr-2 fas fa-plus"></i> Tambah Air
+          </button>
+        </div>
+      </div>
+
+      <?php
+      /*
+<!-- Tren Nutrisi -->
+      <div class="mb-6 bg-white rounded-lg shadow">
+        <div class="px-4 py-3 border-b">
+          <h5 class="flex items-center text-lg font-semibold">
+            <i class="mr-2 text-green-500 fas fa-chart-line"></i> Tren Nutrisi
+          </h5>
+        </div>
+        <div class="px-4 py-5">
+          <!-- Tab Navigation -->
+          <ul class="flex mb-4 border-b">
+            <li class="mr-2">
+              <button class="px-4 py-2 text-sm font-medium text-gray-600 border-b-2 border-transparent hover:text-cyan-500 hover:border-cyan-500 active" id="weekly-tab" data-bs-toggle="tab" data-bs-target="#weekly" type="button" role="tab">
+                Minggu Ini
+              </button>
+            </li>
+            <li class="mr-2">
+              <button class="px-4 py-2 text-sm font-medium text-gray-600 border-b-2 border-transparent hover:text-cyan-500 hover:border-cyan-500" id="monthly-tab" data-bs-toggle="tab" data-bs-target="#monthly" type="button" role="tab">
+                Bulanan
+              </button>
+            </li>
+          </ul>
+
+          <!-- Tab Content -->
+          <div class="tab-content">
+            <!-- Minggu Ini -->
+            <div class="tab-pane fade show active" id="weekly" role="tabpanel">
+              <canvas id="weeklyTrendChart" height="250"></canvas>
+            </div>
+            <!-- Bulanan -->
+            <div class="tab-pane fade" id="monthly" role="tabpanel">
+              <canvas id="monthlyTrendChart" height="250"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      */
+      ?>
+
+      <!-- Pengingat -->
+      <div class="mb-6 bg-white rounded-lg shadow">
+        <div class="flex items-center justify-between px-4 py-3 border-b">
+          <h5 class="flex items-center text-lg font-semibold">
+            <i class="mr-2 fas fa-bell"></i> Pengingat
+          </h5>
+          <button onclick="showModal()" class="flex items-center px-3 py-2 text-xs text-white rounded-md bg-cyan-500">
+            <i class="mr-1 fas fa-plus"></i> Tambah Pengingat
+          </button>
+        </div>
+
+        <div class="px-4 py-5" id="reminder-container">
+          <div class="flex items-center mb-4">
+            <i class="mr-2 text-gray-600 fas fa-bell"></i>
+            <span class="text-sm font-semibold">Tidak ada pengingat</span>
+          </div>
+        </div>
+      </div>
+
 
 
     </div>
@@ -332,8 +293,157 @@ $fiber = (int) ($target_calories / 1000) * 14;
     },
   ];
 
+  const reminder = [];
 
   const container = document.getElementById('nutrient-container');
+
+  function showModal() {
+    const modal = document.getElementById('add-reminder');
+    modal.classList.remove('hidden');
+  }
+
+  async function getUserReminderData() {
+    reminder.length = 0;
+    const response = await fetch('/nutritrack/api/get-user-reminder', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        user_id: <?= $_SESSION['user_id'] ?>
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log(data);
+
+    const currentReminder = data.data;
+
+    currentReminder.forEach(item => {
+      reminder.push(item);
+    })
+
+    renderUserReminder();
+  }
+
+  function renderUserReminder() {
+    const container = document.getElementById('reminder-container');
+    container.innerHTML = '';
+
+    if (reminder.length > 0) {
+      reminder.forEach(item => {
+        const reminderItem = document.createElement('div');
+        reminderItem.className = 'flex items-center justify-between mb-4';
+
+        // Conditionally apply strikethrough if completed
+        const textClass = item.completed ?
+          'text-sm font-semibold text-gray-700 line-through' :
+          'text-sm font-semibold text-gray-700';
+
+        const timeClass = item.completed ?
+          'text-gray-400 line-through' :
+          'text-gray-500';
+
+        reminderItem.innerHTML = `
+        <div>
+          <h6 class="${textClass}">${item.judul}</h6>
+          <small class="${timeClass}">${item.waktu}</small>
+        </div>
+        <div class="flex space-x-2">
+          <button class="px-2 py-1 text-xs text-white bg-yellow-500 rounded-full" onclick="completeReminder(${item.id_reminder})">Aktif</button>
+          <button class="px-2 py-1 text-xs text-white bg-red-500 rounded-full" onclick="deleteReminder(${item.id_reminder})">Hapus</button>
+        </div>
+      `;
+
+        container.appendChild(reminderItem);
+      });
+    } else {
+      container.innerHTML = `
+      <div class="flex items-center mb-4">
+        <i class="mr-2 text-gray-600 fas fa-bell"></i>
+        <span class="text-sm font-semibold">Tidak ada pengingat</span>
+      </div>
+    `;
+    }
+  }
+
+
+  async function deleteReminder(reminder_id) {
+    const response = await fetch('/nutritrack/api/delete-reminder', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        user_id: <?= $_SESSION['user_id'] ?>,
+        reminder_id: reminder_id
+      })
+    });
+
+    if (!response.ok) {
+      showFlashMessage({
+        type: 'error',
+        messages: 'Gagal menghapus pengingat'
+      });
+      return;
+    }
+
+    const data = await response.json();
+
+    if (data.status === 'success') {
+      showFlashMessage({
+        type: 'success',
+        messages: data.message
+      });
+    } else {
+      showFlashMessage({
+        type: 'error',
+        messages: data.message
+      });
+    }
+
+    getUserReminderData();
+  }
+
+  async function completeReminder(reminder_id) {
+    const response = await fetch('/nutritrack/api/complete-reminder', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        user_id: <?= $_SESSION['user_id'] ?>,
+        reminder_id: reminder_id
+      })
+    })
+
+    if (!response.ok) {
+      showFlashMessage({
+        type: 'error',
+        messages: 'Gagal mengedit pengingat'
+      })
+    }
+
+    const data = await response.json();
+
+    if (data.status === 'success') {
+      showFlashMessage({
+        type: 'success',
+        messages: data.message
+      });
+    } else {
+      showFlashMessage({
+        type: 'error',
+        messages: data.message
+      });
+    }
+
+    getUserReminderData();
+  }
 
   /**
    * Render ulang tampilan nutrisi di dalam container.
@@ -408,6 +518,7 @@ $fiber = (int) ($target_calories / 1000) * 14;
     try {
       const rawNutrientData = await getUserTrackingData(<?= $_SESSION["user_id"] ?>, new Date().toISOString().split('T')[0]);
       const rawMealData = await getFoodConsumed(<?= $_SESSION["user_id"] ?>, new Date().toISOString().split('T')[0]);
+      getUserReminderData();
 
       if (rawNutrientData && rawMealData) {
         if (rawNutrientData.status === 'success') {
@@ -553,4 +664,68 @@ $fiber = (int) ($target_calories / 1000) * 14;
 
   updatePage();
   setInterval(updatePage, 5000);
+
+  // Water Consumption Logic
+  let currentWaterGlasses = 0; // Initial value from the HTML
+  const targetWaterGlasses = 8;
+  const waterPerGlassMl = 250; // Assuming 1 glass = 250ml
+
+  const waterAddButton = document.querySelector('.bg-cyan-500.hover\\:bg-cyan-600');
+  const waterCountText = document.querySelector('.px-4.py-5.text-center p');
+  const waterProgressBar = document.querySelector('.h-3.rounded-full.bg-cyan-400');
+  const waterGlassIcons = document.querySelectorAll('.fas.fa-glass-water');
+
+  console.log('Water Consumption Elements:');
+  console.log('Button:', waterAddButton);
+  console.log('Count Text:', waterCountText);
+  console.log('Progress Bar:', waterProgressBar);
+  console.log('Glass Icons:', waterGlassIcons);
+
+  function updateWaterDisplay() {
+    console.log('updateWaterDisplay called. currentWaterGlasses:', currentWaterGlasses);
+    // Ensure currentWaterGlasses does not exceed target
+    if (currentWaterGlasses > targetWaterGlasses) {
+      currentWaterGlasses = targetWaterGlasses;
+    }
+
+    const currentWaterMl = currentWaterGlasses * waterPerGlassMl;
+    const targetWaterMl = targetWaterGlasses * waterPerGlassMl;
+    const percentage = (currentWaterGlasses / targetWaterGlasses) * 100;
+
+    waterCountText.textContent = `${currentWaterGlasses} dari ${targetWaterGlasses} gelas (${currentWaterMl}ml)`;
+    waterProgressBar.style.width = `${percentage}%`;
+
+    waterGlassIcons.forEach((icon, index) => {
+      if (index < currentWaterGlasses) {
+        icon.classList.remove('text-gray-400');
+        icon.classList.add('text-cyan-500');
+      } else {
+        icon.classList.remove('text-cyan-500');
+        icon.classList.add('text-gray-400');
+      }
+    });
+
+    // Disable button if target reached
+    if (currentWaterGlasses >= targetWaterGlasses) {
+      waterAddButton.disabled = true;
+      waterAddButton.classList.remove('hover:bg-cyan-600');
+      waterAddButton.classList.add('opacity-50', 'cursor-not-allowed');
+    } else {
+      waterAddButton.disabled = false;
+      waterAddButton.classList.add('hover:bg-cyan-600');
+      waterAddButton.classList.remove('opacity-50', 'cursor-not-allowed');
+    }
+    console.log('Water display updated. Percentage:', percentage, 'Current ML:', currentWaterMl);
+  }
+
+  waterAddButton.addEventListener('click', () => {
+    console.log('Tambah Air button clicked!');
+    if (currentWaterGlasses < targetWaterGlasses) {
+      currentWaterGlasses++;
+      updateWaterDisplay();
+    }
+  });
+
+  // Initial display update
+  updateWaterDisplay();
 </script>

@@ -76,4 +76,9 @@ class HomeController
     }
     return ['view' => 'premium_page', 'data' => compact('user')];
   }
+
+  public function scan()
+  {
+    return ['view' => 'scan', 'data' => []];
+  }
 }

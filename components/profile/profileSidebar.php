@@ -15,11 +15,22 @@
       ["Messages", "fas fa-comments", "messages"],
       ["Log out", "fas fa-sign-out", "logout"]
     ];
+    $disabledItems = ["Schedules", "Meal Plans", "Premium", "Pemindai Makanan", "Messages"];
     foreach ($menuItems as $item) {
       $active = (strpos($_SERVER['REQUEST_URI'], $item[2]) !== false) ? "bg-emerald-600 border-l-4 border-yellow-400" : "hover:bg-emerald-700";
-      echo "<a href='" . BASE_URL . "profile/" . $item[2] . "' class='sidebar-item flex items-center px-6 py-3 gap-3 $active transition'>
-                    <i class='$item[1]'></i>
-                    <span>$item[0]</span>
+      $disabled_attr = '';
+      $disabled_class = '';
+      $href = "href='" . BASE_URL . "profile/" . $item[2] . "'";
+
+      if (in_array($item[0], $disabledItems)) {
+        $disabled_attr = 'aria-disabled="true" tabindex="-1"';
+        $disabled_class = 'opacity-50 cursor-not-allowed';
+        $href = ''; // Remove href to disable navigation
+      }
+
+      echo "<a {$href} class='sidebar-item flex items-center px-6 py-3 gap-3 {$active} {$disabled_class} transition' {$disabled_attr}>
+                    <i class='{$item[1]}'></i>
+                    <span>{$item[0]}</span>
                 </a>";
     }
     ?>

@@ -74,6 +74,9 @@ $routes = [
         isset($_GET['id']) ? (int)$_GET['id'] : -1
       ),
     ],
+    'nutritrack/scan' => [
+      'handler' => [$homeController, 'scan'],
+    ],
     'nutritrack/profile/tracking' => [
       'handler' => [$profileController, 'profileTracking'],
       'middleware' => ['auth'],

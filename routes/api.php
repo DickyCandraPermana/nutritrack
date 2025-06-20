@@ -115,6 +115,18 @@ $routes = [
     ],
     'nutritrack/api/nutrition-delete' => [
       'handler' => [$adminController, 'deleteNutrisi']
+    ],
+    'nutritrack/api/get-user-reminder' => [
+      'handler' => [$profileController, 'getUserReminder']
+    ],
+    'nutritrack/api/add-reminder' => [
+      'handler' => [$profileController, 'addReminder']
+    ],
+    "nutritrack/api/complete-reminder" => [
+      'handler' => [$profileController, 'completeReminder']
+    ],
+    "nutritrack/api/delete-reminder" => [
+      'handler' => [$profileController, 'deleteReminder']
     ]
   ]
 ];

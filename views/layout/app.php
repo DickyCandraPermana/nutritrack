@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="/nutritrack/public/css/tailwind.css"> <!-- Added Tailwind CSS -->
   <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.24/webcam.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 
@@ -19,7 +20,10 @@
   <script>
     const BASE_URL_JS = "<?= BASE_URL ?>";
 
-    function showFlashMessage({ type = "success", messages = [] }) {
+    function showFlashMessage({
+      type = "success",
+      messages = []
+    }) {
       if (!Array.isArray(messages)) messages = [messages];
       console.log(messages);
 
@@ -91,7 +95,7 @@
   <?php
   // This is where the main content of the page will be included
   if (isset($viewContent)) {
-      echo $viewContent;
+    echo $viewContent;
   }
   ?>
 </body>
