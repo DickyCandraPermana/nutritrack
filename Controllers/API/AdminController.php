@@ -250,10 +250,14 @@ class AdminController
     $nama_makanan = trim($data['nama_makanan'] ?? '');
     $deskripsi = trim($data['deskripsi'] ?? '');
     $kategori = trim($data['kategori'] ?? '');
+    $porsi = trim($data['porsi'] ?? ''); // New: Get porsi
     $nutrisis = $data['nutrisis'] ?? [];
 
     if (empty($nama_makanan)) {
       $errors[] = 'Nama makanan wajib diisi.';
+    }
+    if (empty($porsi)) { // New: Validate porsi
+      $errors[] = 'Porsi makanan wajib diisi.';
     }
 
     if (empty($nutrisis)) {
@@ -263,9 +267,7 @@ class AdminController
         if (!isset($nutrisi['jumlah']) || !is_numeric($nutrisi['jumlah']) || $nutrisi['jumlah'] <= 0) {
           $errors[] = 'Jumlah nutrisi untuk ' . ($nutrisi['nama'] ?? 'item ' . ($index + 1)) . ' harus angka positif.';
         }
-        if (!isset($nutrisi['satuan']) || trim($nutrisi['satuan']) === '') {
-          $errors[] = 'Satuan nutrisi untuk ' . ($nutrisi['nama'] ?? 'item ' . ($index + 1)) . ' wajib diisi.';
-        }
+        // Removed: Satuan validation for detail_nutrisi_makanan
       }
     }
 
@@ -273,21 +275,34 @@ class AdminController
       $this->respond(false, $errors);
     }
 
-    $foodData = array('nama_makanan' => $nama_makanan, 'deskripsi' => $deskripsi, 'kategori' => $kategori);
-    $success = $this->food->tambahMakanan($foodData);
+    $foodData = array('nama_makanan' => $nama_makanan, 'deskripsi' => $deskripsi, 'kategori' => $kategori, 'porsi' => $porsi); // New: Pass porsi
+    $foodAddResult = $this->food->tambahMakanan($foodData);
 
-    $inputDetail = false;
-    if ($success) {
-      $food_id = $this->food->getFoodId($foodData['nama_makanan']);
-      if ($food_id) {
-        $inputDetail = $this->food->inputDetailMakanan($nutrisis, $food_id);
-      } else {
-        $errors[] = 'Gagal mendapatkan ID makanan baru.';
-        $this->respond(false, $errors);
-      }
+    if ($foodAddResult !== true) {
+      $this->respond(false, 'Gagal tambah makanan: ' . $foodAddResult);
     }
 
-    $this->respond($success && $inputDetail, $success && $inputDetail ? 'Berhasil tambah makanan' : 'Gagal tambah makanan');
+    $food_id = $this->food->getFoodId($foodData['nama_makanan']);
+    if (!is_numeric($food_id) || (int)$food_id <= 0) {
+      $this->respond(false, 'Gagal mendapatkan ID makanan baru setelah penambahan atau ID tidak valid.');
+    }
+    $food_id = (int)$food_id; // Ensure food_id is an integer
+
+    // Only attempt to insert nutrition details if the nutritions array is not empty
+    if (!empty($nutrisis)) {
+      $inputDetailResult = $this->food->inputDetailMakanan($nutrisis, $food_id);
+
+      if ($inputDetailResult !== true) {
+        $this->respond(false, 'Gagal menambahkan detail nutrisi: ' . $inputDetailResult);
+      }
+    } else {
+      // If no nutritions are provided, consider it a success for this part
+      // as the food itself might be added without details initially.
+      // Or, you might want to add an error if nutritions are mandatory.
+      // For now, assuming it's okay if no nutritions are provided.
+    }
+
+    $this->respond(true, 'Berhasil tambah makanan');
   }
 
   /**
@@ -322,6 +337,22 @@ class AdminController
   public function tambahNutrisi()
   {
     $data = $this->getInputData();
+    $errors = [];
+
+    $nama = trim($data['nama'] ?? '');
+    $satuan = trim($data['satuan'] ?? '');
+
+    if (empty($nama)) {
+      $errors[] = 'Nama nutrisi wajib diisi.';
+    }
+    if (empty($satuan)) {
+      $errors[] = 'Satuan nutrisi wajib diisi.';
+    }
+
+    if (!empty($errors)) {
+      $this->respond(false, $errors);
+    }
+
     $success = $this->nutrition->tambahNutrisi($data);
     $this->respond($success, $success ? 'Berhasil tambah nutrisi' : 'Gagal tambah nutrisi');
   }
@@ -334,6 +365,26 @@ class AdminController
   public function editNutrisi()
   {
     $data = $this->getInputData();
+    $errors = [];
+
+    $nama = trim($data['nama'] ?? '');
+    $satuan = trim($data['satuan'] ?? '');
+    $id = $data['id'] ?? null;
+
+    if (empty($nama)) {
+      $errors[] = 'Nama nutrisi wajib diisi.';
+    }
+    if (empty($satuan)) {
+      $errors[] = 'Satuan nutrisi wajib diisi.';
+    }
+    if (empty($id)) {
+      $errors[] = 'ID nutrisi tidak valid.';
+    }
+
+    if (!empty($errors)) {
+      $this->respond(false, $errors);
+    }
+
     $success = $this->nutrition->editNutrisi($data);
     $this->respond($success, $success ? 'Berhasil edit nutrisi' : 'Gagal edit nutrisi');
   }

@@ -48,11 +48,13 @@ class FoodController
    */
   public function foodDetail($id): array
   {
-    if (!$id || !is_numeric($id)) {
+    // Ensure ID is a positive integer
+    if (!is_numeric($id) || (int)$id <= 0) {
       setFlash('error', 'ID makanan tidak valid.');
       header('Location: ' . BASE_URL . 'search');
       exit;
     }
+    $id = (int)$id; // Cast to integer after validation
 
     $result = $this->food->getFoodDetail($id);
 

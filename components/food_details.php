@@ -5,6 +5,7 @@ if (!isset($details) || empty($details)) {
 }
 
 $foodName = htmlspecialchars($details[0]['makanan']);
+$foodPorsi = htmlspecialchars($details[0]['porsi']); // Get the 'porsi' field
 $nutritionDataByName = []; // Keep this for the main table
 $nutritionDataById = [];   // New array for ID-based lookup
 
@@ -106,7 +107,8 @@ function calculateAKG($nutritionId, $amount, $unit)
 ?>
 
 <div class="max-w-6xl p-6 mx-auto">
-    <h1 class="mb-6 text-3xl font-bold text-center text-gray-800"><?= $foodName ?></h1>
+    <h1 class="mb-2 text-3xl font-bold text-center text-gray-800"><?= $foodName ?></h1>
+    <p class="mb-6 text-lg text-center text-gray-600">Porsi: <?= $foodPorsi ?></p>
     <div class="grid max-w-6xl grid-cols-1 gap-6 mx-auto lg:grid-cols-3">
         <!-- Informasi Nilai Gizi -->
         <div class="col-span-1 p-4 bg-white rounded shadow">

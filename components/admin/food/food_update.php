@@ -18,6 +18,12 @@
         class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
     </div>
 
+    <div>
+      <label for="edit-porsi" class="block mb-1 font-semibold text-gray-700">Porsi</label>
+      <input type="text" name="porsi" id="edit-porsi" required
+        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+    </div>
+
     <div class="col-span-2">
       <label for="edit-deskripsi" class="block mb-1 font-semibold text-gray-700">Deskripsi</label>
       <textarea name="deskripsi" id="edit-deskripsi" rows="4"
@@ -137,18 +143,28 @@
 
   function addNutritionField() {
     const selectedId = document.getElementById('edit-nutrition-select').value;
-    const selectedText = document.getElementById('edit-nutrition-select').selectedOptions[0].text;
+    const selectedOption = nutritionList.find(nutri => nutri.nutrition_id == selectedId);
+    const selectedText = selectedOption ? selectedOption.nama : '';
+    const selectedSatuan = selectedOption ? selectedOption.satuan : '';
     const fieldContainer = document.getElementById('edit-nutrition-fields');
+
+    // Check if this nutrition is already added
+    const existingNutritionIds = Array.from(fieldContainer.querySelectorAll('input[name="nutritions[][nutrition_id]"]'))
+      .map(input => input.value);
+    if (existingNutritionIds.includes(selectedId)) {
+      showFlashMessage({ type: 'error', messages: `Nutrisi "${selectedText}" sudah ditambahkan.` });
+      return;
+    }
 
     const div = document.createElement('div');
     div.className = 'flex items-center gap-4';
     div.innerHTML = `
-      <input type="hidden" name="nutritions[][nutrition_id]" value="${selectedId}">
+      <input type="hidden" data-nutrition-id="${selectedId}" value="${selectedId}">
       <label class="w-1/4">${selectedText}</label>
-      <input type="number" name="nutritions[][jumlah]" step="0.01" placeholder="Jumlah"
+      <input type="number" data-nutrition-jumlah step="0.01" placeholder="Jumlah"
         class="w-1/4 px-3 py-2 border rounded" required>
-      <input type="text" name="nutritions[][satuan]" placeholder="Satuan (mg, g, etc)"
-        class="w-1/4 px-3 py-2 border rounded" required>
+      <span class="w-1/4 text-gray-600">${selectedSatuan}</span>
+      <button type="button" onclick="this.parentNode.remove()" class="px-2 py-1 text-white bg-red-500 rounded hover:bg-red-600">X</button>
     `;
     fieldContainer.appendChild(div);
   }
@@ -159,14 +175,14 @@
     Object.values(currentFoodDetail).forEach(nutrition => {
       const div = document.createElement('div');
       div.className = 'flex items-center gap-4';
-      div.innerHTML = `
-        <input type="hidden" name="nutritions[][nutrition_id]" value="${nutrition.nutrition_id}">
+    div.innerHTML = `
+        <input type="hidden" data-nutrition-id="${nutrition.nutrition_id}" value="${nutrition.nutrition_id}">
         <label class="w-1/4">${nutrition.nama}</label>
-        <input type="number" name="nutritions[][jumlah]" step="0.01" placeholder="Jumlah"
+        <input type="number" data-nutrition-jumlah step="0.01" placeholder="Jumlah"
           class="w-1/4 px-3 py-2 border rounded" required value="${nutrition.jumlah}">
-        <input type="text" name="nutritions[][satuan]" placeholder="Satuan (mg, g, etc)"
-          class="w-1/4 px-3 py-2 border rounded" required value="${nutrition.satuan}">
-      `;
+        <span class="w-1/4 text-gray-600">${nutrition.satuan}</span>
+        <button type="button" onclick="this.parentNode.remove()" class="px-2 py-1 text-white bg-red-500 rounded hover:bg-red-600">X</button>
+    `;
       fieldContainer.appendChild(div);
     });
   }
@@ -179,18 +195,21 @@
       const nutritionData = [];
       const nutritionFields = document.querySelectorAll('#edit-nutrition-fields > div');
       nutritionFields.forEach(field => {
-        const inputs = field.querySelectorAll('input');
-        nutritionData.push({
-          nutrition_id: inputs[0].value,
-          jumlah: inputs[1].value,
-          satuan: inputs[2].value
-        });
+        const nutritionIdInput = field.querySelector('[data-nutrition-id]');
+        const nutritionJumlahInput = field.querySelector('[data-nutrition-jumlah]');
+        if (nutritionIdInput && nutritionJumlahInput) {
+          nutritionData.push({
+            nutrition_id: nutritionIdInput.value,
+            jumlah: nutritionJumlahInput.value,
+          });
+        }
       });
 
       const payload = Object.fromEntries(formData);
-      payload.nutrisis = nutritionData;
+      payload.nutritions = nutritionData; // Change key from 'nutrisis' to 'nutritions'
+      payload.porsi = document.getElementById('edit-porsi').value; // Add porsi to payload
 
-      // console.log(JSON.stringify(payload)); // Removed debugging log
+      console.log(JSON.stringify(payload)); // Re-enabled debugging log
 
       const res = await fetch('/nutritrack/api/food-edit', {
         method: 'POST',
@@ -228,5 +247,6 @@
     document.getElementById('edit-nama_makanan').value = currentFood[0].nama_makanan;
     document.getElementById('edit-deskripsi').value = currentFood[0].deskripsi;
     document.getElementById('edit-kategori').value = currentFood[0].kategori;
+    document.getElementById('edit-porsi').value = currentFood[0].porsi; // Populate porsi field
   });
 </script>

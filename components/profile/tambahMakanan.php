@@ -21,7 +21,7 @@
         <!-- Options -->
         <ul class="overflow-y-auto max-h-40">
           <template x-for="item in filteredItems" :key="item.food_id">
-            <li @click="selected = item; open = false; search = '';" class="p-3 cursor-pointer hover:bg-gray-100">
+            <li @click="selected = item; open = false; search = ''; updateSatuanDisplay();" class="p-3 cursor-pointer hover:bg-gray-100">
               <span x-text="item.nama_makanan"></span>
             </li>
           </template>
@@ -49,16 +49,15 @@
       </select>
     </div>
 
-    <!-- Porsi -->
-    <div class="flex flex-col gap-2">
-      <label for="jumlah_porsi" class="font-medium text-gray-700">Porsi</label>
-      <input type="number" name="jumlah_porsi" id="jumlah_porsi" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Masukkan porsi makan">
-    </div>
-
-    <!-- Satuan -->
-    <div class="flex flex-col gap-2">
-      <label for="satuan" class="font-medium text-gray-700">Satuan Porsi</label>
-      <input type="text" name="satuan" id="satuan" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Masukkan nama satuan">
+    <!-- Jumlah Porsi dan Satuan -->
+    <div class="flex items-end gap-2">
+      <div class="flex flex-col flex-1 gap-2">
+        <label for="jumlah_porsi" class="font-medium text-gray-700">Jumlah Porsi</label>
+        <input type="number" name="jumlah_porsi" id="jumlah_porsi" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Masukkan jumlah porsi" min="1" value="1">
+      </div>
+      <div class="flex-none">
+        <span id="satuan_display" class="p-2 text-gray-700 bg-gray-200 border border-gray-300 rounded-md">Satuan</span>
+      </div>
     </div>
 
     <!-- Submit -->
@@ -75,14 +74,18 @@
       open: false,
       search: '',
       selected: {
-        label: '',
-        value: ''
+        food_id: '',
+        nama_makanan: 'Pilih Makanan', // Initialize with default text
+        satuan: 'Satuan' // Initialize with default unit
       },
       items: <?php
               echo json_encode($foodData);
               ?>,
       get filteredItems() {
         return this.items.filter(i => i.nama_makanan.toLowerCase().includes(this.search.toLowerCase()));
+      },
+      updateSatuanDisplay() {
+        document.getElementById('satuan_display').innerText = this.selected.satuan || 'Satuan';
       }
     }
   }
@@ -96,6 +99,8 @@
       for (let [key, value] of formData.entries()) {
         data[key] = value;
       }
+      // Add satuan from selected food item
+      data['satuan'] = document.getElementById('satuan_display').innerText;
 
       const res = await fetch(BASE_URL_JS + 'api/user-tambah-makanan', {
         method: 'POST',

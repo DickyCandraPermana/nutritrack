@@ -42,7 +42,7 @@ class Nutrition
   public function getNutrisiById(int $id): ?array
   {
     try {
-      $stmt = $this->db->prepare("SELECT * FROM nutrisi WHERE id = ?");
+      $stmt = $this->db->prepare("SELECT * FROM nutrisi WHERE nutrition_id = ?");
       $stmt->execute([$id]);
       return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
     } catch (PDOException $e) {
@@ -53,7 +53,7 @@ class Nutrition
   /**
    * Adds a new nutrition item to the database.
    *
-   * @param array $data An associative array containing the 'nama' (name) of the nutrition.
+   * @param array $data An associative array containing the 'nama' (name) and 'satuan' (unit) of the nutrition.
    * @return bool True on success, false if the nutrition already exists or on database error.
    */
   public function tambahNutrisi(array $data): bool
@@ -61,8 +61,8 @@ class Nutrition
     if ($this->adaNutrisi($data['nama'])) return false;
 
     try {
-      $stmt = $this->db->prepare("INSERT INTO nutrisi (nama) VALUES (?)");
-      $stmt->execute([$data['nama']]);
+      $stmt = $this->db->prepare("INSERT INTO nutrisi (nama, satuan) VALUES (?, ?)");
+      $stmt->execute([$data['nama'], $data['satuan']]);
       return true;
     } catch (PDOException $e) {
       return false;
@@ -72,14 +72,14 @@ class Nutrition
   /**
    * Edits an existing nutrition item in the database.
    *
-   * @param array $data An associative array containing the 'nama' (name) and 'id' of the nutrition to edit.
+   * @param array $data An associative array containing the 'nama' (name), 'satuan' (unit) and 'id' of the nutrition to edit.
    * @return bool True on success, false on database error.
    */
   public function editNutrisi(array $data): bool
   {
     try {
-      $stmt = $this->db->prepare("UPDATE nutrisi SET nama = ? WHERE id = ?");
-      $stmt->execute([$data['nama'], $data['id']]);
+      $stmt = $this->db->prepare("UPDATE nutrisi SET nama = ?, satuan = ? WHERE nutrition_id = ?");
+      $stmt->execute([$data['nama'], $data['satuan'], $data['id']]);
       return true;
     } catch (PDOException $e) {
       return false;
@@ -95,7 +95,7 @@ class Nutrition
   public function deleteNutrisi(array $data): bool
   {
     try {
-      $stmt = $this->db->prepare("DELETE FROM nutrisi WHERE id = ?");
+      $stmt = $this->db->prepare("DELETE FROM nutrisi WHERE nutrition_id = ?");
       $stmt->execute([$data['id']]);
       return true;
     } catch (PDOException $e) {

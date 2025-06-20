@@ -246,12 +246,12 @@ class ProfileController
 
     // Validate jumlah_porsi
     if (!isset($data['jumlah_porsi']) || !is_numeric($data['jumlah_porsi']) || $data['jumlah_porsi'] <= 0) {
-      $errors[] = 'Portion must be a positive number.';
+      $errors[] = 'Jumlah porsi is required and must be a positive number.';
     }
 
     // Validate satuan
     if (!isset($data['satuan']) || trim($data['satuan']) === '') {
-      $errors[] = 'Portion unit is required.';
+      $errors[] = 'Satuan is required.';
     }
 
     if (!empty($errors)) {

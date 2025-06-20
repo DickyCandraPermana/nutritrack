@@ -16,6 +16,12 @@
         class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
     </div>
 
+    <div>
+      <label for="porsi" class="block mb-1 font-semibold text-gray-700">Porsi</label>
+      <input type="text" name="porsi" id="porsi" required
+        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+    </div>
+
     <div class="col-span-2">
       <label for="deskripsi" class="block mb-1 font-semibold text-gray-700">Deskripsi</label>
       <textarea name="deskripsi" id="deskripsi" rows="4"
@@ -80,8 +86,18 @@
 
   function addNutritionField() {
     const selectedId = document.getElementById('nutritionSelect').value;
-    const selectedText = document.getElementById('nutritionSelect').selectedOptions[0].text;
+    const selectedOption = nutritionList.find(nutri => nutri.nutrition_id == selectedId);
+    const selectedText = selectedOption ? selectedOption.nama : '';
+    const selectedSatuan = selectedOption ? selectedOption.satuan : ''; // Get satuan from nutritionList
     const fieldContainer = document.getElementById('nutritionFields');
+
+    // Check if this nutrition is already added
+    const existingNutritionIds = Array.from(fieldContainer.querySelectorAll('input[name="nutritions[][nutrition_id]"]'))
+      .map(input => input.value);
+    if (existingNutritionIds.includes(selectedId)) {
+      showFlashMessage({ type: 'error', messages: `Nutrisi "${selectedText}" sudah ditambahkan.` });
+      return;
+    }
 
     const div = document.createElement('div');
     div.className = 'flex items-center gap-4';
@@ -90,8 +106,8 @@
       <label class="w-1/4">${selectedText}</label>
       <input type="number" name="nutritions[][jumlah]" step="0.01" placeholder="Jumlah"
         class="w-1/4 px-3 py-2 border rounded" required>
-      <input type="text" name="nutritions[][satuan]" placeholder="Satuan (mg, g, etc)"
-        class="w-1/4 px-3 py-2 border rounded" required>
+      <span class="w-1/4 text-gray-600">${selectedSatuan}</span> <!-- Display satuan statically -->
+      <button type="button" onclick="this.parentNode.remove()" class="px-2 py-1 text-white bg-red-500 rounded hover:bg-red-600">X</button>
     `;
     fieldContainer.appendChild(div);
   }
@@ -109,7 +125,7 @@
         nutritionData.push({
           nutrition_id: inputs[0].value,
           jumlah: inputs[1].value,
-          satuan: inputs[2].value
+          // Removed: satuan is no longer sent with detail_nutrisi_makanan
         });
       });
 

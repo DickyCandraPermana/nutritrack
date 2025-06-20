@@ -128,10 +128,9 @@ class Profile
             makanan.deskripsi, 
             registrasi_makanan.tanggal, 
             detail_registrasi_makanan.waktu_makan, 
-            detail_registrasi_makanan.jumlah_porsi, 
-            detail_registrasi_makanan.satuan,
+            makanan.porsi,
             detail_nutrisi_makanan.jumlah, 
-            detail_nutrisi_makanan.satuan AS nutrisi_satuan,
+            nutrisi.satuan AS nutrisi_satuan,
             nutrisi.nama AS nutrisi_nama
         FROM detail_registrasi_makanan
         INNER JOIN registrasi_makanan ON detail_registrasi_makanan.reg_id = registrasi_makanan.reg_id
@@ -153,8 +152,7 @@ class Profile
           'deskripsi' => $row['deskripsi'],
           'tanggal' => $row['tanggal'],
           'waktu_makan' => $row['waktu_makan'],
-          'jumlah_porsi' => $row['jumlah_porsi'],
-          'satuan' => $row['satuan'],
+          'porsi' => $row['porsi'],
           'nutrisi' => [] // Buat array kosong untuk nutrisi
         ];
       }
@@ -297,13 +295,9 @@ class Profile
     $user_id = $data['user_id'];
     $makanan = $data['food_id'];
     $jam = $data['waktu_makan'];
+    $catatan = $data['catatan'] ?? null; // Use null coalescing for optional field
     $jumlah_porsi = $data['jumlah_porsi'];
     $satuan = $data['satuan'];
-    $catatan = $data['catatan'];
-
-    if (!isset($catatan)) {
-      $catatan = null;
-    }
 
     if ($this->cekRegistrasiMakanan($user_id) == 0) {
       $this->tambahRegistrasiMakanan($user_id);
@@ -311,8 +305,8 @@ class Profile
 
     $reg_id = $this->getRegistrasiMakanan($user_id)['reg_id'];
 
-    $stmt = $this->db->prepare("INSERT INTO detail_registrasi_makanan (reg_id, food_id, waktu_makan, jumlah_porsi, satuan, catatan) VALUES (?, ?, ?, ?, ?, ?)");
-    $stmt->execute([$reg_id, $makanan, $jam, $jumlah_porsi, $satuan, $catatan]);
+    $stmt = $this->db->prepare("INSERT INTO detail_registrasi_makanan (reg_id, food_id, waktu_makan, catatan, jumlah_porsi, satuan) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->execute([$reg_id, $makanan, $jam, $catatan, $jumlah_porsi, $satuan]);
   }
 
   /**
@@ -348,7 +342,7 @@ class Profile
     }
 
     $stmt = $this->db->prepare(
-      "SELECT makanan.nama_makanan, detail_registrasi_makanan.jumlah_porsi, detail_registrasi_makanan.satuan, detail_registrasi_makanan.waktu_makan, detail_nutrisi_makanan.jumlah, detail_nutrisi_makanan.nutrition_id 
+      "SELECT makanan.nama_makanan, makanan.porsi, nutrisi.satuan, detail_registrasi_makanan.waktu_makan, detail_nutrisi_makanan.jumlah, detail_nutrisi_makanan.nutrition_id 
       FROM detail_registrasi_makanan 
       INNER JOIN makanan ON detail_registrasi_makanan.food_id = makanan.food_id
       INNER JOIN detail_nutrisi_makanan ON makanan.food_id = detail_nutrisi_makanan.food_id
@@ -379,7 +373,7 @@ class Profile
       if (!isset($meals[$waktu]['items'][$key])) {
         $meals[$waktu]['items'][$key] = [
           'name' => $nama,
-          'portion' => "{$row['jumlah_porsi']} {$row['satuan']}",
+          'portion' => "{$row['porsi']} {$row['satuan']}",
           'calories' => 0,
           'carbs' => 0,
           'protein' => 0,

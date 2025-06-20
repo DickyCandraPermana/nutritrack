@@ -13,6 +13,7 @@
       <tr>
         <th class="px-4 py-2 border">ID</th>
         <th class="px-4 py-2 border">Nama Makanan</th>
+        <th class="px-4 py-2 border">Porsi</th>
         <th class="px-4 py-2 border">Aksi</th>
       </tr>
     </thead>
@@ -48,6 +49,7 @@
         row.innerHTML = `
         <td class="px-4 py-2 text-sm text-gray-700 border">${food.id}</td>
         <td class="px-4 py-2 text-sm text-left text-gray-700 border hover:text-blue-500 hover:underline"><a href="<?= BASE_URL ?>details?id=${food.id}">${food.nama}</a></td>
+        <td class="px-4 py-2 text-sm text-gray-700 border">${food.porsi}</td>
         <td class="px-4 py-2 text-center border">
           <a href="update-food?food_id=${food.id}"
             class="mr-2 text-yellow-500 transition hover:text-yellow-700">
