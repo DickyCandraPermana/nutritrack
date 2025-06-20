@@ -20,9 +20,9 @@
       <?php
       $menuItems = [
         ["Camera", "fas fa-camera", "scan"],
-        ["Help", "", "help"],
+        ["Help", "", "#faq"],
         ["Upgrade", "", "premium"],
-        ["Comunity", "", "comunity"],
+        ["Comunity", "", "#testimoni"],
         ["Notification", "fas fa-bell", "notification"],
         ["Chat", "fas fa-comments", "chat"]
       ];

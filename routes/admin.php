@@ -61,7 +61,12 @@ $routes = [
     ],
     'nutritrack/admin/logout' => [
       'handler' => [$authController, 'logout'],
-    ]
+    ],
+    'nutritrack/details' => [
+      'handler' => fn() => $foodController->foodDetail(
+        isset($_GET['id']) ? (int)$_GET['id'] : -1
+      ),
+    ],
   ]
 ];
 

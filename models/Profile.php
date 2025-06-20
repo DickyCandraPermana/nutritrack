@@ -524,4 +524,35 @@ class Profile
       ];
     }
   }
+
+  public function tambahAir($user_id, $tanggal, $jumlah, $tipe = "tambah")
+  {
+    try {
+      // Ambil air_dikonsumsi sekarang
+      $stmt = $this->db->prepare("SELECT air_dikonsumsi FROM registrasi_makanan WHERE user_id = ? AND tanggal = ?");
+      $stmt->execute([$user_id, $tanggal]);
+      $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+      // Default kalau belum ada record
+      $currentWater = $row ? (int)$row['air_dikonsumsi'] : 0;
+
+      // Tambah atau kurangin
+      if ($tipe == "tambah") {
+        $currentWater += $jumlah;
+      } else {
+        $currentWater -= $jumlah;
+        if ($currentWater < 0) $currentWater = 0; // Biar gak minus
+      }
+
+      // Update ke DB
+      $stmt = $this->db->prepare("UPDATE registrasi_makanan SET air_dikonsumsi = ? WHERE user_id = ? AND tanggal = ?");
+      $stmt->execute([$currentWater, $user_id, $tanggal]);
+
+      return true;
+    } catch (PDOException $e) {
+      return [
+        'error' => $e->getMessage()
+      ];
+    }
+  }
 }

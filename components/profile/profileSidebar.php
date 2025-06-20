@@ -11,11 +11,11 @@
       ["Schedules", "fas fa-calendar", "schedules"],
       ["Meal Plans", "fas fa-utensils", "meal-plans"],
       ["Premium", "fas fa-check-circle", "premium"],
-      ["Pemindai Makanan", "fas fa-camera", "scanner"],
+      ["Pemindai Makanan", "fas fa-camera", "scan"],
       ["Messages", "fas fa-comments", "messages"],
       ["Log out", "fas fa-sign-out", "logout"]
     ];
-    $disabledItems = ["Schedules", "Meal Plans", "Premium", "Pemindai Makanan", "Messages"];
+    $disabledItems = ["Schedules", "Meal Plans", "Premium", "Messages"];
     foreach ($menuItems as $item) {
       $active = (strpos($_SERVER['REQUEST_URI'], $item[2]) !== false) ? "bg-emerald-600 border-l-4 border-yellow-400" : "hover:bg-emerald-700";
       $disabled_attr = '';

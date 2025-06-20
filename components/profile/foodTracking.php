@@ -18,7 +18,7 @@ $fiber = (int) ($target_calories / 1000) * 14;
 require 'addReminder.php';
 ?>
 
-<div class="container px-4 mx-auto mt-6">
+<div class="container px-6 mx-auto mt-6">
   <!-- Header & Date Selector -->
   <div class="flex items-center justify-between mb-6">
     <h2 class="text-2xl font-semibold">Tracking Gizi</h2>
@@ -33,151 +33,139 @@ require 'addReminder.php';
     </div>
   </div>
 
-  <div class="grid grid-cols-1 gap-6 lg:grid-cols-12">
-    <!-- Left Column -->
-    <div class="space-y-6 lg:col-span-8">
-      <!-- Daily Summary -->
-      <div class="p-6 bg-white rounded-lg shadow">
-        <div class="grid items-center grid-cols-1 gap-6 md:grid-cols-2">
-          <div>
-            <h5 class="mb-2 text-lg font-medium">Total Kalori Hari Ini</h5>
-            <div class="flex items-end mb-2">
-              <h2 class="mr-2 text-2xl font-bold"><?= $total_calories ?> kkal</h2>
-              <h4 class="text-lg text-gray-400">/ <?= $target_calories ?> kkal</h4>
-            </div>
-            <div class="w-full h-3 bg-gray-200 rounded-full">
-              <div class="h-3 bg-yellow-400 rounded-full" style="width: <?= $calories_percent ?>%"></div>
-            </div>
-            <p class="mt-2 text-sm text-gray-600">Anda masih membutuhkan <?= $calories_deff ?> kkal untuk mencapai target</p>
+  <!-- Rekomendasi Gizi -->
+  <?php
+  $recommendations = [
+    [
+      "icon" => "fas fa-egg",
+      "iconColor" => "text-yellow-500",
+      "title" => "Sarapan Sehat",
+      "description" => "Mulailah hari dengan sarapan kaya protein dan serat, seperti telur rebus, oatmeal, dan buah-buahan segar."
+    ],
+    [
+      "icon" => "fas fa-utensils",
+      "iconColor" => "text-green-500",
+      "title" => "Makan Siang Seimbang",
+      "description" => "Sajikan makanan dengan kombinasi karbohidrat, protein, dan sayuran. Cobalah nasi merah dengan ayam panggang dan salad hijau."
+    ],
+    [
+      "icon" => "fas fa-apple-alt",
+      "iconColor" => "text-red-500",
+      "title" => "Camilan Sehat",
+      "description" => "Pilih camilan kaya nutrisi seperti buah-buahan segar, kacang-kacangan, atau yogurt rendah lemak."
+    ],
+    [
+      "icon" => "fas fa-tint",
+      "iconColor" => "text-blue-500",
+      "title" => "Minum Air yang Cukup",
+      "description" => "Pastikan untuk minum setidaknya 8 gelas air setiap hari untuk menjaga hidrasi tubuh dan kesehatan kulit."
+    ],
+    [
+      "icon" => "fas fa-leaf",
+      "iconColor" => "text-green-700",
+      "title" => "Konsumsi Makanan Kaya Serat",
+      "description" => "Makanan kaya serat seperti sayuran hijau, buah-buahan, dan biji-bijian membantu pencernaan dan mencegah konstipasi."
+    ]
+  ];
+  ?>
+
+
+  <div class="flex flex-row flex-wrap justify-center gap-4 mb-6 space-y-4">
+    <?php foreach ($recommendations as $item): ?>
+      <div class="flex items-center p-4 space-x-4 border rounded-lg shadow-md w-[400px] bg-gray-50">
+        <div class="flex-shrink-0">
+          <i class="text-3xl <?= $item['iconColor'] ?> <?= $item['icon'] ?>"></i>
+        </div>
+        <div class="flex-grow">
+          <h4 class="text-lg font-medium text-gray-800"><?= htmlspecialchars($item['title']) ?></h4>
+          <p class="text-sm text-gray-600"><?= htmlspecialchars($item['description']) ?></p>
+        </div>
+      </div>
+    <?php endforeach; ?>
+  </div>
+</div>
+
+
+<div class="grid grid-cols-1 gap-6 lg:grid-cols-12">
+  <!-- Left Column -->
+  <div class="space-y-6 lg:col-span-8">
+    <!-- Daily Summary -->
+    <div class="p-6 bg-white rounded-lg shadow">
+      <div class="grid items-center grid-cols-1 gap-6 md:grid-cols-2">
+        <div>
+          <h5 class="mb-2 text-lg font-medium">Total Kalori Hari Ini</h5>
+          <div class="flex items-end mb-2">
+            <h2 class="mr-2 text-2xl font-bold"><?= $total_calories ?> kkal</h2>
+            <h4 class="text-lg text-gray-400">/ <?= $target_calories ?> kkal</h4>
           </div>
-          <div class="relative">
-            <canvas id="calorieGauge"></canvas>
-            <div class="absolute inset-0 flex flex-col items-center justify-center">
-              <h6 class="text-xl font-semibold"><?= $calories_percent  ?>%</h6>
-              <small class="text-sm text-gray-500">dari target</small>
-            </div>
+          <div class="w-full h-3 bg-gray-200 rounded-full">
+            <div class="h-3 bg-yellow-400 rounded-full" style="width: <?= $calories_percent ?>%"></div>
+          </div>
+          <p class="mt-2 text-sm text-gray-600">Anda masih membutuhkan <?= $calories_deff ?> kkal untuk mencapai target</p>
+        </div>
+        <div class="relative">
+          <canvas id="calorieGauge"></canvas>
+          <div class="absolute inset-0 flex flex-col items-center justify-center">
+            <h6 class="text-xl font-semibold"><?= $calories_percent  ?>%</h6>
+            <small class="text-sm text-gray-500">dari target</small>
           </div>
         </div>
       </div>
-
-      <!-- Nutrient Breakdown -->
-      <div class="flex flex-col p-6 bg-white rounded-lg shadow">
-        <div class="flex items-center mb-4 text-lg font-semibold">
-          <i class="mr-2 text-gray-600 fas fa-chart-pie"></i> Distribusi Nutrisi
-        </div>
-        <!-- Item nutrisi -->
-        <div id="nutrient-container" class="space-y-4 lg:col-span-5"></div>
-      </div>
-
-      <!-- Riwayat Makanan -->
-      <div id="mealHistoryContainer" class="mb-6 bg-white rounded-lg shadow"></div>
-
     </div>
 
-    <!-- Right Column -->
-    <div class="space-y-6 lg:col-span-4">
-
-
-
-      <!-- Rekomendasi Gizi -->
-      <div class="p-5 mb-6 bg-white rounded-lg shadow-lg">
-        <div class="mb-5 text-center">
-          <h2 class="text-xl font-semibold text-gray-800">Rekomendasi Gizi Harian</h2>
-          <p class="text-sm text-gray-500">Berikut adalah beberapa tips dan rekomendasi untuk menjaga pola makan sehat dan bergizi setiap hari.</p>
-        </div>
-
-        <div class="space-y-4">
-          <!-- Rekomendasi 1: Sarapan Sehat -->
-          <div class="flex items-center p-4 space-x-4 border rounded-lg bg-gray-50">
-            <div class="flex-shrink-0">
-              <i class="text-3xl text-yellow-500 fas fa-egg"></i>
-            </div>
-            <div class="flex-grow">
-              <h4 class="text-lg font-medium text-gray-800">Sarapan Sehat</h4>
-              <p class="text-sm text-gray-600">Mulailah hari dengan sarapan kaya protein dan serat, seperti telur rebus, oatmeal, dan buah-buahan segar.</p>
-            </div>
-          </div>
-
-          <!-- Rekomendasi 2: Makan Siang Seimbang -->
-          <div class="flex items-center p-4 space-x-4 border rounded-lg bg-gray-50">
-            <div class="flex-shrink-0">
-              <i class="text-3xl text-green-500 fas fa-utensils"></i>
-            </div>
-            <div class="flex-grow">
-              <h4 class="text-lg font-medium text-gray-800">Makan Siang Seimbang</h4>
-              <p class="text-sm text-gray-600">Sajikan makanan dengan kombinasi karbohidrat, protein, dan sayuran. Cobalah nasi merah dengan ayam panggang dan salad hijau.</p>
-            </div>
-          </div>
-
-          <!-- Rekomendasi 3: Camilan Sehat -->
-          <div class="flex items-center p-4 space-x-4 border rounded-lg bg-gray-50">
-            <div class="flex-shrink-0">
-              <i class="text-3xl text-red-500 fas fa-apple-alt"></i>
-            </div>
-            <div class="flex-grow">
-              <h4 class="text-lg font-medium text-gray-800">Camilan Sehat</h4>
-              <p class="text-sm text-gray-600">Pilih camilan kaya nutrisi seperti buah-buahan segar, kacang-kacangan, atau yogurt rendah lemak.</p>
-            </div>
-          </div>
-
-          <!-- Rekomendasi 4: Minum Air yang Cukup -->
-          <div class="flex items-center p-4 space-x-4 border rounded-lg bg-gray-50">
-            <div class="flex-shrink-0">
-              <i class="text-3xl text-blue-500 fas fa-tint"></i>
-            </div>
-            <div class="flex-grow">
-              <h4 class="text-lg font-medium text-gray-800">Minum Air yang Cukup</h4>
-              <p class="text-sm text-gray-600">Pastikan untuk minum setidaknya 8 gelas air setiap hari untuk menjaga hidrasi tubuh dan kesehatan kulit.</p>
-            </div>
-          </div>
-
-          <!-- Rekomendasi 5: Konsumsi Makanan Kaya Serat -->
-          <div class="flex items-center p-4 space-x-4 border rounded-lg bg-gray-50">
-            <div class="flex-shrink-0">
-              <i class="text-3xl text-green-700 fas fa-leaf"></i>
-            </div>
-            <div class="flex-grow">
-              <h4 class="text-lg font-medium text-gray-800">Konsumsi Makanan Kaya Serat</h4>
-              <p class="text-sm text-gray-600">Makanan kaya serat seperti sayuran hijau, buah-buahan, dan biji-bijian membantu pencernaan dan mencegah konstipasi.</p>
-            </div>
-          </div>
-        </div>
+    <!-- Nutrient Breakdown -->
+    <div class="flex flex-col p-6 bg-white rounded-lg shadow">
+      <div class="flex items-center mb-4 text-lg font-semibold">
+        <i class="mr-2 text-gray-600 fas fa-chart-pie"></i> Distribusi Nutrisi
       </div>
+      <!-- Item nutrisi -->
+      <div id="nutrient-container" class="space-y-4 lg:col-span-5"></div>
+    </div>
 
-      <!-- Konsumsi Air -->
-      <div class="mb-6 bg-white rounded-lg shadow">
-        <div class="px-4 py-3 border-b">
-          <h5 class="flex items-center text-lg font-semibold">
-            <i class="mr-2 text-blue-500 fas fa-tint"></i> Konsumsi Air
-          </h5>
+    <!-- Riwayat Makanan -->
+    <div id="mealHistoryContainer" class="mb-6 bg-white rounded-lg shadow"></div>
+
+  </div>
+
+  <!-- Right Column -->
+  <div class="space-y-6 lg:col-span-4">
+
+    <!-- Konsumsi Air -->
+    <div class="mb-6 bg-white rounded-lg shadow">
+      <div class="px-4 py-3 border-b">
+        <h5 class="flex items-center text-lg font-semibold">
+          <i class="mr-2 text-blue-500 fas fa-tint"></i> Konsumsi Air
+        </h5>
+      </div>
+      <div class="px-4 py-5 text-center">
+        <h6 class="mb-2 text-sm text-gray-600">Target: 8 gelas (2000ml)</h6>
+        <div class="w-full h-3 mb-2 bg-gray-200 rounded-full">
+          <div class="h-3 rounded-full bg-cyan-400" style="width: 0%"></div>
         </div>
-        <div class="px-4 py-5 text-center">
-          <h6 class="mb-2 text-sm text-gray-600">Target: 8 gelas (2000ml)</h6>
-          <div class="w-full h-3 mb-2 bg-gray-200 rounded-full">
-            <div class="h-3 rounded-full bg-cyan-400" style="width: 0%"></div>
-          </div>
-          <p class="mb-4 text-sm text-gray-700">0 dari 8 gelas (0ml)</p>
+        <p class="mb-4 text-sm text-gray-700">0 dari 8 gelas (0ml)</p>
 
-          <div class="flex items-center justify-between mb-4">
-            <i class="text-xl text-gray-400 fas fa-glass-water"></i>
-            <i class="text-xl text-gray-400 fas fa-glass-water"></i>
-            <i class="text-xl text-gray-400 fas fa-glass-water"></i>
-            <i class="text-xl text-gray-400 fas fa-glass-water"></i>
-            <i class="text-xl text-gray-400 fas fa-glass-water"></i>
-            <i class="text-xl text-gray-400 fas fa-glass-water"></i>
-            <i class="text-xl text-gray-400 fas fa-glass-water"></i>
-            <i class="text-xl text-gray-400 fas fa-glass-water"></i>
-          </div>
+        <div class="flex items-center justify-between mb-4">
+          <i class="text-xl text-gray-400 fas fa-glass-water"></i>
+          <i class="text-xl text-gray-400 fas fa-glass-water"></i>
+          <i class="text-xl text-gray-400 fas fa-glass-water"></i>
+          <i class="text-xl text-gray-400 fas fa-glass-water"></i>
+          <i class="text-xl text-gray-400 fas fa-glass-water"></i>
+          <i class="text-xl text-gray-400 fas fa-glass-water"></i>
+          <i class="text-xl text-gray-400 fas fa-glass-water"></i>
+          <i class="text-xl text-gray-400 fas fa-glass-water"></i>
+        </div>
 
-          <button class="w-full px-4 py-2 font-medium text-white rounded bg-cyan-500 hover:bg-cyan-600">
+        <div class="flex flex-row space-x-2">
+          <button id="decrease-water-btn" class="w-full px-4 py-2 font-medium text-white rounded bg-cyan-500 hover:bg-cyan-600">
             <i class="mr-2 fas fa-plus"></i> Tambah Air
           </button>
         </div>
       </div>
+    </div>
 
-      <?php
-      /*
-<!-- Tren Nutrisi -->
+    <!-- Tren Nutrisi -->
+    <?php
+    /*
       <div class="mb-6 bg-white rounded-lg shadow">
         <div class="px-4 py-3 border-b">
           <h5 class="flex items-center text-lg font-semibold">
@@ -213,31 +201,29 @@ require 'addReminder.php';
         </div>
       </div>
       */
-      ?>
+    ?>
 
-      <!-- Pengingat -->
-      <div class="mb-6 bg-white rounded-lg shadow">
-        <div class="flex items-center justify-between px-4 py-3 border-b">
-          <h5 class="flex items-center text-lg font-semibold">
-            <i class="mr-2 fas fa-bell"></i> Pengingat
-          </h5>
-          <button onclick="showModal()" class="flex items-center px-3 py-2 text-xs text-white rounded-md bg-cyan-500">
-            <i class="mr-1 fas fa-plus"></i> Tambah Pengingat
-          </button>
-        </div>
-
-        <div class="px-4 py-5" id="reminder-container">
-          <div class="flex items-center mb-4">
-            <i class="mr-2 text-gray-600 fas fa-bell"></i>
-            <span class="text-sm font-semibold">Tidak ada pengingat</span>
-          </div>
-        </div>
+    <!-- Pengingat -->
+    <div class="mb-6 bg-white rounded-lg shadow">
+      <div class="flex items-center justify-between px-4 py-3 border-b">
+        <h5 class="flex items-center text-lg font-semibold">
+          <i class="mr-2 fas fa-bell"></i> Pengingat
+        </h5>
+        <button onclick="showModal()" class="flex items-center px-3 py-2 text-xs text-white rounded-md bg-cyan-500">
+          <i class="mr-1 fas fa-plus"></i> Tambah Pengingat
+        </button>
       </div>
 
-
-
+      <div class="px-4 py-5" id="reminder-container">
+        <div class="flex items-center mb-4">
+          <i class="mr-2 text-gray-600 fas fa-bell"></i>
+          <span class="text-sm font-semibold">Tidak ada pengingat</span>
+        </div>
+      </div>
     </div>
+
   </div>
+</div>
 </div>
 
 <script>
@@ -487,7 +473,6 @@ require 'addReminder.php';
       container.appendChild(document.createElement('p')).innerHTML = 'Belum ada data';
     }
   }
-
 
   async function getUserTrackingData(user_id, tanggal) {
     try {

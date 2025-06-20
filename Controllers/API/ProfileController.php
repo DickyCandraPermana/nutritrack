@@ -427,4 +427,22 @@ class ProfileController
     ]);
     exit;
   }
+
+  public function updateConsumedWater()
+  {
+    $data = json_decode(file_get_contents('php://input'), true);
+    $res = $this->profile->tambahAir($data['user_id'], $data['tanggal'], $data['jumlah'], $data['tipe']);
+    if (isset($res['error'])) {
+      echo json_encode([
+        "status" => "error",
+        "message" => $res['error']
+      ]);
+      exit;
+    }
+    echo json_encode([
+      "status" => "success",
+      "message" => "Air berhasil ditambahkan"
+    ]);
+    exit;
+  }
 }

@@ -1,4 +1,4 @@
-<div class="flex items-center justify-center p-6 bg-gray-100">
+<div class="flex items-center justify-center p-6 bg-gray-100" id="faq">
   <div class="w-full max-w-2xl p-6 bg-white shadow-md rounded-xl">
     <h2 class="mb-6 text-3xl font-bold text-center text-green-600">Frequently Asked Questions</h2>
 

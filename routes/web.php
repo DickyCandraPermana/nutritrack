@@ -77,6 +77,9 @@ $routes = [
     'nutritrack/scan' => [
       'handler' => [$homeController, 'scan'],
     ],
+    'nutritrack/profile/scan' => [
+      'handler' => fn() => header('Location: /nutritrack/scan')
+    ],
     'nutritrack/profile/tracking' => [
       'handler' => [$profileController, 'profileTracking'],
       'middleware' => ['auth'],
